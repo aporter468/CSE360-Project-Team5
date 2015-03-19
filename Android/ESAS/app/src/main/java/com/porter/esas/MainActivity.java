@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.util.*;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -30,7 +31,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
-
+    HistoryFragment historyFragment;
+     int userType; //0 = patient, 1 = doctor
+    ArrayList<Survey> surveyList;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -74,6 +77,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+        userType = 0;
+        historyFragment = HistoryFragment.newInstance(userType);
+        surveyList = new ArrayList<Survey>();
     }
 
 
@@ -126,6 +132,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public Fragment getItem(int position) {
+            if(position==0) {
+
+
+                return historyFragment;
+            }
+            if(position == 2)
+            {
+                return SurveyFragment.newInstance(0);
+            }
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);
@@ -142,11 +157,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return "History";
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
+                    return "Provider Info";
                 case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
+                    return "Enter Survey";
             }
             return null;
         }
@@ -184,5 +199,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return rootView;
         }
     }
+    public void showDatePickerDialog(View v) {
+        DatePickerFragment newFragment = new DatePickerFragment();
+        newFragment.show(getFragmentManager(), "datePicker");
+    }
+    public void setHistoryDate(int[] selectedDate)
+    {
+        historyFragment.setDate(selectedDate);
+    }
+    public void submitSurvey()
+    {
 
+    }
+    public void addSubmittedSurvey(Survey s)
+    {
+        surveyList.add(s);
+    }
 }
