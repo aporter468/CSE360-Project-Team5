@@ -70,6 +70,32 @@ public class ESASDatabaseConnection {
         }
     }
 
+    public PatientInformation login(String email, String password) {
+        final String query = "SELECT patientid, providerid, name, phone FROM patients WHERE email == ? AND password == ?"
+        PatientInformation patientInformation;
+        
+	try {
+            // Set up the sql query
+	    PreparedStatement pstat = connection.prepareStatement(query);
+	    pstat.setString(1, email);
+	    pstat.setString(2, password);
+	    
+	    // Query and obtain the results
+	    ResultSet resultSet = pstat.executeQuery();
+
+	    // Extract the results
+	    resultSet.next();
+	    int patientid = resultSet.getInt(1);
+	    int providerid = resultSet.getInt(2);
+	    String name = restulSet.getString(3);
+	    int phone = resultSet.getInt(4);
+	    patientInformation = new PatientInformation(patientid, providerid, name, email, phone)
+	catch (SQLException e) {
+	   throw new IllegalArgumentException("tbd", e);
+	}
+	return patientInformation;
+    }
+
     public PatientInformation getPatientInformation(int patientId) {
         final String query = "SELECT patientid, providerid, name, email, phone FROM patients WHERE patientId = ?";
         PatientInformation patientInformation;

@@ -5,6 +5,7 @@ providerid INTEGER NOT NULL,
 name TEXT NOT NULL,
 email TEXT,
 phone INTEGER,
+password TEXT NOT NULL,
 FOREIGN KEY(providerid) REFERENCES providers(providerid)
 );
 
@@ -13,7 +14,8 @@ CREATE TABLE providers
 providerid INTEGER PRIMARY KEY,
 name TEXT NOT NULL,
 email TEXT,
-phone INTEGER
+phone INTEGER,
+password TEXT NOT NULL
 );
 
 CREATE TABLE surveys
