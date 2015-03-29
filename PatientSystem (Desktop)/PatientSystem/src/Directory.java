@@ -1,16 +1,21 @@
-import java.awt.EventQueue;
-import javax.swing.JFrame;
 import java.awt.CardLayout;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.JPasswordField;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SpinnerDateModel;
+import java.util.Date;
+import java.util.Calendar;
 
 public class Directory {
     //declaration of private variables
@@ -21,7 +26,7 @@ public class Directory {
 	private JPanel panelMainMenu;
 	private JPanel panelCompleteSurvey;
 	private JPanel panelViewCareProviderInfo;
-	private JPanel panelViewHistoryPanel;
+	private JPanel panelViewHistory;
 	
 	//textField and passwordField from Login Panel
 	private JTextField textField_LoginUsername;
@@ -74,12 +79,20 @@ public class Directory {
 		frmEsasSystem.getContentPane().add(panelLogin, "name_136526590665903");
 		panelLogin.setLayout(null);
 		
-		JButton btnLogin = new JButton("Log In");
+		JButton btnLogin = new JButton("Log In");  // Log In 
+		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
+			public void actionPerformed(ActionEvent arg0) {
+				textField_LoginUsername.setText("");
+				passwordField_Login.setText("");
+				panelLogin.setVisible(false);
+				panelMainMenu.setVisible(true);
+			}
+		});
 		btnLogin.setBounds(207, 168, 89, 23);
 		panelLogin.add(btnLogin);
 		
 		JButton btnLoginSignUp = new JButton("Sign Up"); //SignUp Button
-		btnLoginSignUp.addActionListener(new ActionListener() {
+		btnLoginSignUp.addActionListener(new ActionListener() { //Action Listener for SignUp Button
 			public void actionPerformed(ActionEvent e) {
 				textField_LoginUsername.setText("");
 				passwordField_Login.setText("");
@@ -96,8 +109,8 @@ public class Directory {
 		panelLogin.add(textField_LoginUsername);
 		textField_LoginUsername.setColumns(10);
 		
-		JButton btnLoginForgottenCredentials = new JButton("Forgot you password?");
-		btnLoginForgottenCredentials.addActionListener(new ActionListener() {
+		JButton btnLoginForgottenCredentials = new JButton("Forgot you password?"); //Forgot Password Button
+		btnLoginForgottenCredentials.addActionListener(new ActionListener() { //Action Listener for Forgot Pass button
 			public void actionPerformed(ActionEvent e) {
 				textField_LoginUsername.setText("");
 				passwordField_Login.setText("");
@@ -108,22 +121,22 @@ public class Directory {
 		btnLoginForgottenCredentials.setBounds(108, 202, 188, 23);
 		panelLogin.add(btnLoginForgottenCredentials);
 		
-		JLabel lblLoginTitle = new JLabel("Welcome to the ESAS System");
+		JLabel lblLoginTitle = new JLabel("Welcome to the ESAS System"); //Window Title
 		lblLoginTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblLoginTitle.setBounds(73, 23, 272, 23);
 		panelLogin.add(lblLoginTitle);
 		
-		JLabel lblLoginUsername = new JLabel("Username:");
+		JLabel lblLoginUsername = new JLabel("Username:");  //User name Label
 		lblLoginUsername.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLoginUsername.setBounds(108, 88, 65, 14);
 		panelLogin.add(lblLoginUsername);
 		
-		JLabel lblLoginPassword = new JLabel("Password:");
+		JLabel lblLoginPassword = new JLabel("Password:");  //password label
 		lblLoginPassword.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLoginPassword.setBounds(108, 119, 65, 14);
 		panelLogin.add(lblLoginPassword);
 		
-		passwordField_Login = new JPasswordField();
+		passwordField_Login = new JPasswordField();   //JPasswordField for the password
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
 		
@@ -315,28 +328,52 @@ public class Directory {
 		JLabel lblMainMenuWelcome = new JLabel("Welcome ");
 		lblMainMenuWelcome.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblMainMenuWelcome.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMainMenuWelcome.setBounds(108, 31, 179, 22);
+		lblMainMenuWelcome.setBounds(129, 31, 179, 22);
 		panelMainMenu.add(lblMainMenuWelcome);
 		
 		JButton btnMainMenuViewHistory = new JButton("View History");
-		btnMainMenuViewHistory.setBounds(128, 93, 159, 23);
+		btnMainMenuViewHistory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelViewHistory.setVisible(true);
+			}
+		});
+		btnMainMenuViewHistory.setBounds(108, 93, 200, 23);
 		panelMainMenu.add(btnMainMenuViewHistory);
 		
 		JButton btnMainMenuAccessCPInformation = new JButton("Access Care Provider Info");
-		btnMainMenuAccessCPInformation.setBounds(128, 127, 159, 23);
+		btnMainMenuAccessCPInformation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelViewCareProviderInfo.setVisible(true);
+			}
+		});
+		btnMainMenuAccessCPInformation.setBounds(108, 127, 200, 23);
 		panelMainMenu.add(btnMainMenuAccessCPInformation);
 		
 		JButton btnMainMenuCompleteSurvey = new JButton("Complete Survey");
-		btnMainMenuCompleteSurvey.setBounds(128, 160, 159, 23);
+		btnMainMenuCompleteSurvey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelCompleteSurvey.setVisible(true);
+			}
+		});
+		btnMainMenuCompleteSurvey.setBounds(108, 160, 200, 23);
 		panelMainMenu.add(btnMainMenuCompleteSurvey);
 		
 		JLabel lblMainMenuSelectOption = new JLabel("Select of one the options below:");
 		lblMainMenuSelectOption.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMainMenuSelectOption.setBounds(118, 64, 169, 14);
+		lblMainMenuSelectOption.setBounds(108, 64, 200, 14);
 		panelMainMenu.add(lblMainMenuSelectOption);
 		
 		JButton btnMainMenuPreviousScreen = new JButton("Previous Screen");
-		btnMainMenuPreviousScreen.setBounds(128, 194, 159, 23);
+		btnMainMenuPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelLogin.setVisible(true);
+			}
+		});
+		btnMainMenuPreviousScreen.setBounds(108, 194, 200, 23);
 		panelMainMenu.add(btnMainMenuPreviousScreen);
 		//----------------------------------------------------------------------------------------------------
 		
@@ -344,18 +381,140 @@ public class Directory {
 		panelCompleteSurvey = new JPanel();
 		frmEsasSystem.getContentPane().add(panelCompleteSurvey, "name_136918142667310");
 		panelCompleteSurvey.setLayout(null);
+		
+		JLabel lblCompleteSurvey = new JLabel("Complete Survey");
+		lblCompleteSurvey.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblCompleteSurvey.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCompleteSurvey.setBounds(111, 24, 216, 30);
+		panelCompleteSurvey.add(lblCompleteSurvey);
+		
+		JLabel lblCompleteSurveyPain = new JLabel("Pain");
+		lblCompleteSurveyPain.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyPain.setBounds(48, 81, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyPain);
+		
+		JLabel lblCompleteSurveyTiredness = new JLabel("Tiredness");
+		lblCompleteSurveyTiredness.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyTiredness.setBounds(27, 113, 67, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyTiredness);
+		
+		JLabel lblCompleteSurveyNausea = new JLabel("Nausea");
+		lblCompleteSurveyNausea.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyNausea.setBounds(48, 144, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyNausea);
+		
+		JLabel lblCompleteSurveyDepression = new JLabel("Depression");
+		lblCompleteSurveyDepression.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyDepression.setBounds(27, 175, 67, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDepression);
+		
+		JLabel lblCompleteSurveyAnxiety = new JLabel("Anxiety");
+		lblCompleteSurveyAnxiety.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyAnxiety.setBounds(48, 209, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyAnxiety);
+		
+		JLabel lblCompleteSurveyDate = new JLabel("Date:");
+		lblCompleteSurveyDate.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyDate.setBounds(212, 126, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDate);
+		
+		JButton btnCompleteSurveySaveSurvey = new JButton("Save Survey");
+		btnCompleteSurveySaveSurvey.setBounds(254, 166, 134, 23);
+		panelCompleteSurvey.add(btnCompleteSurveySaveSurvey);
+		
+		JButton btnCompleSurveyPreviousScreen = new JButton("Previous Screen");
+		btnCompleSurveyPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelCompleteSurvey.setVisible(false);
+				panelMainMenu.setVisible(true);
+			}
+		});
+		btnCompleSurveyPreviousScreen.setBounds(254, 205, 134, 23);
+		panelCompleteSurvey.add(btnCompleSurveyPreviousScreen);
+		
+		JSpinner spinnerCompleteSurveyPain = new JSpinner();
+		spinnerCompleteSurveyPain.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyPain.setBounds(111, 78, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyPain);
+		
+		JSpinner spinner_1 = new JSpinner();
+		spinner_1.setModel(new SpinnerDateModel(new Date(1427612400000L), null, null, Calendar.DAY_OF_YEAR));
+		spinner_1.setBounds(268, 123, 120, 20);
+		panelCompleteSurvey.add(spinner_1);
+		
+		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
+		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyTiredness.setBounds(111, 110, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyTiredness);
+		
+		JSpinner spinnerCompleteSurvey = new JSpinner();
+		spinnerCompleteSurvey.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurvey.setBounds(111, 141, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurvey);
+		
+		JSpinner spinnerCompleteSurveyDepression = new JSpinner();
+		spinnerCompleteSurveyDepression.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyDepression.setBounds(111, 172, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDepression);
+		
+		JSpinner spinnerCompleteSurveyAnxiety = new JSpinner();
+		spinnerCompleteSurveyAnxiety.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyAnxiety.setBounds(111, 203, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyAnxiety);
+		
+		JLabel lblCompleteSurveyDescription1 = new JLabel("1 is lowest level of symptom possible");
+		lblCompleteSurveyDescription1.setBounds(200, 65, 216, 30);
+		panelCompleteSurvey.add(lblCompleteSurveyDescription1);
+		
+		JLabel lblCompleteSurveyDescription2 = new JLabel("10 is highest level of symptom possible");
+		lblCompleteSurveyDescription2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCompleteSurveyDescription2.setBounds(199, 93, 217, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDescription2);
+
 		//----------------------------------------------------------------------------------------------------
 		
 		//View CareProvider Info Panel************************************************************************
 		panelViewCareProviderInfo = new JPanel();
 		frmEsasSystem.getContentPane().add(panelViewCareProviderInfo, "name_136919613899853");
 		panelViewCareProviderInfo.setLayout(null);
+		
+		JLabel lblViewCPInfoTitle = new JLabel("Care Provider Information");
+		lblViewCPInfoTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblViewCPInfoTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblViewCPInfoTitle.setBounds(85, 39, 252, 22);
+		panelViewCareProviderInfo.add(lblViewCPInfoTitle);
+		
+		JButton btnCareProviderInfoPreviousScreen = new JButton("Previous Screen");
+		btnCareProviderInfoPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelViewCareProviderInfo.setVisible(false);
+				panelMainMenu.setVisible(true);
+			}
+		});
+		btnCareProviderInfoPreviousScreen.setBounds(128, 189, 158, 23);
+		panelViewCareProviderInfo.add(btnCareProviderInfoPreviousScreen);
 		//----------------------------------------------------------------------------------------------------
 		
 		//View History Panel**********************************************************************************
-		panelViewHistoryPanel = new JPanel();
-		frmEsasSystem.getContentPane().add(panelViewHistoryPanel, "name_136921281711804");
-		panelViewHistoryPanel.setLayout(null);
+		panelViewHistory = new JPanel();
+		frmEsasSystem.getContentPane().add(panelViewHistory, "name_136921281711804");
+		panelViewHistory.setLayout(null);
+		
+		JLabel lblViewHistoryTitle = new JLabel("View History");
+		lblViewHistoryTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblViewHistoryTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblViewHistoryTitle.setBounds(125, 41, 175, 22);
+		panelViewHistory.add(lblViewHistoryTitle);
+		
+		JButton btnViewHistoryPreviousScreen = new JButton("Previous Screen");
+		btnViewHistoryPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelViewHistory.setVisible(false);
+				panelMainMenu.setVisible(true);
+			}
+		});
+		btnViewHistoryPreviousScreen.setBounds(136, 179, 164, 23);
+		panelViewHistory.add(btnViewHistoryPreviousScreen);
 		//----------------------------------------------------------------------------------------------------
 	}
 }
