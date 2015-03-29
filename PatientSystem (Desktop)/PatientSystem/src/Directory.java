@@ -4,18 +4,19 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
-import java.util.Date;
-import java.util.Calendar;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 public class Directory {
     //declaration of private variables
@@ -40,15 +41,15 @@ public class Directory {
 	private JTextField textField_SignUpCareProvider;
 	private JPasswordField passwordField_SignUpPassword;
 	private JPasswordField passwordField_SignUpConfirmPassword;
-	private JTextField textField_SecretAnswer;
+	private JTextField textField_SignUpSecretAnswer;
 
 	//textFields from panelForgottenCredentials
 	private JTextField textField_ForgottenCredentialsUsername;
 	private JTextField textField_ForgottenCredentialsSecretAnswer;
+	private ArrayList<Patient> PatientList = new ArrayList<Patient>();
 	
 	//main method
 	public static void main(String[] args) {
-		ArrayList<Patient> PatientList = new ArrayList<Patient>();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -81,11 +82,40 @@ public class Directory {
 		
 		JButton btnLogin = new JButton("Log In");  // Log In 
 		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				textField_LoginUsername.setText("");
-				passwordField_Login.setText("");
-				panelLogin.setVisible(false);
-				panelMainMenu.setVisible(true);
+				//check if username exists
+				boolean found = false;
+				int length = PatientList.size(); //get the size of ArrayList
+				Patient temp = new Patient();   //make a temporary Patient
+				int position = -1;             //placeholder for found user
+				int i = 0;                     //counter
+				while ((found==false)&&(i<length)){ //go through ArrayList looking for match on user name
+					temp = PatientList.get(i);
+					if (textField_LoginUsername.getText().equals(temp.getUsername())){ //check if user name matches
+						found = true;  // if it is found change condition and save the index
+						position = i;
+					}
+					i++;
+				}
+					
+				if(found==false){ //display message if user name does not exist
+					JOptionPane.showMessageDialog(null, "Username does not exist.");
+				}
+				else{
+					//check if the password matches
+					temp = PatientList.get(position);
+					if (passwordField_Login.getText().equals(temp.getPassword())){
+						textField_LoginUsername.setText("");
+						passwordField_Login.setText("");
+						panelLogin.setVisible(false);
+						panelMainMenu.setVisible(true);
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Incorrect Password");
+					}
+						
+				}
 			}
 		});
 		btnLogin.setBounds(207, 168, 89, 23);
@@ -195,6 +225,22 @@ public class Directory {
 		textField_SignUpSecretQuestion.setColumns(10);
 		
 		JButton btnSignUpCreateNewUser = new JButton("Register");
+		btnSignUpCreateNewUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String firstName = textField_SignUpFirstName.getText();
+				String lastName = textField_SignUpLastName.getText();
+				String name = firstName + " " + lastName;
+				String userName = textField_SignUpUsername.getText();
+				String careProvider = textField_SignUpCareProvider.getText();
+				String secretQuestion = textField_SignUpSecretQuestion.getText();
+				String secretAnswer = textField_SignUpSecretAnswer.getText();
+				@SuppressWarnings("deprecation")
+				String password = passwordField_SignUpPassword.getText();
+				Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, careProvider);
+				PatientList.add(newUser);
+				System.out.println("New user: " + name + " was added!");
+			}
+		});
 		btnSignUpCreateNewUser.setBounds(259, 180, 146, 23);
 		panelSignUp.add(btnSignUpCreateNewUser);
 		
@@ -209,7 +255,7 @@ public class Directory {
 				textField_SignUpCareProvider.setText("");
 				passwordField_SignUpPassword.setText("");
 				passwordField_SignUpConfirmPassword.setText("");
-				textField_SecretAnswer.setText("");
+				textField_SignUpSecretAnswer.setText("");
 				panelSignUp.setVisible(false);
 				panelLogin.setVisible(true);
 			}
@@ -245,10 +291,10 @@ public class Directory {
 		lblSignUpSecretQuestion.setBounds(10, 184, 105, 14);
 		panelSignUp.add(lblSignUpSecretQuestion);
 		
-		textField_SecretAnswer = new JTextField();
-		textField_SecretAnswer.setBounds(125, 215, 124, 20);
-		panelSignUp.add(textField_SecretAnswer);
-		textField_SecretAnswer.setColumns(10);
+		textField_SignUpSecretAnswer = new JTextField();
+		textField_SignUpSecretAnswer.setBounds(125, 215, 124, 20);
+		panelSignUp.add(textField_SignUpSecretAnswer);
+		textField_SignUpSecretAnswer.setColumns(10);
 		
 		JLabel lblSignUpSecretAnswer = new JLabel("Secret Answer:");
 		lblSignUpSecretAnswer.setHorizontalAlignment(SwingConstants.RIGHT);
