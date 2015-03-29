@@ -104,9 +104,6 @@ public class SurveyFragment extends Fragment {
     }
     private void submitSurvey()
     {
-            Log.e("mylog","survey vals: "+surveyValues[0]+" "+surveyValues[1]);
-        //comments = commentsET.getText()
-
         Survey survey = new Survey(surveyValues,commentsET.getText().toString(),Calendar.getInstance());
         ((MainActivity) getActivity()).addSubmittedSurvey(survey);
     }

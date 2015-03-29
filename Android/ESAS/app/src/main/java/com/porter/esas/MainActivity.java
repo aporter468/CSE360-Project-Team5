@@ -2,6 +2,7 @@ package com.porter.esas;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -32,7 +33,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
     HistoryFragment historyFragment;
-     int userType; //0 = patient, 1 = doctor
+    PatientsFragment patientsFragment;
+    RecentSurveysFragment recentSurveysFragment;
+    int userType; //0 = patient, 1 = doctor
     ArrayList<Survey> surveyList;
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -43,6 +46,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        userType = 0;
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        setTitle("Settings");
+       userType = extras.getInt("com.porter.user_type");
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -77,9 +85,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-        userType = 0;
-        historyFragment = HistoryFragment.newInstance(userType);
-        surveyList = new ArrayList<Survey>();
+        if(userType ==0) {
+            historyFragment = HistoryFragment.newInstance(userType);
+            surveyList = new ArrayList<Survey>();
+        }
+        else
+        {
+            recentSurveysFragment = RecentSurveysFragment.newInstance();
+            patientsFragment = PatientsFragment.newInstance();
+        }
     }
 
 
@@ -132,14 +146,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public Fragment getItem(int position) {
-            if(position==0) {
-
-
-                return historyFragment;
-            }
-            if(position == 2)
+            if(userType == 0) //patient
             {
-                return SurveyFragment.newInstance(0);
+                if (position == 0) {
+                    return historyFragment;
+                }
+                if (position == 2) {
+                    return SurveyFragment.newInstance(0);
+                }
+            }
+            else//doctor
+            {
+                if (position == 0) {
+                    return recentSurveysFragment;
+                }
+                if (position == 1) {
+                    return patientsFragment;
+                }
             }
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
@@ -148,20 +171,35 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            if(userType==0)
+                return 3;
+            else
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return "History";
-                case 1:
-                    return "Provider Info";
-                case 2:
-                    return "Enter Survey";
+
+            if(userType==0) {
+                switch (position) {
+                    case 0:
+                        return "History";
+                    case 1:
+                        return "Provider Info";
+                    case 2:
+                        return "Enter Survey";
+                }
+            }
+            else
+            {
+                switch (position) {
+                    case 0:
+                        return "Recent Surveys";
+                    case 1:
+                        return "Patients";
+
+                }
             }
             return null;
         }
