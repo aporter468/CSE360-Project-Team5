@@ -88,4 +88,8 @@ public class Patient {
 	public Survey getSurvey(int position){
 		return Surveys.get(position);
 	}
+	
+	public ArrayList<Survey> getAllSurveys(){
+		return Surveys;
+	}
 }

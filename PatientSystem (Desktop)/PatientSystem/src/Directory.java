@@ -49,6 +49,7 @@ public class Directory {
 	private JTextField textField_ForgottenCredentialsSecretAnswer;
 	private JTextField textField_ForgottenCredentialsSecretQuestion;
 	private ArrayList<Patient> PatientList = new ArrayList<Patient>();
+	private int CurrentUser;
 	
 	//main method
 	public static void main(String[] args) {
@@ -106,6 +107,7 @@ public class Directory {
 						passwordField_Login.setText("");
 						panelLogin.setVisible(false); //set the panelLogin to not visible
 						panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
+						CurrentUser = position;
 					}
 					else { //show Incorrect password message
 						JOptionPane.showMessageDialog(null, "Incorrect Password", "Error", JOptionPane.ERROR_MESSAGE);
@@ -526,7 +528,57 @@ public class Directory {
 		lblCompleteSurveyDate.setBounds(212, 126, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDate);
 		
+		
+		JSpinner spinnerCompleteSurveyDate = new JSpinner();
+		spinnerCompleteSurveyDate.setModel(new SpinnerDateModel(new Date(1427612400000L), null, null, Calendar.DAY_OF_YEAR));
+		spinnerCompleteSurveyDate.setBounds(268, 123, 120, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDate);
+		
+		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
+		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyTiredness.setBounds(111, 110, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyTiredness);
+		
+		JSpinner spinnerCompleteSurveyNausea = new JSpinner();
+		spinnerCompleteSurveyNausea.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyNausea.setBounds(111, 141, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyNausea);
+		
+		JSpinner spinnerCompleteSurveyDepression = new JSpinner();
+		spinnerCompleteSurveyDepression.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyDepression.setBounds(111, 172, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDepression);
+		
+		JSpinner spinnerCompleteSurveyAnxiety = new JSpinner();
+		spinnerCompleteSurveyAnxiety.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyAnxiety.setBounds(111, 203, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyAnxiety);
+		
+		JSpinner spinnerCompleteSurveyPain = new JSpinner();
+		spinnerCompleteSurveyPain.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyPain.setBounds(111, 78, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyPain);
+		
 		JButton btnCompleteSurveySaveSurvey = new JButton("Save Survey");
+		btnCompleteSurveySaveSurvey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//collect current values from JSpinner
+				int tiredness = (int)spinnerCompleteSurveyTiredness.getValue();
+				int pain = (int)spinnerCompleteSurveyPain.getValue();
+				int nausea = (int)spinnerCompleteSurveyNausea.getValue();
+				int depression = (int)spinnerCompleteSurveyDepression.getValue();
+				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
+				String date = (String) spinnerCompleteSurveyDate.getValue();
+				//instantiate a temporary Patient and Survey to save the survey
+				Patient temp = new Patient();
+				temp = PatientList.get(CurrentUser);
+				//add the survey to the Correct Patient
+				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
+				temp.addSurvey(completedSurvey);
+				
+				//reset JSpinners to default values
+			}
+		});
 		btnCompleteSurveySaveSurvey.setBounds(254, 166, 134, 23);
 		panelCompleteSurvey.add(btnCompleteSurveySaveSurvey);
 		
@@ -539,36 +591,6 @@ public class Directory {
 		});
 		btnCompleSurveyPreviousScreen.setBounds(254, 205, 134, 23);
 		panelCompleteSurvey.add(btnCompleSurveyPreviousScreen);
-		
-		JSpinner spinnerCompleteSurveyPain = new JSpinner();
-		spinnerCompleteSurveyPain.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyPain.setBounds(111, 78, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyPain);
-		
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setModel(new SpinnerDateModel(new Date(1427612400000L), null, null, Calendar.DAY_OF_YEAR));
-		spinner_1.setBounds(268, 123, 120, 20);
-		panelCompleteSurvey.add(spinner_1);
-		
-		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
-		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyTiredness.setBounds(111, 110, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyTiredness);
-		
-		JSpinner spinnerCompleteSurvey = new JSpinner();
-		spinnerCompleteSurvey.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurvey.setBounds(111, 141, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurvey);
-		
-		JSpinner spinnerCompleteSurveyDepression = new JSpinner();
-		spinnerCompleteSurveyDepression.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyDepression.setBounds(111, 172, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyDepression);
-		
-		JSpinner spinnerCompleteSurveyAnxiety = new JSpinner();
-		spinnerCompleteSurveyAnxiety.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyAnxiety.setBounds(111, 203, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyAnxiety);
 		
 		JLabel lblCompleteSurveyDescription1 = new JLabel("1 is lowest level of symptom possible");
 		lblCompleteSurveyDescription1.setBounds(200, 65, 216, 30);
