@@ -9,7 +9,7 @@ public class Patient {
 	String SecretQuestion;
 	String SecretAnswer;
 	String CareProvider;
-	ArrayList<Survey> Surveys; 
+	ArrayList<Survey> Surveys = new ArrayList<Survey>();
 	
 	//constructor methods
 	public Patient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
@@ -57,6 +57,7 @@ public class Patient {
 	}
 	
 	public void addSurvey(Survey pSurvey){
+		System.out.println("About to add a Survey");
 		Surveys.add(pSurvey);
 	}
 	

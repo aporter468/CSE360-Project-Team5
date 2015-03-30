@@ -3,6 +3,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -568,15 +569,20 @@ public class Directory {
 				int nausea = (int)spinnerCompleteSurveyNausea.getValue();
 				int depression = (int)spinnerCompleteSurveyDepression.getValue();
 				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
-				String date = (String) spinnerCompleteSurveyDate.getValue();
+				String date = new SimpleDateFormat("yyyy/MM/dd").format(spinnerCompleteSurveyDate.getValue());
 				//instantiate a temporary Patient and Survey to save the survey
 				Patient temp = new Patient();
 				temp = PatientList.get(CurrentUser);
 				//add the survey to the Correct Patient
 				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
 				temp.addSurvey(completedSurvey);
-				
 				//reset JSpinners to default values
+				spinnerCompleteSurveyTiredness.setValue(1);
+				spinnerCompleteSurveyPain.setValue(1);
+				spinnerCompleteSurveyNausea.setValue(1);
+				spinnerCompleteSurveyDepression.setValue(1);
+				spinnerCompleteSurveyAnxiety.setValue(1);
+				JOptionPane.showMessageDialog(null, "Survey was saved!");
 			}
 		});
 		btnCompleteSurveySaveSurvey.setBounds(254, 166, 134, 23);
@@ -593,12 +599,12 @@ public class Directory {
 		panelCompleteSurvey.add(btnCompleSurveyPreviousScreen);
 		
 		JLabel lblCompleteSurveyDescription1 = new JLabel("1 is lowest level of symptom possible");
-		lblCompleteSurveyDescription1.setBounds(200, 65, 216, 30);
+		lblCompleteSurveyDescription1.setBounds(174, 65, 242, 30);
 		panelCompleteSurvey.add(lblCompleteSurveyDescription1);
 		
 		JLabel lblCompleteSurveyDescription2 = new JLabel("10 is highest level of symptom possible");
 		lblCompleteSurveyDescription2.setHorizontalAlignment(SwingConstants.LEFT);
-		lblCompleteSurveyDescription2.setBounds(199, 93, 217, 14);
+		lblCompleteSurveyDescription2.setBounds(174, 93, 242, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDescription2);
 
 		//----------------------------------------------------------------------------------------------------
