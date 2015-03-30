@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 //This is the Patient class that will server to record individual patients information
 public class Patient {
@@ -7,6 +9,7 @@ public class Patient {
 	String SecretQuestion;
 	String SecretAnswer;
 	String CareProvider;
+	ArrayList<Survey> Surveys; 
 	
 	//constructor methods
 	public Patient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
@@ -53,6 +56,10 @@ public class Patient {
 		CareProvider = pCareProvider;
 	}
 	
+	public void addSurvey(Survey pSurvey){
+		Surveys.add(pSurvey);
+	}
+	
 	//getter methods
 	public String getName(){
 		return Name;
@@ -76,5 +83,9 @@ public class Patient {
 	
 	public String getCareProvider(){
 		return CareProvider;
+	}
+	
+	public Survey getSurvey(int position){
+		return Surveys.get(position);
 	}
 }

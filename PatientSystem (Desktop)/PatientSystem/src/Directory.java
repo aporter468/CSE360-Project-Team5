@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -46,6 +47,7 @@ public class Directory {
 	//textFields from panelForgottenCredentials
 	private JTextField textField_ForgottenCredentialsUsername;
 	private JTextField textField_ForgottenCredentialsSecretAnswer;
+	private JTextField textField_ForgottenCredentialsSecretQuestion;
 	private ArrayList<Patient> PatientList = new ArrayList<Patient>();
 	
 	//main method
@@ -53,7 +55,7 @@ public class Directory {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Directory window = new Directory();
+					Directory window = new Directory(); //instantiate a new Directory
 					window.frmEsasSystem.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -84,55 +86,47 @@ public class Directory {
 		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				//check if username exists
-				boolean found = false;
-				int length = PatientList.size(); //get the size of ArrayList
-				Patient temp = new Patient();   //make a temporary Patient
-				int position = -1;             //placeholder for found user
-				int i = 0;                     //counter
-				while ((found==false)&&(i<length)){ //go through ArrayList looking for match on user name
-					temp = PatientList.get(i);
-					if (textField_LoginUsername.getText().equals(temp.getUsername())){ //check if user name matches
-						found = true;  // if it is found change condition and save the index
-						position = i;
-					}
-					i++;
-				}
-					
+				//check if user name exists
+				//call the function findUser that will return the position of the user in the ArrayList
+				int position = findUser(textField_LoginUsername.getText());
+				boolean found;
+				if (position >= 0)
+					found = true;
+				else
+					found = false;
 				if(found==false){ //display message if user name does not exist
-					JOptionPane.showMessageDialog(null, "Username does not exist.");
+					JOptionPane.showMessageDialog(null, "Username does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{
 					//check if the password matches
+					Patient temp = new Patient();
 					temp = PatientList.get(position);
 					if (passwordField_Login.getText().equals(temp.getPassword())){
 						textField_LoginUsername.setText("");
 						passwordField_Login.setText("");
-						panelLogin.setVisible(false);
-						panelMainMenu.setVisible(true);
+						panelLogin.setVisible(false); //set the panelLogin to not visible
+						panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
 					}
-					else {
-						JOptionPane.showMessageDialog(null, "Incorrect Password");
-					}
-						
+					else { //show Incorrect password message
+						JOptionPane.showMessageDialog(null, "Incorrect Password", "Error", JOptionPane.ERROR_MESSAGE);
+					}	
 				}
 			}
 		});
 		btnLogin.setBounds(207, 168, 89, 23);
-		panelLogin.add(btnLogin);
+		panelLogin.add(btnLogin); //add the Login button to the JPanel
 		
 		JButton btnLoginSignUp = new JButton("Sign Up"); //SignUp Button
 		btnLoginSignUp.addActionListener(new ActionListener() { //Action Listener for SignUp Button
 			public void actionPerformed(ActionEvent e) {
-				textField_LoginUsername.setText("");
+				textField_LoginUsername.setText(""); //clear the user name and password fields
 				passwordField_Login.setText("");
-				panelLogin.setVisible(false);
-				panelSignUp.setVisible(true);
-				
+				panelLogin.setVisible(false); //set the Login panel to not visible
+				panelSignUp.setVisible(true); //set the sign up panel to visible
 			}
 		});
 		btnLoginSignUp.setBounds(108, 168, 89, 23);
-		panelLogin.add(btnLoginSignUp);
+		panelLogin.add(btnLoginSignUp);    //add the sign up button to the JPanel
 		
 		textField_LoginUsername = new JTextField();
 		textField_LoginUsername.setBounds(181, 85, 112, 20);
@@ -149,7 +143,7 @@ public class Directory {
 			}
 		});
 		btnLoginForgottenCredentials.setBounds(108, 202, 188, 23);
-		panelLogin.add(btnLoginForgottenCredentials);
+		panelLogin.add(btnLoginForgottenCredentials);  //add the Forgotten Password button to the JPanel
 		
 		JLabel lblLoginTitle = new JLabel("Welcome to the ESAS System"); //Window Title
 		lblLoginTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -236,9 +230,36 @@ public class Directory {
 				String secretAnswer = textField_SignUpSecretAnswer.getText();
 				@SuppressWarnings("deprecation")
 				String password = passwordField_SignUpPassword.getText();
-				Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, careProvider);
-				PatientList.add(newUser);
-				System.out.println("New user: " + name + " was added!");
+				@SuppressWarnings("deprecation")
+				String passwordConfirmation = passwordField_SignUpConfirmPassword.getText();
+				//check if passwords match
+				if (!password.equals(passwordConfirmation)){
+					JOptionPane.showMessageDialog(null, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check if password is at least 6 characters
+				else if(password.length()<=5){
+					JOptionPane.showMessageDialog(null, "Password must be at least 6 characters", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check if name is at least 3 characters long
+				else if(name.length() <= 3){
+					JOptionPane.showMessageDialog(null, "Invalid name", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check that user name is at least 6 characters long
+				else if(userName.length()<= 5){
+					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else{//create a new user and add it to the ArrayList
+					Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, careProvider);
+					PatientList.add(newUser);
+					JOptionPane.showMessageDialog(null, "User: " + userName +" was created!");
+					System.out.println("New user: " + name + " was added!");
+					//clear textFields
+					textField_SignUpFirstName.setText("");
+					textField_SignUpLastName.setText("");
+					textField_SignUpUsername.setText("");
+					textField_SignUpCareProvider.setText("");
+					textField_SignUpSecretQuestion.setText("");
+					textField_SignUpSecretAnswer.setText("");
+					passwordField_SignUpPassword.setText("");
+					passwordField_SignUpConfirmPassword.setText("");
+				}
 			}
 		});
 		btnSignUpCreateNewUser.setBounds(259, 180, 146, 23);
@@ -261,7 +282,7 @@ public class Directory {
 			}
 		});
 		btnSignUpGoBack.setBounds(259, 214, 146, 23);
-		panelSignUp.add(btnSignUpGoBack);
+		panelSignUp.add(btnSignUpGoBack); //add the previous screen button
 		
 		textField_SignUpCareProvider = new JTextField();
 		textField_SignUpCareProvider.setBounds(103, 119, 86, 20);
@@ -306,10 +327,10 @@ public class Directory {
 		panelForgottenCredentials = new JPanel();
 		frmEsasSystem.getContentPane().add(panelForgottenCredentials, "name_136911632557425");
 		panelForgottenCredentials.setLayout(null);
+		//declaration of JButtons and JLabels for the panel Forgotten credentials
 		JButton btnForgottenCredentialsGenerateQuestion;
 		JButton btnForgottenCredentialsAnswer;
 		JLabel lblRecoverPassword;
-		JLabel lblForgottenCredentialsSecretQuestion;
 		JLabel lblForgottenCredentialsInstructions;
 		JLabel lblForgottenCredentialsUsername;
 		JButton btnForgottenCredentialsPreviousScreen;
@@ -321,6 +342,26 @@ public class Directory {
 		panelForgottenCredentials.add(lblRecoverPassword);
 		
 		btnForgottenCredentialsGenerateQuestion = new JButton("Generate Secret Question");
+		btnForgottenCredentialsGenerateQuestion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//check if user name exists
+				int position = findUser(textField_ForgottenCredentialsUsername.getText());
+				boolean found;
+				if (position >= 0)
+					found = true;
+				else
+					found = false;
+				//if user name was not found display an error message
+				if (found == false){
+					JOptionPane.showMessageDialog(null, "Username was not found!", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else { //if user name was found get secret question and display it to user
+					Patient temp = new Patient();
+					temp = PatientList.get(position);
+					textField_ForgottenCredentialsSecretQuestion.setText(temp.getSecretQuestion());
+				}
+			}
+		});
 		btnForgottenCredentialsGenerateQuestion.setBounds(58, 139, 280, 23);
 		panelForgottenCredentials.add(btnForgottenCredentialsGenerateQuestion);
 		
@@ -330,12 +371,26 @@ public class Directory {
 		textField_ForgottenCredentialsSecretAnswer.setColumns(10);
 		
 		btnForgottenCredentialsAnswer = new JButton("Check Answer");
+		btnForgottenCredentialsAnswer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//check if the answer provided matches the Secret Answer stored
+				//get the position of the user in the ArrayList to get the information stored
+				int position = findUser(textField_ForgottenCredentialsUsername.getText());
+				Patient temp = new Patient();
+				temp = PatientList.get(position);
+				String answer = textField_ForgottenCredentialsSecretAnswer.getText();
+				//compare the stored secret answer to the provided answer
+				if (answer.equals(temp.getSecretAnswer())){
+					String password = temp.getPassword();
+					JOptionPane.showMessageDialog(null, "Password is: "+password, "Password Recovery", JOptionPane.WARNING_MESSAGE);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Incorrect Answer!", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 		btnForgottenCredentialsAnswer.setBounds(58, 204, 131, 23);
 		panelForgottenCredentials.add(btnForgottenCredentialsAnswer);
-		
-		lblForgottenCredentialsSecretQuestion = new JLabel("");
-		lblForgottenCredentialsSecretQuestion.setBounds(37, 179, 176, 14);
-		panelForgottenCredentials.add(lblForgottenCredentialsSecretQuestion);
 		
 		lblForgottenCredentialsInstructions = new JLabel("Enter your username and click on the Generate Secret Question Button");
 		lblForgottenCredentialsInstructions.setBounds(37, 83, 353, 14);
@@ -357,13 +412,20 @@ public class Directory {
 				//clear textFields
 				textField_ForgottenCredentialsUsername.setText("");
 				textField_ForgottenCredentialsSecretAnswer.setText("");
-				lblForgottenCredentialsSecretQuestion.setText("");
+				textField_ForgottenCredentialsSecretQuestion.setText("");
 				panelForgottenCredentials.setVisible(false);
 				panelLogin.setVisible(true);
 			}
 		});
 		btnForgottenCredentialsPreviousScreen.setBounds(204, 204, 134, 23);
 		panelForgottenCredentials.add(btnForgottenCredentialsPreviousScreen);
+		
+		textField_ForgottenCredentialsSecretQuestion = new JTextField();
+		textField_ForgottenCredentialsSecretQuestion.setHorizontalAlignment(SwingConstants.CENTER);
+		textField_ForgottenCredentialsSecretQuestion.setEditable(false);
+		textField_ForgottenCredentialsSecretQuestion.setBounds(58, 173, 156, 20);
+		panelForgottenCredentials.add(textField_ForgottenCredentialsSecretQuestion);
+		textField_ForgottenCredentialsSecretQuestion.setColumns(10);
 		//----------------------------------------------------------------------------------------------------
 		
 		//MainMenu Panel *************************************************************************************
@@ -562,5 +624,26 @@ public class Directory {
 		btnViewHistoryPreviousScreen.setBounds(136, 179, 164, 23);
 		panelViewHistory.add(btnViewHistoryPreviousScreen);
 		//----------------------------------------------------------------------------------------------------
+	}
+	
+	public int findUser(String pUsername){
+		//check if user name exists
+		boolean found = false;
+		int length = PatientList.size(); //get the size of ArrayList
+		Patient temp = new Patient();   //make a temporary Patient
+		int position = -1;             //placeholder for found user
+		int i = 0;                     //counter
+		while ((found==false)&&(i<length)){ //go through ArrayList looking for match on user name
+			temp = PatientList.get(i);
+			if (pUsername.equals(temp.getUsername())){ //check if user name matches
+				found = true;  // if it is found change condition and save the index
+				position = i;
+			}
+			i++;  //increment counter
+		}
+		if (found == true)
+			return position;
+		else
+			return -1;
 	}
 }
