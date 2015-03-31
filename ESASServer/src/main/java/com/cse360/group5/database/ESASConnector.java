@@ -5,12 +5,17 @@ import com.cse360.group5.users.ProviderUser;
 
 import java.sql.*;
 
+/**
+ * Opens and releases connections to the sqlite database containing ESAS records.
+ */
 public class ESASConnector {
     private final String URL = "jdbc:sqlite:esasrecords.db";
     private final String DRIVER = "org.sqlite.JDBC";
 
-    /*
-    Opens connection to sqlite database at path.
+    /**
+     * Opens and returns a new Connection object to the database.
+     *
+     * @return Database Connection
      */
     protected Connection getConnection() {
         Connection connection;
@@ -25,8 +30,10 @@ public class ESASConnector {
         return connection;
     }
 
-    /*
-    Releases connection to sqlite database
+    /**
+     * Cleans up the Connection object to the database.
+     *
+     * @param connection
      */
     protected void releaseConnection(Connection connection) {
         if (connection != null) {

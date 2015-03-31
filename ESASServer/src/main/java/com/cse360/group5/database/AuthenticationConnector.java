@@ -10,8 +10,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Manages all database requests involving authentication including logins and registrations.
+ */
 public class AuthenticationConnector extends ESASConnector {
 
+    /**
+     * Authenticates the user first trying as a provider, then as a patient.
+     *
+     * @param email
+     * @param password
+     * @return User Information
+     */
     public User authenticate(String email, String password) {
         User user = authenticateProvider(email, password);
         if (user == null) {
@@ -20,6 +30,13 @@ public class AuthenticationConnector extends ESASConnector {
         return user;
     }
 
+    /**
+     * Authenticates the patient against the database.
+     *
+     * @param email
+     * @param password
+     * @return Patient Information
+     */
     public PatientUser authenticatePatient(String email, String password) {
         String query = "SELECT patientid, firstname, lastname, phone, providerid FROM patients WHERE email = ? AND password = ?";
         Connection connection = getConnection();
@@ -60,6 +77,13 @@ public class AuthenticationConnector extends ESASConnector {
         return patientUser;
     }
 
+    /**
+     * Authenticates the provider against the database.
+     *
+     * @param email
+     * @param password
+     * @return Provider Information
+     */
     public ProviderUser authenticateProvider(String email, String password) {
         String query = "SELECT providerid, firstname, lastname, phone FROM providers WHERE email = ? AND password = ?";
         Connection connection = getConnection();
@@ -99,6 +123,16 @@ public class AuthenticationConnector extends ESASConnector {
         return providerUser;
     }
 
+    /**
+     * Takes in required patient fields and adds a row to the patient table.
+     *
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param password
+     * @param phone
+     * @param providerid
+     */
     public void registerPatient(String firstName, String lastName, String email, String password, int phone, int providerid) {
         String insertion = "INSERT INTO patients(firstname, lastname, email, password, phone, providerid) VALUES(?, ?, ?, ?, ?, ?)";
         Connection connection = getConnection();
@@ -123,6 +157,15 @@ public class AuthenticationConnector extends ESASConnector {
         }
     }
 
+    /**
+     * Takes in required provider fields and adds a row to the provider table.
+     *
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param password
+     * @param phone
+     */
     public void registerProvider(String firstName, String lastName, String email, String password, int phone) {
         String insertion = "INSERT INTO providers(firstname, lastname, email, password, phone) VALUES(?, ?, ?, ?, ?)";
         Connection connection = getConnection();

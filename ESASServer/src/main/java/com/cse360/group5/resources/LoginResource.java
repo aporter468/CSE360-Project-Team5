@@ -8,12 +8,17 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import org.restlet.security.User;
 
+/**
+ * Logs in a user. Takes in a json request with email and password fields filled and checks the
+ * information against database records.
+ */
 public class LoginResource extends ServerResource {
 
     @Post("json")
     public String login(String value) {
         AuthenticationConnector authenticationConnector = new AuthenticationConnector();
 
+        // check if json request is valid
         if (validLoginInfo(value)) {
             try {
                 // Parse json object
@@ -23,9 +28,10 @@ public class LoginResource extends ServerResource {
                 String email = jsonObject.getString("email");
                 String password = jsonObject.getString("password");
 
-                // login
+                // authenticate
                 User user = authenticationConnector.authenticate(email, password);
 
+                // Check if valid email/password
                 if (user == null) {
                     getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                     return "";
@@ -36,7 +42,7 @@ public class LoginResource extends ServerResource {
                 getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 return "";
             }
-        } else {
+        } else { // json request invalid
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             return "";
         }

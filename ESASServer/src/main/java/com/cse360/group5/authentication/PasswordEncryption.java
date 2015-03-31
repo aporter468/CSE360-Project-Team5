@@ -9,6 +9,12 @@ public final class PasswordEncryption {
 
     final static String algorithm = "SHA1";
 
+    /**
+     * Encrypts passwords using the SHA1 hash algorithm.
+     *
+     * @param password
+     * @return
+     */
     public static String encrypt(String password) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm);

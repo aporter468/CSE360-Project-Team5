@@ -7,11 +7,21 @@ import org.restlet.data.Status;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
+/**
+ * Registers a patient or provider. Takes in a json request with required patient or provider fields and
+ * adds a row to the database for the user.
+ */
 public class RegistrationResource extends ServerResource {
-    final String[] requiredPatientFields = {"firstname", "lastname", "email", "password", "providerid"};
-    final String[] requiredProviderFields = {"firstname", "lastname", "email", "password"};
-    final String optionalPhone = "phone";
+    private final String[] requiredPatientFields = {"firstname", "lastname", "email", "password", "providerid"};
+    private final String[] requiredProviderFields = {"firstname", "lastname", "email", "password"};
+    private final String optionalPhone = "phone";
 
+    /**
+     * Takes in a json request, validates its contents, and registers the patient or provider.
+     *
+     * @param value
+     * @return
+     */
     @Post("json")
     public String register(String value) {
         // Initialize authentication connection
@@ -74,6 +84,12 @@ public class RegistrationResource extends ServerResource {
         }
     }
 
+    /**
+     * Checks if the json request contains the required patient fields.
+     *
+     * @param json
+     * @return validity
+     */
     private boolean validPatient(String json) {
         try {
             JSONObject jsonObject = new JSONObject(json);
@@ -92,6 +108,12 @@ public class RegistrationResource extends ServerResource {
         }
     }
 
+    /**
+     * Checks if the json request contains the valid provider fields
+     *
+     * @param json
+     * @return validity
+     */
     private boolean validProvider(String json) {
         try {
             JSONObject jsonObject = new JSONObject(json);

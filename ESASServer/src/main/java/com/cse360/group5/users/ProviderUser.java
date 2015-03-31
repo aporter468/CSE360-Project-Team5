@@ -2,6 +2,9 @@ package com.cse360.group5.users;
 
 import org.restlet.security.User;
 
+/**
+ * Contains all information a provider has. Extends Restlet's User to provide phone information.
+ */
 public class ProviderUser extends User {
 
     private int phone;
