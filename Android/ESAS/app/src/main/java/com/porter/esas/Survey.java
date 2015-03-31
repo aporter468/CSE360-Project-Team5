@@ -5,8 +5,8 @@ import java.util.Calendar;
  */
 
 public class Survey {
-    public static int numSurveyFields = 5;
-    public static String[] SURVEY_FIELDS = {"Pain","Exhaustion","Nausea","Depression","Anxiety"};
+    public static int numSurveyFields = 9;
+    public static String[] SURVEY_FIELDS = {"Pain","Tiredness","Drowsiness","Nausea","Lack of Appetite","Shortness of Breath","No Depression","No Anxiety","Best Wellbeing"};
     private int[] surveyValues;
     private String comments;
     private Calendar date;
