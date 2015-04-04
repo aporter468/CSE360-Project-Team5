@@ -38,17 +38,14 @@ public class AuthenticationConnector extends ESASConnector {
      * @return Patient Information
      */
     public PatientUser authenticatePatient(String email, String password) {
-        String query = "SELECT patientid, firstname, lastname, phone, providerid FROM patients WHERE email = ? AND password = ?";
+        String query = "SELECT password, patientid, firstname, lastname, phone, providerid FROM patients WHERE email = ?";
         Connection connection = getConnection();
         PatientUser patientUser = null;
-
-        String encryptedPassword = PasswordEncryption.encrypt(password);
 
         try {
             // Set up the sql query
             PreparedStatement pstat = connection.prepareStatement(query);
             pstat.setString(1, email);
-            pstat.setString(2, encryptedPassword);
 
             // Query and obtain the results
             ResultSet resultSet = pstat.executeQuery();
@@ -56,13 +53,19 @@ public class AuthenticationConnector extends ESASConnector {
             // Extract the results
             boolean hasRow = resultSet.next();
             if (hasRow) {
-                int patientId = resultSet.getInt("patientid");
-                String firstName = resultSet.getString("firstname");
-                String lastName = resultSet.getString("lastname");
-                int phone = resultSet.getInt("phone");
-                int providerId = resultSet.getInt("providerid");
+                // Check that the password is correct
+                boolean correctPassword = PasswordEncryption.check(password, resultSet.getString("password"));
 
-                patientUser = new PatientUser(patientId, firstName, lastName, email, phone, providerId);
+                // If correct set patientUser to the patients information
+                if (correctPassword) {
+                    int patientId = resultSet.getInt("patientid");
+                    String firstName = resultSet.getString("firstname");
+                    String lastName = resultSet.getString("lastname");
+                    int phone = resultSet.getInt("phone");
+                    int providerId = resultSet.getInt("providerid");
+
+                    patientUser = new PatientUser(patientId, firstName, lastName, email, phone, providerId);
+                }
             }
 
             // Close the resources
@@ -85,17 +88,14 @@ public class AuthenticationConnector extends ESASConnector {
      * @return Provider Information
      */
     public ProviderUser authenticateProvider(String email, String password) {
-        String query = "SELECT providerid, firstname, lastname, phone FROM providers WHERE email = ? AND password = ?";
+        String query = "SELECT password, providerid, firstname, lastname, phone FROM providers WHERE email = ?";
         Connection connection = getConnection();
         ProviderUser providerUser = null;
-
-        String encryptedPassword = PasswordEncryption.encrypt(password);
 
         try {
             // Set up the sql query
             PreparedStatement pstat = connection.prepareStatement(query);
             pstat.setString(1, email);
-            pstat.setString(2, encryptedPassword);
 
             // Query and obtain the results
             ResultSet resultSet = pstat.executeQuery();
@@ -103,12 +103,18 @@ public class AuthenticationConnector extends ESASConnector {
             // Extract the results
             boolean hasRow = resultSet.next();
             if (hasRow) {
-                int providerid = resultSet.getInt("providerid");
-                String firstName = resultSet.getString("firstname");
-                String lastName = resultSet.getString("lastname");
-                int phone = resultSet.getInt("phone");
+                // Check if correct password
+                boolean correctPassword = PasswordEncryption.check(password, resultSet.getString("password"));
 
-                providerUser = new ProviderUser(providerid, firstName, lastName, email, phone);
+                // Sets providerUser information if correct password
+                if (correctPassword) {
+                    int providerid = resultSet.getInt("providerid");
+                    String firstName = resultSet.getString("firstname");
+                    String lastName = resultSet.getString("lastname");
+                    int phone = resultSet.getInt("phone");
+
+                    providerUser = new ProviderUser(providerid, firstName, lastName, email, phone);
+                }
             }
 
             // Close the resources
