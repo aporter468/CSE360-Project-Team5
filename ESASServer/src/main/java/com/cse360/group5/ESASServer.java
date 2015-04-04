@@ -3,6 +3,7 @@ package com.cse360.group5;
 import com.cse360.group5.authentication.AuthenticationVerifier;
 import com.cse360.group5.resources.LoginResource;
 import com.cse360.group5.resources.RegistrationResource;
+import com.cse360.group5.resources.SurveyResource;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -23,7 +24,7 @@ public class ESASServer extends Application {
         component.getServers().add(Protocol.HTTP, 3888);
 
         // Connect this application to the server
-        component.getDefaultHost().attach("/v1", new ESASServer());
+        component.getDefaultHost().attach(new ESASServer());
 
         // Start the server
         component.start();
@@ -36,18 +37,23 @@ public class ESASServer extends Application {
      */
     @Override
     public Restlet createInboundRoot() {
-        // Create the authenticator for all http data requests
-        ChallengeAuthenticator challengeAuthenticator = new ChallengeAuthenticator(getContext(), ChallengeScheme.HTTP_BASIC, "realm");
+        Router baseRouter = new Router(getContext());
+
+        Router privateRouter = new Router(getContext());
+        privateRouter.attach("/surveys", SurveyResource.class);
+
+        // Define the authenticator using AuthenticationVerifier and HTTP_BASIC authentication
+        ChallengeAuthenticator challengeAuthenticator = new ChallengeAuthenticator(getContext(), ChallengeScheme.HTTP_BASIC, "Edmonton Symptom Assessment System Data");
         challengeAuthenticator.setVerifier(new AuthenticationVerifier());
+        challengeAuthenticator.setNext(privateRouter);
 
-        // Define routing
-        Router router = new Router(getContext());
-        router.attach("/login", LoginResource.class);
-        router.attach("/register", RegistrationResource.class);
+        // Define the public resources
+        baseRouter.attach("/login", LoginResource.class);
+        baseRouter.attach("/register", RegistrationResource.class);
 
-        challengeAuthenticator.setNext(router);
+        // Attach the private resource routing guarded by challengeAuthenticator
+        baseRouter.attach("/v1", challengeAuthenticator);
 
-        //return challengeAuthenticator;
-        return router;
+        return baseRouter;
     }
 }
