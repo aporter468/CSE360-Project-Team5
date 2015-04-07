@@ -260,7 +260,7 @@ public class RegisterActivity extends Activity {
                 }
                 Log.e("mylog", "result" + result);
 
-                if(result.equals("ProviderRegistration  Successful")||result.equals("Patient Registration Successful")) {
+                if(result.equals("Provider Registration Successful")||result.equals("Patient Registration Successful")) {
                     mSuccess = true;
                 }
 
