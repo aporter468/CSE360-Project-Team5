@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SurveyConnector extends ESASConnector {
-    public List<SurveyResult> getPatientSurveys(int patientid) {
-        final String query = "SELECT painindex, timestamp FROM surveys WHERE patientid = ? ORDER BY timestamp DESC";
-        List<SurveyResult> surveys = new ArrayList<SurveyResult>();
+    public ArrayList<SurveyResult> getPatientSurveys(int patientid) {
+        final String query = "SELECT pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp FROM surveys WHERE patientid = ? ORDER BY timestamp DESC";
+        ArrayList<SurveyResult> surveys = new ArrayList<SurveyResult>();
         Connection connection = getConnection();
 
         try {
@@ -25,9 +25,19 @@ public class SurveyConnector extends ESASConnector {
 
             // Extract the results
             while (resultSet.next()) {
-                int painindex = resultSet.getInt(1);
-                int timestamp = resultSet.getInt(2);
-                SurveyResult surveyResult = new SurveyResult(patientid, painindex, timestamp);
+                int pain = resultSet.getInt("pain");
+                int drowsiness = resultSet.getInt("drowsiness");
+                int nausea = resultSet.getInt("nausea");
+                int appetite = resultSet.getInt("appetite");
+                int shortnessofbreath = resultSet.getInt("shortnessofbreath");
+                int depression = resultSet.getInt("depression");
+                int anxiety = resultSet.getInt("anxiety");
+                int wellbeing = resultSet.getInt("wellbeing");
+                String comments = resultSet.getString("comments");
+                int timestamp = resultSet.getInt("timestamp");
+
+                SurveyResult surveyResult = new SurveyResult(patientid, pain, drowsiness, nausea,
+                        appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp);
                 surveys.add(surveyResult);
             }
 
@@ -41,16 +51,24 @@ public class SurveyConnector extends ESASConnector {
         return surveys;
     }
 
-    public void submitSurvey(SurveyResult survey) {
-        final String query = "INSERT INTO surveys VALUES(?, ?, ?)";
+    public void submitSurvey(int patientid, int pain, int drowsiness, int nausea, int appetite, int shortnessofbreath, int depression, int anxiety, int wellbeing, String comments, int timestamp) {
+        final String query = "INSERT INTO surveys (patientid, pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Connection connection = getConnection();
 
         try {
             // Set up sql query
             PreparedStatement pstat = connection.prepareStatement(query);
-            pstat.setInt(1, survey.getPatientid());
-            pstat.setInt(2, survey.getPainindex());
-            pstat.setInt(3, survey.getTimestamp());
+            pstat.setInt(1, patientid);
+            pstat.setInt(2, pain);
+            pstat.setInt(3, drowsiness);
+            pstat.setInt(4, nausea);
+            pstat.setInt(5, appetite);
+            pstat.setInt(6, shortnessofbreath);
+            pstat.setInt(7, depression);
+            pstat.setInt(8, anxiety);
+            pstat.setInt(9, wellbeing);
+            pstat.setString(10, comments);
+            pstat.setInt(11, timestamp);
 
             // Query and obtain the results
             boolean success = pstat.execute();

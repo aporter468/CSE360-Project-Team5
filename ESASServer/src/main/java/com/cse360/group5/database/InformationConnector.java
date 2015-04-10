@@ -9,26 +9,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class InformationConnector extends ESASConnector {
-    public PatientUser getPatientUser(String email) {
-        String query = "SELECT patientid, firstname, lastname, email, phone, providerid FROM patients WHERE email = ?";
+    public PatientUser getPatientUser(int patientid) {
+        String query = "SELECT firstname, lastname, email, phone, providerid FROM patients WHERE patientid = ?";
         Connection connection = getConnection();
         PatientUser patientUser = null;
 
         try {
             PreparedStatement pstat = connection.prepareStatement(query);
-            pstat.setString(1, email);
+            pstat.setInt(1, patientid);
 
             ResultSet resultSet = pstat.executeQuery();
 
             boolean hasRow = resultSet.next();
             if (hasRow) {
-                int patientId = resultSet.getInt("patientid");
+                String email = resultSet.getString("email");
                 String firstName = resultSet.getString("firstname");
                 String lastName = resultSet.getString("lastname");
                 int phone = resultSet.getInt("phone");
                 int providerId = resultSet.getInt("providerid");
 
-                patientUser = new PatientUser(patientId, firstName, lastName, email, phone, providerId);
+                patientUser = new PatientUser(patientid, firstName, lastName, email, phone, providerId);
             }
 
         } catch (SQLException e) {
@@ -41,7 +41,7 @@ public class InformationConnector extends ESASConnector {
     }
 
     public ProviderUser getProviderUser(int providerid) {
-        String query = "SELECT firstname, lastname, email, phone FROM providers WHERE patientid = ?";
+        String query = "SELECT firstname, lastname, email, phone FROM providers WHERE providerid = ?";
         Connection connection = getConnection();
         ProviderUser providerUser = null;
 
@@ -53,10 +53,10 @@ public class InformationConnector extends ESASConnector {
 
             boolean hasRow = resultSet.next();
             if (hasRow) {
-                String firstName = resultSet.getString(1);
-                String lastName = resultSet.getString(2);
-                String email = resultSet.getString(3);
-                int phone = resultSet.getInt(4);
+                String firstName = resultSet.getString("firstname");
+                String lastName = resultSet.getString("lastname");
+                String email = resultSet.getString("email");
+                int phone = resultSet.getInt("phone");
 
                 providerUser = new ProviderUser(providerid, firstName, lastName, email, phone);
             }

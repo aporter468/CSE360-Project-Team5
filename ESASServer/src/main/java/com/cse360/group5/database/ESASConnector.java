@@ -1,6 +1,8 @@
 package com.cse360.group5.database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * Opens and releases connections to the sqlite database containing ESAS records.

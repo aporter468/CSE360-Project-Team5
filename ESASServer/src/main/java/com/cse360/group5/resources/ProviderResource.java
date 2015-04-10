@@ -18,7 +18,7 @@ public class ProviderResource extends ServerResource{
         // Retrieve the Provider we are getting information of depending on which user made the request
         Object user = this.getRequest().getAttributes().get("user");
         if (user instanceof ProviderUser) {
-             providerUser = (ProviderUser) user;
+            providerUser = (ProviderUser) user;
         } else if (user instanceof PatientUser) {
             PatientUser patientUser = (PatientUser) user;
 
