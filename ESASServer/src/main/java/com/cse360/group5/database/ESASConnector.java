@@ -6,7 +6,7 @@ import java.sql.*;
  * Opens and releases connections to the sqlite database containing ESAS records.
  */
 public class ESASConnector {
-    private final String URL = "jdbc:sqlite:esasrecords.db";
+    private final String URL = "jdbc:sqlite:esasrecords.sqlite";
     private final String DRIVER = "org.sqlite.JDBC";
 
     /**

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-DATABASENAME="esasrecords.db"
+DATABASENAME="esasrecords.sqlite"
 
 sqlite3 -init initdatabase.sql $DATABASENAME ""
