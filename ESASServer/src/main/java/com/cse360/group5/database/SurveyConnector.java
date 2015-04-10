@@ -34,7 +34,7 @@ public class SurveyConnector extends ESASConnector {
                 int anxiety = resultSet.getInt("anxiety");
                 int wellbeing = resultSet.getInt("wellbeing");
                 String comments = resultSet.getString("comments");
-                int timestamp = resultSet.getInt("timestamp");
+                long timestamp = resultSet.getLong("timestamp");
 
                 SurveyResult surveyResult = new SurveyResult(patientid, pain, drowsiness, nausea,
                         appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp);
@@ -51,7 +51,7 @@ public class SurveyConnector extends ESASConnector {
         return surveys;
     }
 
-    public void submitSurvey(int patientid, int pain, int drowsiness, int nausea, int appetite, int shortnessofbreath, int depression, int anxiety, int wellbeing, String comments, int timestamp) {
+    public void submitSurvey(int patientid, int pain, int drowsiness, int nausea, int appetite, int shortnessofbreath, int depression, int anxiety, int wellbeing, String comments, long timestamp) {
         final String query = "INSERT INTO surveys (patientid, pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Connection connection = getConnection();
 
@@ -68,14 +68,9 @@ public class SurveyConnector extends ESASConnector {
             pstat.setInt(8, anxiety);
             pstat.setInt(9, wellbeing);
             pstat.setString(10, comments);
-            pstat.setInt(11, timestamp);
+            pstat.setLong(11, timestamp);
 
-            // Query and obtain the results
-            boolean success = pstat.execute();
-            if (!success) {
-                // TODO: Flesh out message
-                throw new SQLException("Insertion failed");
-            }
+            pstat.execute();
         } catch (SQLException e) {
             // TODO: When does this occur?
             throw new IllegalArgumentException("TBD", e);

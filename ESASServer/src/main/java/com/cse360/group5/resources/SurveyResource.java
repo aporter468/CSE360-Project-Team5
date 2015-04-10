@@ -13,6 +13,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SurveyResource extends ServerResource {
 
@@ -49,7 +50,12 @@ public class SurveyResource extends ServerResource {
         JSONObject jsonResponse = new JSONObject();
 
         try {
-            jsonResponse.put("surveys", surveyResults);
+            JSONArray jsonArray = new JSONArray();
+            for (SurveyResult survey : surveyResults) {
+                jsonArray.put(survey.toJSON());
+            }
+
+            jsonResponse.put("surveys", jsonArray);
         } catch (JSONException e) {
             throw new RuntimeException("Failed to add survey results to json response");
         }
@@ -89,12 +95,13 @@ public class SurveyResource extends ServerResource {
             int depression = jsonObject.getInt("depression");
             int anxiety = jsonObject.getInt("anxiety");
             int wellbeing = jsonObject.getInt("wellbeing");
-            int timestamp = jsonObject.getInt("timestamp");
 
             String comments = "";
             if (jsonObject.has("comment")) {
                 comments = jsonObject.getString("comments");
             }
+
+            long timestamp = (new Date()).getTime();
 
             surveyConnector.submitSurvey(patientid, pain, drowsiness, nausea, appetite,
                     shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp);

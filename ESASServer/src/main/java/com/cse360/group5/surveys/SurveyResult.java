@@ -1,5 +1,8 @@
 package com.cse360.group5.surveys;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class SurveyResult {
     private int patientid;
     private int pain;
@@ -11,11 +14,11 @@ public class SurveyResult {
     private int anxiety;
     private int wellbeing;
     private String comments;
-    private int timestamp;
+    private long timestamp;
 
     public SurveyResult(int patientid, int pain, int drowsiness, int nausea, int appetite,
                         int shortnessofbreath, int depression, int anxiety, int wellbeing,
-                        String comments, int timestamp) {
+                        String comments, long timestamp) {
         this.patientid = patientid;
         this.pain = pain;
         this.drowsiness = drowsiness;
@@ -27,6 +30,27 @@ public class SurveyResult {
         this.wellbeing = wellbeing;
         this.comments = comments;
         this.timestamp = timestamp;
+    }
+
+    public JSONObject toJSON() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("patientid", this.patientid);
+            jsonObject.put("pain", this.pain);
+            jsonObject.put("drowsiness", this.drowsiness);
+            jsonObject.put("nausea", this.nausea);
+            jsonObject.put("appetite", this.appetite);
+            jsonObject.put("shortnessofbreath", this.shortnessofbreath);
+            jsonObject.put("depression", this.depression);
+            jsonObject.put("anxiety", this.anxiety);
+            jsonObject.put("wellbeing", this.wellbeing);
+            jsonObject.put("comments", this.comments);
+            jsonObject.put("timestamp", this.timestamp);
+
+            return jsonObject;
+        } catch (JSONException e) {
+            throw new RuntimeException("Could not populate json object in survey result");
+        }
     }
 
     public int getPatientid() {
@@ -67,7 +91,7 @@ public class SurveyResult {
         return comments;
     }
 
-    public int getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 }
