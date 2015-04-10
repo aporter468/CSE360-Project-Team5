@@ -1,9 +1,7 @@
 package com.cse360.group5;
 
 import com.cse360.group5.authentication.AuthenticationVerifier;
-import com.cse360.group5.resources.LoginResource;
-import com.cse360.group5.resources.RegistrationResource;
-import com.cse360.group5.resources.SurveyResource;
+import com.cse360.group5.resources.*;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -41,6 +39,8 @@ public class ESASServer extends Application {
 
         Router privateRouter = new Router(getContext());
         privateRouter.attach("/surveys", SurveyResource.class);
+        privateRouter.attach("/patients", PatientResource.class);
+        privateRouter.attach("/providers", ProviderResource.class);
 
         // Define the authenticator using AuthenticationVerifier and HTTP_BASIC authentication
         ChallengeAuthenticator challengeAuthenticator = new ChallengeAuthenticator(getContext(), ChallengeScheme.HTTP_BASIC, "Edmonton Symptom Assessment System Data");
@@ -48,7 +48,7 @@ public class ESASServer extends Application {
         challengeAuthenticator.setNext(privateRouter);
 
         // Define the public resources
-        baseRouter.attach("/login", LoginResource.class);
+        //baseRouter.attach("/login", LoginResource.class);
         baseRouter.attach("/register", RegistrationResource.class);
 
         // Attach the private resource routing guarded by challengeAuthenticator

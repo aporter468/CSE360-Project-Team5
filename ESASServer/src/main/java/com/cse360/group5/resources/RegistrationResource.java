@@ -12,9 +12,6 @@ import org.restlet.resource.ServerResource;
  * adds a row to the database for the user.
  */
 public class RegistrationResource extends ServerResource {
-    private final String[] requiredPatientFields = {"firstname", "lastname", "email", "password", "providerid"};
-    private final String[] requiredProviderFields = {"firstname", "lastname", "email", "password"};
-    private final String optionalPhone = "phone";
 
     /**
      * Takes in a json request, validates its contents, and registers the patient or provider.
@@ -27,7 +24,7 @@ public class RegistrationResource extends ServerResource {
         // Initialize authentication connection
         AuthenticationConnector authenticationConnector = new AuthenticationConnector();
 
-        if (validPatient(value)) {
+        if (JSONValidator.validPatientRegistrationRequest(value)) {
             try {
                 // Parse the value into json
                 JSONObject jsonObject = new JSONObject(value);
@@ -40,8 +37,8 @@ public class RegistrationResource extends ServerResource {
                 int providerid = jsonObject.getInt("providerid");
 
                 // Check for optional phone parameter and register the patient
-                if (jsonObject.has(optionalPhone)) {
-                    int phone = jsonObject.getInt(optionalPhone);
+                if (jsonObject.has("phone")) {
+                    int phone = jsonObject.getInt("phone");
                     authenticationConnector.registerPatient(firstname, lastname, email, password, phone, providerid);
                 } else {
                     authenticationConnector.registerPatient(firstname, lastname, email, password, 0, providerid);
@@ -53,7 +50,7 @@ public class RegistrationResource extends ServerResource {
                 getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 return "";
             }
-        } else if (validProvider(value)) {
+        } else if (JSONValidator.validProviderRegistrationRequest(value)) {
             try {
                 // Parse the value into json
                 JSONObject jsonObject = new JSONObject(value);
@@ -65,8 +62,8 @@ public class RegistrationResource extends ServerResource {
                 String password = jsonObject.getString("password");
 
                 // Check for optional phone parameter and register the patient
-                if (jsonObject.has(optionalPhone)) {
-                    int phone = jsonObject.getInt(optionalPhone);
+                if (jsonObject.has("phone")) {
+                    int phone = jsonObject.getInt("phone");
                     authenticationConnector.registerProvider(firstname, lastname, email, password, phone);
                 } else {
                     authenticationConnector.registerProvider(firstname, lastname, email, password, 0);
@@ -84,51 +81,7 @@ public class RegistrationResource extends ServerResource {
         }
     }
 
-    /**
-     * Checks if the json request contains the required patient fields.
-     *
-     * @param json
-     * @return validity
-     */
-    private boolean validPatient(String json) {
-        try {
-            JSONObject jsonObject = new JSONObject(json);
 
-            boolean valid = true;
-            for (String field : requiredPatientFields) {
-                if (!jsonObject.has(field)) {
-                    valid = false;
-                    break;
-                }
-            }
 
-            return valid;
-        } catch (JSONException e) {
-            return false;
-        }
-    }
 
-    /**
-     * Checks if the json request contains the valid provider fields
-     *
-     * @param json
-     * @return validity
-     */
-    private boolean validProvider(String json) {
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-
-            boolean valid = true;
-            for (String field : requiredProviderFields) {
-                if (!jsonObject.has(field)) {
-                    valid = false;
-                    break;
-                }
-            }
-
-            return valid;
-        } catch (JSONException e) {
-            return false;
-        }
-    }
 }
