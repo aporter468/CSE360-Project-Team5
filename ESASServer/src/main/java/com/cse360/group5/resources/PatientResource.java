@@ -59,5 +59,5 @@ public class PatientResource extends ServerResource {
         return jsonResponse.toString();
     }
 
-
+    // GET PATIENTS ASSIGNED TO DOCTOR
 }
