@@ -1,16 +1,24 @@
-import java.awt.EventQueue;
-import javax.swing.JFrame;
 import java.awt.CardLayout;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.JPasswordField;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 public class Directory {
     //declaration of private variables
@@ -21,7 +29,7 @@ public class Directory {
 	private JPanel panelMainMenu;
 	private JPanel panelCompleteSurvey;
 	private JPanel panelViewCareProviderInfo;
-	private JPanel panelViewHistoryPanel;
+	private JPanel panelViewHistory;
 	
 	//textField and passwordField from Login Panel
 	private JTextField textField_LoginUsername;
@@ -35,19 +43,21 @@ public class Directory {
 	private JTextField textField_SignUpCareProvider;
 	private JPasswordField passwordField_SignUpPassword;
 	private JPasswordField passwordField_SignUpConfirmPassword;
-	private JTextField textField_SecretAnswer;
+	private JTextField textField_SignUpSecretAnswer;
 
 	//textFields from panelForgottenCredentials
 	private JTextField textField_ForgottenCredentialsUsername;
 	private JTextField textField_ForgottenCredentialsSecretAnswer;
+	private JTextField textField_ForgottenCredentialsSecretQuestion;
+	private ArrayList<Patient> PatientList = new ArrayList<Patient>();
+	private int CurrentUser;
 	
 	//main method
 	public static void main(String[] args) {
-		ArrayList<Patient> PatientList = new ArrayList<Patient>();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Directory window = new Directory();
+					Directory window = new Directory(); //instantiate a new Directory
 					window.frmEsasSystem.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -74,30 +84,60 @@ public class Directory {
 		frmEsasSystem.getContentPane().add(panelLogin, "name_136526590665903");
 		panelLogin.setLayout(null);
 		
-		JButton btnLogin = new JButton("Log In");
+		JButton btnLogin = new JButton("Log In");  // Log In 
+		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
+			@SuppressWarnings("deprecation")
+			public void actionPerformed(ActionEvent arg0) {
+				//check if user name exists
+				//call the function findUser that will return the position of the user in the ArrayList
+				int position = findUser(textField_LoginUsername.getText());
+				boolean found;
+				if (position >= 0)
+					found = true;
+				else
+					found = false;
+				if(found==false){ //display message if user name does not exist
+					JOptionPane.showMessageDialog(null, "Username does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else{
+					//check if the password matches
+					Patient temp = new Patient();
+					temp = PatientList.get(position);
+					if (passwordField_Login.getText().equals(temp.getPassword())){
+						textField_LoginUsername.setText("");
+						passwordField_Login.setText("");
+						panelLogin.setVisible(false); //set the panelLogin to not visible
+						panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
+						CurrentUser = position;
+					}
+					else { //show Incorrect password message
+						JOptionPane.showMessageDialog(null, "Incorrect Password", "Error", JOptionPane.ERROR_MESSAGE);
+					}	
+				}
+			}
+		});
 		btnLogin.setBounds(207, 168, 89, 23);
-		panelLogin.add(btnLogin);
+		panelLogin.add(btnLogin); //add the Login button to the JPanel
 		
 		JButton btnLoginSignUp = new JButton("Sign Up"); //SignUp Button
-		btnLoginSignUp.addActionListener(new ActionListener() {
+		btnLoginSignUp.addActionListener(new ActionListener() { //Action Listener for SignUp Button
 			public void actionPerformed(ActionEvent e) {
-				textField_LoginUsername.setText("");
+				textField_LoginUsername.setText(""); //clear the user name and password fields
 				passwordField_Login.setText("");
-				panelLogin.setVisible(false);
-				panelSignUp.setVisible(true);
-				
+				panelLogin.setVisible(false); //set the Login panel to not visible
+				panelSignUp.setVisible(true); //set the sign up panel to visible
 			}
 		});
 		btnLoginSignUp.setBounds(108, 168, 89, 23);
-		panelLogin.add(btnLoginSignUp);
+		panelLogin.add(btnLoginSignUp);    //add the sign up button to the JPanel
 		
 		textField_LoginUsername = new JTextField();
 		textField_LoginUsername.setBounds(181, 85, 112, 20);
 		panelLogin.add(textField_LoginUsername);
 		textField_LoginUsername.setColumns(10);
 		
-		JButton btnLoginForgottenCredentials = new JButton("Forgot you password?");
-		btnLoginForgottenCredentials.addActionListener(new ActionListener() {
+		JButton btnLoginForgottenCredentials = new JButton("Forgot you password?"); //Forgot Password Button
+		btnLoginForgottenCredentials.addActionListener(new ActionListener() { //Action Listener for Forgot Pass button
 			public void actionPerformed(ActionEvent e) {
 				textField_LoginUsername.setText("");
 				passwordField_Login.setText("");
@@ -106,24 +146,24 @@ public class Directory {
 			}
 		});
 		btnLoginForgottenCredentials.setBounds(108, 202, 188, 23);
-		panelLogin.add(btnLoginForgottenCredentials);
+		panelLogin.add(btnLoginForgottenCredentials);  //add the Forgotten Password button to the JPanel
 		
-		JLabel lblLoginTitle = new JLabel("Welcome to the ESAS System");
+		JLabel lblLoginTitle = new JLabel("Welcome to the ESAS System"); //Window Title
 		lblLoginTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblLoginTitle.setBounds(73, 23, 272, 23);
 		panelLogin.add(lblLoginTitle);
 		
-		JLabel lblLoginUsername = new JLabel("Username:");
+		JLabel lblLoginUsername = new JLabel("Username:");  //User name Label
 		lblLoginUsername.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLoginUsername.setBounds(108, 88, 65, 14);
 		panelLogin.add(lblLoginUsername);
 		
-		JLabel lblLoginPassword = new JLabel("Password:");
+		JLabel lblLoginPassword = new JLabel("Password:");  //password label
 		lblLoginPassword.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLoginPassword.setBounds(108, 119, 65, 14);
 		panelLogin.add(lblLoginPassword);
 		
-		passwordField_Login = new JPasswordField();
+		passwordField_Login = new JPasswordField();   //JPasswordField for the password
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
 		
@@ -182,6 +222,49 @@ public class Directory {
 		textField_SignUpSecretQuestion.setColumns(10);
 		
 		JButton btnSignUpCreateNewUser = new JButton("Register");
+		btnSignUpCreateNewUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String firstName = textField_SignUpFirstName.getText();
+				String lastName = textField_SignUpLastName.getText();
+				String name = firstName + " " + lastName;
+				String userName = textField_SignUpUsername.getText();
+				String careProvider = textField_SignUpCareProvider.getText();
+				String secretQuestion = textField_SignUpSecretQuestion.getText();
+				String secretAnswer = textField_SignUpSecretAnswer.getText();
+				@SuppressWarnings("deprecation")
+				String password = passwordField_SignUpPassword.getText();
+				@SuppressWarnings("deprecation")
+				String passwordConfirmation = passwordField_SignUpConfirmPassword.getText();
+				//check if passwords match
+				if (!password.equals(passwordConfirmation)){
+					JOptionPane.showMessageDialog(null, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check if password is at least 6 characters
+				else if(password.length()<=5){
+					JOptionPane.showMessageDialog(null, "Password must be at least 6 characters", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check if name is at least 3 characters long
+				else if(name.length() <= 3){
+					JOptionPane.showMessageDialog(null, "Invalid name", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check that user name is at least 6 characters long
+				else if(userName.length()<= 5){
+					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else{//create a new user and add it to the ArrayList
+					Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, careProvider);
+					PatientList.add(newUser);
+					JOptionPane.showMessageDialog(null, "User: " + userName +" was created!");
+					System.out.println("New user: " + name + " was added!");
+					//clear textFields
+					textField_SignUpFirstName.setText("");
+					textField_SignUpLastName.setText("");
+					textField_SignUpUsername.setText("");
+					textField_SignUpCareProvider.setText("");
+					textField_SignUpSecretQuestion.setText("");
+					textField_SignUpSecretAnswer.setText("");
+					passwordField_SignUpPassword.setText("");
+					passwordField_SignUpConfirmPassword.setText("");
+				}
+			}
+		});
 		btnSignUpCreateNewUser.setBounds(259, 180, 146, 23);
 		panelSignUp.add(btnSignUpCreateNewUser);
 		
@@ -196,13 +279,13 @@ public class Directory {
 				textField_SignUpCareProvider.setText("");
 				passwordField_SignUpPassword.setText("");
 				passwordField_SignUpConfirmPassword.setText("");
-				textField_SecretAnswer.setText("");
+				textField_SignUpSecretAnswer.setText("");
 				panelSignUp.setVisible(false);
 				panelLogin.setVisible(true);
 			}
 		});
 		btnSignUpGoBack.setBounds(259, 214, 146, 23);
-		panelSignUp.add(btnSignUpGoBack);
+		panelSignUp.add(btnSignUpGoBack); //add the previous screen button
 		
 		textField_SignUpCareProvider = new JTextField();
 		textField_SignUpCareProvider.setBounds(103, 119, 86, 20);
@@ -232,10 +315,10 @@ public class Directory {
 		lblSignUpSecretQuestion.setBounds(10, 184, 105, 14);
 		panelSignUp.add(lblSignUpSecretQuestion);
 		
-		textField_SecretAnswer = new JTextField();
-		textField_SecretAnswer.setBounds(125, 215, 124, 20);
-		panelSignUp.add(textField_SecretAnswer);
-		textField_SecretAnswer.setColumns(10);
+		textField_SignUpSecretAnswer = new JTextField();
+		textField_SignUpSecretAnswer.setBounds(125, 215, 124, 20);
+		panelSignUp.add(textField_SignUpSecretAnswer);
+		textField_SignUpSecretAnswer.setColumns(10);
 		
 		JLabel lblSignUpSecretAnswer = new JLabel("Secret Answer:");
 		lblSignUpSecretAnswer.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -247,10 +330,10 @@ public class Directory {
 		panelForgottenCredentials = new JPanel();
 		frmEsasSystem.getContentPane().add(panelForgottenCredentials, "name_136911632557425");
 		panelForgottenCredentials.setLayout(null);
+		//declaration of JButtons and JLabels for the panel Forgotten credentials
 		JButton btnForgottenCredentialsGenerateQuestion;
 		JButton btnForgottenCredentialsAnswer;
 		JLabel lblRecoverPassword;
-		JLabel lblForgottenCredentialsSecretQuestion;
 		JLabel lblForgottenCredentialsInstructions;
 		JLabel lblForgottenCredentialsUsername;
 		JButton btnForgottenCredentialsPreviousScreen;
@@ -262,6 +345,26 @@ public class Directory {
 		panelForgottenCredentials.add(lblRecoverPassword);
 		
 		btnForgottenCredentialsGenerateQuestion = new JButton("Generate Secret Question");
+		btnForgottenCredentialsGenerateQuestion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//check if user name exists
+				int position = findUser(textField_ForgottenCredentialsUsername.getText());
+				boolean found;
+				if (position >= 0)
+					found = true;
+				else
+					found = false;
+				//if user name was not found display an error message
+				if (found == false){
+					JOptionPane.showMessageDialog(null, "Username was not found!", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else { //if user name was found get secret question and display it to user
+					Patient temp = new Patient();
+					temp = PatientList.get(position);
+					textField_ForgottenCredentialsSecretQuestion.setText(temp.getSecretQuestion());
+				}
+			}
+		});
 		btnForgottenCredentialsGenerateQuestion.setBounds(58, 139, 280, 23);
 		panelForgottenCredentials.add(btnForgottenCredentialsGenerateQuestion);
 		
@@ -271,12 +374,26 @@ public class Directory {
 		textField_ForgottenCredentialsSecretAnswer.setColumns(10);
 		
 		btnForgottenCredentialsAnswer = new JButton("Check Answer");
+		btnForgottenCredentialsAnswer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//check if the answer provided matches the Secret Answer stored
+				//get the position of the user in the ArrayList to get the information stored
+				int position = findUser(textField_ForgottenCredentialsUsername.getText());
+				Patient temp = new Patient();
+				temp = PatientList.get(position);
+				String answer = textField_ForgottenCredentialsSecretAnswer.getText();
+				//compare the stored secret answer to the provided answer
+				if (answer.equals(temp.getSecretAnswer())){
+					String password = temp.getPassword();
+					JOptionPane.showMessageDialog(null, "Password is: "+password, "Password Recovery", JOptionPane.WARNING_MESSAGE);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Incorrect Answer!", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 		btnForgottenCredentialsAnswer.setBounds(58, 204, 131, 23);
 		panelForgottenCredentials.add(btnForgottenCredentialsAnswer);
-		
-		lblForgottenCredentialsSecretQuestion = new JLabel("");
-		lblForgottenCredentialsSecretQuestion.setBounds(37, 179, 176, 14);
-		panelForgottenCredentials.add(lblForgottenCredentialsSecretQuestion);
 		
 		lblForgottenCredentialsInstructions = new JLabel("Enter your username and click on the Generate Secret Question Button");
 		lblForgottenCredentialsInstructions.setBounds(37, 83, 353, 14);
@@ -298,13 +415,20 @@ public class Directory {
 				//clear textFields
 				textField_ForgottenCredentialsUsername.setText("");
 				textField_ForgottenCredentialsSecretAnswer.setText("");
-				lblForgottenCredentialsSecretQuestion.setText("");
+				textField_ForgottenCredentialsSecretQuestion.setText("");
 				panelForgottenCredentials.setVisible(false);
 				panelLogin.setVisible(true);
 			}
 		});
 		btnForgottenCredentialsPreviousScreen.setBounds(204, 204, 134, 23);
 		panelForgottenCredentials.add(btnForgottenCredentialsPreviousScreen);
+		
+		textField_ForgottenCredentialsSecretQuestion = new JTextField();
+		textField_ForgottenCredentialsSecretQuestion.setHorizontalAlignment(SwingConstants.CENTER);
+		textField_ForgottenCredentialsSecretQuestion.setEditable(false);
+		textField_ForgottenCredentialsSecretQuestion.setBounds(58, 173, 156, 20);
+		panelForgottenCredentials.add(textField_ForgottenCredentialsSecretQuestion);
+		textField_ForgottenCredentialsSecretQuestion.setColumns(10);
 		//----------------------------------------------------------------------------------------------------
 		
 		//MainMenu Panel *************************************************************************************
@@ -315,28 +439,52 @@ public class Directory {
 		JLabel lblMainMenuWelcome = new JLabel("Welcome ");
 		lblMainMenuWelcome.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblMainMenuWelcome.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMainMenuWelcome.setBounds(108, 31, 179, 22);
+		lblMainMenuWelcome.setBounds(129, 31, 179, 22);
 		panelMainMenu.add(lblMainMenuWelcome);
 		
 		JButton btnMainMenuViewHistory = new JButton("View History");
-		btnMainMenuViewHistory.setBounds(128, 93, 159, 23);
+		btnMainMenuViewHistory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelViewHistory.setVisible(true);
+			}
+		});
+		btnMainMenuViewHistory.setBounds(108, 93, 200, 23);
 		panelMainMenu.add(btnMainMenuViewHistory);
 		
 		JButton btnMainMenuAccessCPInformation = new JButton("Access Care Provider Info");
-		btnMainMenuAccessCPInformation.setBounds(128, 127, 159, 23);
+		btnMainMenuAccessCPInformation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelViewCareProviderInfo.setVisible(true);
+			}
+		});
+		btnMainMenuAccessCPInformation.setBounds(108, 127, 200, 23);
 		panelMainMenu.add(btnMainMenuAccessCPInformation);
 		
 		JButton btnMainMenuCompleteSurvey = new JButton("Complete Survey");
-		btnMainMenuCompleteSurvey.setBounds(128, 160, 159, 23);
+		btnMainMenuCompleteSurvey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelCompleteSurvey.setVisible(true);
+			}
+		});
+		btnMainMenuCompleteSurvey.setBounds(108, 160, 200, 23);
 		panelMainMenu.add(btnMainMenuCompleteSurvey);
 		
 		JLabel lblMainMenuSelectOption = new JLabel("Select of one the options below:");
 		lblMainMenuSelectOption.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMainMenuSelectOption.setBounds(118, 64, 169, 14);
+		lblMainMenuSelectOption.setBounds(108, 64, 200, 14);
 		panelMainMenu.add(lblMainMenuSelectOption);
 		
 		JButton btnMainMenuPreviousScreen = new JButton("Previous Screen");
-		btnMainMenuPreviousScreen.setBounds(128, 194, 159, 23);
+		btnMainMenuPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenu.setVisible(false);
+				panelLogin.setVisible(true);
+			}
+		});
+		btnMainMenuPreviousScreen.setBounds(108, 194, 200, 23);
 		panelMainMenu.add(btnMainMenuPreviousScreen);
 		//----------------------------------------------------------------------------------------------------
 		
@@ -344,18 +492,186 @@ public class Directory {
 		panelCompleteSurvey = new JPanel();
 		frmEsasSystem.getContentPane().add(panelCompleteSurvey, "name_136918142667310");
 		panelCompleteSurvey.setLayout(null);
+		
+		JLabel lblCompleteSurvey = new JLabel("Complete Survey");
+		lblCompleteSurvey.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblCompleteSurvey.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCompleteSurvey.setBounds(111, 24, 216, 30);
+		panelCompleteSurvey.add(lblCompleteSurvey);
+		
+		JLabel lblCompleteSurveyPain = new JLabel("Pain");
+		lblCompleteSurveyPain.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyPain.setBounds(48, 81, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyPain);
+		
+		JLabel lblCompleteSurveyTiredness = new JLabel("Tiredness");
+		lblCompleteSurveyTiredness.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyTiredness.setBounds(27, 113, 67, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyTiredness);
+		
+		JLabel lblCompleteSurveyNausea = new JLabel("Nausea");
+		lblCompleteSurveyNausea.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyNausea.setBounds(48, 144, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyNausea);
+		
+		JLabel lblCompleteSurveyDepression = new JLabel("Depression");
+		lblCompleteSurveyDepression.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyDepression.setBounds(27, 175, 67, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDepression);
+		
+		JLabel lblCompleteSurveyAnxiety = new JLabel("Anxiety");
+		lblCompleteSurveyAnxiety.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyAnxiety.setBounds(48, 209, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyAnxiety);
+		
+		JLabel lblCompleteSurveyDate = new JLabel("Date:");
+		lblCompleteSurveyDate.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyDate.setBounds(212, 126, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDate);
+		
+		
+		JSpinner spinnerCompleteSurveyDate = new JSpinner();
+		spinnerCompleteSurveyDate.setModel(new SpinnerDateModel(new Date(1427612400000L), null, null, Calendar.DAY_OF_YEAR));
+		spinnerCompleteSurveyDate.setBounds(268, 123, 120, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDate);
+		
+		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
+		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyTiredness.setBounds(111, 110, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyTiredness);
+		
+		JSpinner spinnerCompleteSurveyNausea = new JSpinner();
+		spinnerCompleteSurveyNausea.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyNausea.setBounds(111, 141, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyNausea);
+		
+		JSpinner spinnerCompleteSurveyDepression = new JSpinner();
+		spinnerCompleteSurveyDepression.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyDepression.setBounds(111, 172, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDepression);
+		
+		JSpinner spinnerCompleteSurveyAnxiety = new JSpinner();
+		spinnerCompleteSurveyAnxiety.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyAnxiety.setBounds(111, 203, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyAnxiety);
+		
+		JSpinner spinnerCompleteSurveyPain = new JSpinner();
+		spinnerCompleteSurveyPain.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyPain.setBounds(111, 78, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyPain);
+		
+		JButton btnCompleteSurveySaveSurvey = new JButton("Save Survey");
+		btnCompleteSurveySaveSurvey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//collect current values from JSpinner
+				int tiredness = (int)spinnerCompleteSurveyTiredness.getValue();
+				int pain = (int)spinnerCompleteSurveyPain.getValue();
+				int nausea = (int)spinnerCompleteSurveyNausea.getValue();
+				int depression = (int)spinnerCompleteSurveyDepression.getValue();
+				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
+				String date = new SimpleDateFormat("yyyy/MM/dd").format(spinnerCompleteSurveyDate.getValue());
+				//instantiate a temporary Patient and Survey to save the survey
+				Patient temp = new Patient();
+				temp = PatientList.get(CurrentUser);
+				//add the survey to the Correct Patient
+				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
+				temp.addSurvey(completedSurvey);
+				//reset JSpinners to default values
+				spinnerCompleteSurveyTiredness.setValue(1);
+				spinnerCompleteSurveyPain.setValue(1);
+				spinnerCompleteSurveyNausea.setValue(1);
+				spinnerCompleteSurveyDepression.setValue(1);
+				spinnerCompleteSurveyAnxiety.setValue(1);
+				JOptionPane.showMessageDialog(null, "Survey was saved!");
+			}
+		});
+		btnCompleteSurveySaveSurvey.setBounds(254, 166, 134, 23);
+		panelCompleteSurvey.add(btnCompleteSurveySaveSurvey);
+		
+		JButton btnCompleSurveyPreviousScreen = new JButton("Previous Screen");
+		btnCompleSurveyPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelCompleteSurvey.setVisible(false);
+				panelMainMenu.setVisible(true);
+			}
+		});
+		btnCompleSurveyPreviousScreen.setBounds(254, 205, 134, 23);
+		panelCompleteSurvey.add(btnCompleSurveyPreviousScreen);
+		
+		JLabel lblCompleteSurveyDescription1 = new JLabel("1 is lowest level of symptom possible");
+		lblCompleteSurveyDescription1.setBounds(174, 65, 242, 30);
+		panelCompleteSurvey.add(lblCompleteSurveyDescription1);
+		
+		JLabel lblCompleteSurveyDescription2 = new JLabel("10 is highest level of symptom possible");
+		lblCompleteSurveyDescription2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCompleteSurveyDescription2.setBounds(174, 93, 242, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDescription2);
+
 		//----------------------------------------------------------------------------------------------------
 		
 		//View CareProvider Info Panel************************************************************************
 		panelViewCareProviderInfo = new JPanel();
 		frmEsasSystem.getContentPane().add(panelViewCareProviderInfo, "name_136919613899853");
 		panelViewCareProviderInfo.setLayout(null);
+		
+		JLabel lblViewCPInfoTitle = new JLabel("Care Provider Information");
+		lblViewCPInfoTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblViewCPInfoTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblViewCPInfoTitle.setBounds(85, 39, 252, 22);
+		panelViewCareProviderInfo.add(lblViewCPInfoTitle);
+		
+		JButton btnCareProviderInfoPreviousScreen = new JButton("Previous Screen");
+		btnCareProviderInfoPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelViewCareProviderInfo.setVisible(false);
+				panelMainMenu.setVisible(true);
+			}
+		});
+		btnCareProviderInfoPreviousScreen.setBounds(128, 189, 158, 23);
+		panelViewCareProviderInfo.add(btnCareProviderInfoPreviousScreen);
 		//----------------------------------------------------------------------------------------------------
 		
 		//View History Panel**********************************************************************************
-		panelViewHistoryPanel = new JPanel();
-		frmEsasSystem.getContentPane().add(panelViewHistoryPanel, "name_136921281711804");
-		panelViewHistoryPanel.setLayout(null);
+		panelViewHistory = new JPanel();
+		frmEsasSystem.getContentPane().add(panelViewHistory, "name_136921281711804");
+		panelViewHistory.setLayout(null);
+		
+		JLabel lblViewHistoryTitle = new JLabel("View History");
+		lblViewHistoryTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblViewHistoryTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblViewHistoryTitle.setBounds(125, 41, 175, 22);
+		panelViewHistory.add(lblViewHistoryTitle);
+		
+		JButton btnViewHistoryPreviousScreen = new JButton("Previous Screen");
+		btnViewHistoryPreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelViewHistory.setVisible(false);
+				panelMainMenu.setVisible(true);
+			}
+		});
+		btnViewHistoryPreviousScreen.setBounds(136, 179, 164, 23);
+		panelViewHistory.add(btnViewHistoryPreviousScreen);
 		//----------------------------------------------------------------------------------------------------
+	}
+	
+	public int findUser(String pUsername){
+		//check if user name exists
+		boolean found = false;
+		int length = PatientList.size(); //get the size of ArrayList
+		Patient temp = new Patient();   //make a temporary Patient
+		int position = -1;             //placeholder for found user
+		int i = 0;                     //counter
+		while ((found==false)&&(i<length)){ //go through ArrayList looking for match on user name
+			temp = PatientList.get(i);
+			if (pUsername.equals(temp.getUsername())){ //check if user name matches
+				found = true;  // if it is found change condition and save the index
+				position = i;
+			}
+			i++;  //increment counter
+		}
+		if (found == true)
+			return position;
+		else
+			return -1;
 	}
 }
