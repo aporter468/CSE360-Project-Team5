@@ -1,24 +1,23 @@
 package com.porter.esas;
 
-import java.util.Locale;
-
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -36,6 +35,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     PatientsFragment patientsFragment;
     RecentSurveysFragment recentSurveysFragment;
     int userType; //0 = patient, 1 = doctor
+    String email;
+    String password;
     ArrayList<Survey> surveyList;
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -51,6 +52,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         Bundle extras = intent.getExtras();
         setTitle("Settings");
        userType = extras.getInt("com.porter.user_type");
+        email = extras.getString("com.porter.email");
+        password = extras.getString("com.porter.password");
+        Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();

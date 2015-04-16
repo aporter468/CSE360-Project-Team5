@@ -5,13 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -26,24 +25,44 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.util.Base64;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AUTH;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Intent;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * A login screen that offers login via email/password.
@@ -67,6 +86,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private int userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -295,37 +315,26 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            Log.e("mylog","signin?");
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://10.0.2.2:3888/v1/login");
+           // HttpPost httppost = new HttpPost("http://10.0.2.2:3888/login");
 
             try {
 
-                JSONObject json = new JSONObject();
-                json.put("email", mEmail);
-                json.put("password", mPassword);
+                HttpGet httpGet = new HttpGet("http://10.0.2.2:3888/v1/patients");
 
-                StringEntity se = new StringEntity( json.toString());
-                se.setContentType(new BasicHeader("Content-type", "application/json"));
-                httppost.setEntity(se);
+                final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
+                httpGet.setHeader("Authorization", basicAuth);
 
-                // Execute HTTP Post Request
-                HttpResponse response = httpclient.execute(httppost);
-                BufferedReader reader = null;
-                Log.e("mylog","executed");
+                HttpResponse httpResponse = httpclient.execute(httpGet);
 
 
-                reader = new BufferedReader(new InputStreamReader(response
-                        .getEntity().getContent()));
-                String line = null;
-                String result = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
-                }
-                Log.e("mylog","result"+result);
-                if(result.equals("Login successful"))
-                {
+                String resp_body = EntityUtils.toString(httpResponse.getEntity());
+                JSONObject jsobj = new JSONObject(resp_body);
                     mySuccess = true;
-                }
+                      userType = 0;
+
+                return true;
 
             } catch (ClientProtocolException e) {
                 Log.e("mylog", "didn't connect");
@@ -334,6 +343,35 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
             catch(JSONException e)
             {
+                Log.e("mylog", "json exception (patient)");
+
+            }
+            try {
+
+
+
+                //try as provider
+                HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
+                final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
+                httpGet2.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse2 = httpclient.execute(httpGet2);
+
+
+                String resp_body2 = EntityUtils.toString(httpResponse2.getEntity());
+                JSONObject jsobj2 = new JSONObject(resp_body2);
+                mySuccess = true;
+                userType = 1;
+                return true;
+
+            } catch (ClientProtocolException e) {
+                Log.e("mylog", "didn't connect");
+            } catch (IOException e) {
+                Log.e("mylog", "didn't connect");
+            }
+            catch(JSONException e)
+            {
+                Log.e("mylog", "json exception (provider)ap");
 
             }
             return false;
@@ -346,7 +384,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
             if (mySuccess) {
                 Intent intent = new Intent(activity, MainActivity.class);
-                intent.putExtra("com.porter.user_type", 0);
+                intent.putExtra("com.porter.user_type", userType);
+                intent.putExtra("com.porter.email",mEmail);
+                intent.putExtra("com.porter.password",mPassword);
                 startActivity(intent);
               //  finish();
             } else {
