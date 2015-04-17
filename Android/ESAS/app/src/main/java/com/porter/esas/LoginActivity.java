@@ -360,7 +360,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 String resp_body3 = EntityUtils.toString(httpResponse3.getEntity());
               // JSONObject surveys = new JSONObject(resp_body3);
                 receivedSurveys = resp_body3;
-             // Log.e("mylog","surveys received: "+surveys.toString());
+              Log.e("mylog","surveys received: "+receivedSurveys.toString());
 
                     mySuccess = true;
                       userType = 0;
@@ -391,6 +391,20 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                 String resp_body2 = EntityUtils.toString(httpResponse2.getEntity());
                 JSONObject jsobj2 = new JSONObject(resp_body2);
+
+                //provider info
+
+                HttpGet httpGet3 = new HttpGet("http://10.0.2.2:3888/v1/providers");
+
+                httpGet3.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse3 = httpclient.execute(httpGet3);
+
+                String resp_body3 = EntityUtils.toString(httpResponse3.getEntity());
+                // JSONObject surveys = new JSONObject(resp_body3);
+              //  receivedSurveys = resp_body3;
+                Log.e("mylog","provider info: "+resp_body3);
+
                 mySuccess = true;
                 userType = 1;
                 return true;

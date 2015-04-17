@@ -90,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             patientsProviderInfo[2]=extras.getString("com.porter.providerEmail");
             receivedSurveys = new ArrayList<Survey>();
              surveyJSONStrings = extras.getString("com.porter.receivedSurveysJSON");
-          //  historyFragment = HistoryFragment.newInstance(userType);
+           historyFragment = HistoryFragment.newInstance(userType);
 
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this));
         }
         if(userType ==0) {
-            historyFragment = HistoryFragment.newInstance(userType);
+          //  historyFragment = HistoryFragment.newInstance(userType);
             providerInfoFragment = ProviderInfoFragment.newInstance("","","");
         }
         else
@@ -141,10 +141,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     }
+    public void setSurveyJSONStrings(String in)
+    {
+        surveyJSONStrings = in;
+    }
 
-    public void setupHistoryTable() {
+    public void setupHistoryTable( ) {
 
-        if(!historyTableBuilt) {
+
             TableLayout.LayoutParams rowParams =
                     new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.FILL_PARENT, 1f);
 
@@ -155,6 +159,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
             if (surveyJSONStrings.length() > 0)//send empty from register
             {
+                receivedSurveys = new ArrayList<Survey>();
                 try {
                     JSONObject surveysJSON = new JSONObject(surveyJSONStrings);
                     JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
@@ -166,6 +171,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
                         }
                         Survey newS = new Survey(surveyArray, "");
+                        newS.setDate(Long.parseLong(survey.get("timestamp").toString()),this);
                         receivedSurveys.add(newS);
                     }
 
@@ -176,7 +182,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 TableLayout tableLayout = (TableLayout) historyFragment.getRootView().findViewById(R.id.surveysTableLayout);
                 TableRow headRow = new TableRow(this);
                 headRow.setLayoutParams(rowParams);
-
+                  tableLayout.removeAllViews();
                 for (int column = 0; column < Survey.NUM_SURVEY_FIELDS; column++) {
 
                     TextView textView = new TextView(this);
@@ -206,7 +212,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
             }
             historyTableBuilt  = true;
-        }
+
     }
 
     public String[] getPatientsProviderInfo()
@@ -240,7 +246,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
-
+         if(historyFragment!=null && historyFragment.isSet())
+             setupHistoryTable();
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
@@ -366,7 +373,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
     public void setHistoryDate(int[] selectedDate)
     {
-        historyFragment.setDate(selectedDate);
+
+        historyFragment.setDate(selectedDate, receivedSurveys);
     }
     public void submitSurvey(Survey s)
     {
@@ -434,8 +442,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     result += line;
                 }
                 Log.e("mylog", "result" + result);
+                HttpGet httpGet3 = new HttpGet("http://10.0.2.2:3888/v1/surveys");
 
+                httpGet3.setHeader("Authorization", basicAuth);
 
+                HttpResponse httpResponse3 = httpclient.execute(httpGet3);
+
+                String surveystringresp = EntityUtils.toString(httpResponse3.getEntity());
+                activity.setSurveyJSONStrings(surveystringresp);
+                activity.setupHistoryTable();
 
             } catch (ClientProtocolException e) {
                 Log.e("mylog", "didn't connect");
