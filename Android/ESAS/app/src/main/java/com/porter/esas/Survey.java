@@ -6,15 +6,16 @@ import java.util.Calendar;
 
 public class Survey {
     public static int numSurveyFields = 9;
-    public static String[] SURVEY_FIELDS = {"Pain","Tiredness","Drowsiness","Nausea","Lack of Appetite","Shortness of Breath","No Depression","No Anxiety","Best Wellbeing"};
+    public static String[] SURVEY_FIELDS = {"Pain","Drowsiness","Nausea","Lack of Appetite","Shortness of Breath","No Depression","No Anxiety","Best Wellbeing"};
+  public static String[] SERVER_FIELD_NAMES = {"pain","drowsiness","nausea","appetite","shortnessofbreath","depression","anxiety","wellbeing"};
     private int[] surveyValues;
     private String comments;
     private Calendar date;
-    public Survey(int[] surveyValues, String comments,Calendar date)
+    public Survey(int[] surveyValues, String comments)
     {
         this.surveyValues= surveyValues;
         this.comments = comments;
-        this.date = date;
+       // this.date = date;
     }
 
     public int[] getSurveyValues() {

@@ -306,7 +306,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         private final LoginActivity activity;
         private boolean mySuccess;
         private String[] patientsProviderInfo;
-
+        private String receivedSurveys;
         UserLoginTask(String email, String password, LoginActivity activity) {
             mEmail = email;
             mPassword = password;
@@ -321,7 +321,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
            // HttpPost httppost = new HttpPost("http://10.0.2.2:3888/login");
 
             try {
-
+//user's own info- attempt login
                 HttpGet httpGet = new HttpGet("http://10.0.2.2:3888/v1/patients");
 
                 final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
@@ -332,7 +332,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                 String resp_body = EntityUtils.toString(httpResponse.getEntity());
                 JSONObject jsobj = new JSONObject(resp_body);
-
+//provider data
                 HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
 
                 httpGet2.setHeader("Authorization", basicAuth);
@@ -349,6 +349,19 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 patientsProviderInfo[0] = name;
                 patientsProviderInfo[1] = phone;
                 patientsProviderInfo[2] = email;
+
+//surveys (for this user)
+                HttpGet httpGet3 = new HttpGet("http://10.0.2.2:3888/v1/surveys");
+
+                httpGet3.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse3 = httpclient.execute(httpGet3);
+
+                String resp_body3 = EntityUtils.toString(httpResponse3.getEntity());
+              // JSONObject surveys = new JSONObject(resp_body3);
+                receivedSurveys = resp_body3;
+             // Log.e("mylog","surveys received: "+surveys.toString());
+
                     mySuccess = true;
                       userType = 0;
 
@@ -440,7 +453,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     intent.putExtra("com.porter.providerName", patientsProviderInfo[0]);
                     intent.putExtra("com.porter.providerPhone", patientsProviderInfo[1]);
                     intent.putExtra("com.porter.providerEmail", patientsProviderInfo[2]);
-
+                    intent.putExtra("com.porter.receivedSurveysJSON",receivedSurveys);
                 }
                 startActivity(intent);
               //  finish();

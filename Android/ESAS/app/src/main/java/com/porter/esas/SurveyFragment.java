@@ -97,7 +97,7 @@ public class SurveyFragment extends Fragment {
     }
     private void submitSurvey()
     {
-        Survey survey = new Survey(surveyValues,"",Calendar.getInstance());
+        Survey survey = new Survey(surveyValues,"");
         ((MainActivity) getActivity()).submitSurvey(survey);
     }
 

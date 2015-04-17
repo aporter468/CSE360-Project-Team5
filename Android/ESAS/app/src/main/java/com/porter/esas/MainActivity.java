@@ -27,6 +27,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Locale;
-
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
@@ -56,9 +56,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     String email;
     String password;
     //patient-only
-String[] patientsProviderInfo;
+    String[] patientsProviderInfo;
+    ArrayList<Survey> receivedSurveys;
     //provider-only
-    ArrayList<Survey> surveyList;
     private SubmitSurveyTask mAuthTask = null;
 
     /**
@@ -83,7 +83,34 @@ String[] patientsProviderInfo;
             patientsProviderInfo[0]=extras.getString("com.porter.providerName");
             patientsProviderInfo[1]=extras.getString("com.porter.providerPhone");
             patientsProviderInfo[2]=extras.getString("com.porter.providerEmail");
+            receivedSurveys = new ArrayList<Survey>();
+            String surveyJSONStrings = extras.getString("com.porter.receivedSurveysJSON");
+            if(surveyJSONStrings.length()>0)//send empty from register
+            {
+                try {
+                    JSONObject surveysJSON = new JSONObject(surveyJSONStrings);
+                    JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
+                    for(int i = 0; i<surveysArray.length();i++) {
+                        JSONObject survey = (JSONObject)surveysArray.get(i);
+                        int[] surveyArray = new int[8];
+                        for(int j = 0; j<8;j++)
+                        {
 
+                            surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
+                        }
+                        Survey newS = new Survey(surveyArray,"");
+                        receivedSurveys.add(newS);
+                    }
+
+
+                }
+                catch(JSONException e)
+                {}
+                for(int i =0; i<receivedSurveys.size(); i++)
+                {
+                    Log.e("mylog","survey "+i+": "+receivedSurveys.get(i).getSurveyValues()[0]);
+                }
+            }
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
@@ -124,7 +151,6 @@ String[] patientsProviderInfo;
         if(userType ==0) {
             historyFragment = HistoryFragment.newInstance(userType);
             providerInfoFragment = ProviderInfoFragment.newInstance("","","");
-            surveyList = new ArrayList<Survey>();
         }
         else
         {
@@ -332,13 +358,13 @@ String[] patientsProviderInfo;
                 httppost.setHeader("Authorization", basicAuth);
                  int[] surveyVals = mSurvey.getSurveyValues();
                 json.put("pain",surveyVals[0]);
-                json.put("drowsiness",surveyVals[2]);
-                json.put("nausea",surveyVals[3]);
-                json.put("appetite",surveyVals[4]);
-                json.put("shortnessofbreath",surveyVals[5]);
-                json.put("depression",surveyVals[6]);
-                json.put("anxiety",surveyVals[7]);
-                json.put("wellbeing",surveyVals[8]);
+                json.put("drowsiness",surveyVals[1]);
+                json.put("nausea",surveyVals[2]);
+                json.put("appetite",surveyVals[3]);
+                json.put("shortnessofbreath",surveyVals[4]);
+                json.put("depression",surveyVals[5]);
+                json.put("anxiety",surveyVals[6]);
+                json.put("wellbeing",surveyVals[7]);
 
 
                 StringEntity se = new StringEntity( json.toString());
