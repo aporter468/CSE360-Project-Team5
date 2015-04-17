@@ -28,11 +28,16 @@ public class HistoryFragment extends Fragment {
 
     public HistoryFragment() {
     }
-
+View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+         rootView = inflater.inflate(R.layout.fragment_history, container, false);
+        ((MainActivity)getActivity()).setupHistoryTable();
+        return rootView;
+    }
+    public View getRootView()
+    {
         return rootView;
     }
 
@@ -42,4 +47,5 @@ public class HistoryFragment extends Fragment {
         mTextView = (TextView)getView().findViewById(R.id.selectedDate);
         mTextView.setText("Date: "+selectedDate[0]+"/"+selectedDate[1]+"/"+selectedDate[2]);
     }
+
 }

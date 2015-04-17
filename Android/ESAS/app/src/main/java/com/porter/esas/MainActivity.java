@@ -17,6 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -58,6 +61,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     //patient-only
     String[] patientsProviderInfo;
     ArrayList<Survey> receivedSurveys;
+    String surveyJSONStrings;
+    boolean historyTableBuilt = false;
     //provider-only
     private SubmitSurveyTask mAuthTask = null;
 
@@ -84,33 +89,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             patientsProviderInfo[1]=extras.getString("com.porter.providerPhone");
             patientsProviderInfo[2]=extras.getString("com.porter.providerEmail");
             receivedSurveys = new ArrayList<Survey>();
-            String surveyJSONStrings = extras.getString("com.porter.receivedSurveysJSON");
-            if(surveyJSONStrings.length()>0)//send empty from register
-            {
-                try {
-                    JSONObject surveysJSON = new JSONObject(surveyJSONStrings);
-                    JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
-                    for(int i = 0; i<surveysArray.length();i++) {
-                        JSONObject survey = (JSONObject)surveysArray.get(i);
-                        int[] surveyArray = new int[8];
-                        for(int j = 0; j<8;j++)
-                        {
+             surveyJSONStrings = extras.getString("com.porter.receivedSurveysJSON");
+          //  historyFragment = HistoryFragment.newInstance(userType);
 
-                            surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
-                        }
-                        Survey newS = new Survey(surveyArray,"");
-                        receivedSurveys.add(newS);
-                    }
-
-
-                }
-                catch(JSONException e)
-                {}
-                for(int i =0; i<receivedSurveys.size(); i++)
-                {
-                    Log.e("mylog","survey "+i+": "+receivedSurveys.get(i).getSurveyValues()[0]);
-                }
-            }
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
@@ -160,6 +141,74 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     }
+
+    public void setupHistoryTable() {
+
+        if(!historyTableBuilt) {
+            TableLayout.LayoutParams rowParams =
+                    new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.FILL_PARENT, 1f);
+
+            TableRow.LayoutParams itemParams =
+                    new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT,
+                            TableRow.LayoutParams.FILL_PARENT, 1f);
+
+
+            if (surveyJSONStrings.length() > 0)//send empty from register
+            {
+                try {
+                    JSONObject surveysJSON = new JSONObject(surveyJSONStrings);
+                    JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
+                    for (int i = 0; i < surveysArray.length(); i++) {
+                        JSONObject survey = (JSONObject) surveysArray.get(i);
+                        int[] surveyArray = new int[8];
+                        for (int j = 0; j < 8; j++) {
+
+                            surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
+                        }
+                        Survey newS = new Survey(surveyArray, "");
+                        receivedSurveys.add(newS);
+                    }
+
+
+                } catch (JSONException e) {
+                }
+
+                TableLayout tableLayout = (TableLayout) historyFragment.getRootView().findViewById(R.id.surveysTableLayout);
+                TableRow headRow = new TableRow(this);
+                headRow.setLayoutParams(rowParams);
+
+                for (int column = 0; column < Survey.NUM_SURVEY_FIELDS; column++) {
+
+                    TextView textView = new TextView(this);
+                    textView.setLayoutParams(itemParams);
+                    textView.setText(Survey.SURVEY_FIELDS[column]);
+                    textView.setRotation(90.0f);
+                    headRow.addView(textView);
+
+                }
+                tableLayout.addView(headRow);
+
+
+                for (int i = 0; i < receivedSurveys.size(); i++) {
+                    TableRow tableRow = new TableRow(this);
+                    tableRow.setLayoutParams(rowParams);
+
+                    for (int column = 0; column < Survey.NUM_SURVEY_FIELDS; column++) {
+
+                        TextView textView = new TextView(this);
+                        textView.setLayoutParams(itemParams);
+                        textView.setText("" + receivedSurveys.get(i).getSurveyValues()[column]);
+                        tableRow.addView(textView);
+                    }
+                    tableLayout.addView(tableRow);
+
+                }
+
+            }
+            historyTableBuilt  = true;
+        }
+    }
+
     public String[] getPatientsProviderInfo()
     {
         return patientsProviderInfo;

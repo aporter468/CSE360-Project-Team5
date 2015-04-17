@@ -21,7 +21,7 @@ public class SurveyFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    final private int[] surveyValues = new int[Survey.numSurveyFields];
+    final private int[] surveyValues = new int[Survey.NUM_SURVEY_FIELDS];
     private EditText commentsET;
     /**
      * Returns a new instance of this fragment for the given section
@@ -43,7 +43,7 @@ public class SurveyFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_survey, container, false);
         LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.surveyLayout);
-        for(int i =0; i<Survey.numSurveyFields;i++)
+        for(int i =0; i<Survey.NUM_SURVEY_FIELDS;i++)
         {
            final TextView fieldLabel = new TextView(getActivity());
             fieldLabel.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,

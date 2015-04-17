@@ -13,7 +13,7 @@ public class PatientsFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    final private int[] surveyValues = new int[Survey.numSurveyFields];
+    final private int[] surveyValues = new int[Survey.NUM_SURVEY_FIELDS];
     private EditText commentsET;
     /**
      * Returns a new instance of this fragment for the given section
