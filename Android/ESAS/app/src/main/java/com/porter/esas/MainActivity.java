@@ -171,47 +171,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
                         }
                         Survey newS = new Survey(surveyArray, "");
-                        newS.setDate(Long.parseLong(survey.get("timestamp").toString()),this);
+                        newS.setDate(Long.parseLong(survey.get("timestamp").toString()), this);
                         receivedSurveys.add(newS);
                     }
 
-
                 } catch (JSONException e) {
                 }
-
-                TableLayout tableLayout = (TableLayout) historyFragment.getRootView().findViewById(R.id.surveysTableLayout);
-                TableRow headRow = new TableRow(this);
-                headRow.setLayoutParams(rowParams);
-                  tableLayout.removeAllViews();
-                for (int column = 0; column < Survey.NUM_SURVEY_FIELDS; column++) {
-
-                    TextView textView = new TextView(this);
-                    textView.setLayoutParams(itemParams);
-                    textView.setText(Survey.SURVEY_FIELDS[column]);
-                    textView.setRotation(90.0f);
-                    headRow.addView(textView);
-
-                }
-                tableLayout.addView(headRow);
-
-
-                for (int i = 0; i < receivedSurveys.size(); i++) {
-                    TableRow tableRow = new TableRow(this);
-                    tableRow.setLayoutParams(rowParams);
-
-                    for (int column = 0; column < Survey.NUM_SURVEY_FIELDS; column++) {
-
-                        TextView textView = new TextView(this);
-                        textView.setLayoutParams(itemParams);
-                        textView.setText("" + receivedSurveys.get(i).getSurveyValues()[column]);
-                        tableRow.addView(textView);
-                    }
-                    tableLayout.addView(tableRow);
-
-                }
-
             }
-            historyTableBuilt  = true;
+
 
     }
 
@@ -246,9 +213,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
-         if(historyFragment!=null && historyFragment.isSet())
+         if(historyFragment!=null && historyFragment.isSet()) {
              setupHistoryTable();
-        mViewPager.setCurrentItem(tab.getPosition());
+             historyFragment.setGraphSurveys(receivedSurveys);
+
+         }
+             mViewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
@@ -451,6 +421,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 String surveystringresp = EntityUtils.toString(httpResponse3.getEntity());
                 activity.setSurveyJSONStrings(surveystringresp);
                 activity.setupHistoryTable();
+                if(historyFragment!=null)
+                    historyFragment.setGraphSurveys(receivedSurveys);
+
+
+
 
             } catch (ClientProtocolException e) {
                 Log.e("mylog", "didn't connect");

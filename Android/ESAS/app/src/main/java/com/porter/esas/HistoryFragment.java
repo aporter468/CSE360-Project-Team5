@@ -1,13 +1,17 @@
 package com.porter.esas;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import android.util.Log;
@@ -39,12 +43,18 @@ public class HistoryFragment extends Fragment {
     }
 View rootView;
     boolean isSet;
+    GraphView graph;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          rootView = inflater.inflate(R.layout.fragment_history, container, false);
         ((MainActivity)getActivity()).setupHistoryTable();
         isSet = true;
+        graph =new GraphView((MainActivity)getActivity(),new ArrayList<Survey>());
+
+        RelativeLayout graphViewLayout =  (RelativeLayout)(rootView.findViewById(R.id.surveyGraphContainer));
+        graphViewLayout.addView(graph);
+        graphViewLayout.setBackgroundColor(Color.parseColor("#ffffff"));
         return rootView;
     }
     public View getRootView()
@@ -59,7 +69,7 @@ View rootView;
     {
         TextView mTextView;
         mTextView = (TextView)getView().findViewById(R.id.selectedDate);
-        mTextView.setText("Date: "+selectedDate[0]+"/"+selectedDate[1]+"/"+selectedDate[2]);
+        mTextView.setText("Date: "+selectedDate[1]+"/"+selectedDate[2]+"/"+selectedDate[0]);
         ArrayList<Survey> dateMatches = new ArrayList<Survey>();
         for(int i =0; i<surveys.size(); i++)
         {
@@ -90,7 +100,7 @@ tableLayout.removeAllViews();
                 rowTitleText.setLayoutParams(itemParams);
                 rowTitleText.setText(Survey.SURVEY_FIELDS[i]);
                 tableRow.addView(rowTitleText);
-                for (int column = 0; column < dateMatches.size(); column++) {
+                for (int column = dateMatches.size()-1; column >-1; column--) {
 
                     TextView textView = new TextView(getActivity());
                     textView.setLayoutParams(itemParams);
@@ -103,5 +113,8 @@ tableLayout.removeAllViews();
 
         }
 
-
+public void setGraphSurveys(ArrayList<Survey> surveys)
+{
+    graph.setSurveysList(surveys);
+}
 }
