@@ -305,6 +305,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         private final String mPassword;
         private final LoginActivity activity;
         private boolean mySuccess;
+        private String[] patientsProviderInfo;
 
         UserLoginTask(String email, String password, LoginActivity activity) {
             mEmail = email;
@@ -331,6 +332,23 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                 String resp_body = EntityUtils.toString(httpResponse.getEntity());
                 JSONObject jsobj = new JSONObject(resp_body);
+
+                HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
+
+                httpGet2.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse2 = httpclient.execute(httpGet2);
+
+                String resp_body2 = EntityUtils.toString(httpResponse2.getEntity());
+                JSONObject patientsProvider = new JSONObject(resp_body2);
+                String name = patientsProvider.get("firstname").toString()+" "+patientsProvider.get("lastname").toString();
+                String phone =  patientsProvider.get("phone").toString();
+                String email = patientsProvider.get("email").toString();
+                Log.e("mylog","name: "+name+" "+phone+" "+email);
+                patientsProviderInfo = new String[3];
+                patientsProviderInfo[0] = name;
+                patientsProviderInfo[1] = phone;
+                patientsProviderInfo[2] = email;
                     mySuccess = true;
                       userType = 0;
 
@@ -373,7 +391,36 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             {
                 Log.e("mylog", "json exception (provider)ap");
 
+            }  try {
+
+
+
+                //try as provider
+                HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
+                final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
+                httpGet2.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse2 = httpclient.execute(httpGet2);
+
+
+                String resp_body2 = EntityUtils.toString(httpResponse2.getEntity());
+                JSONObject jsobj2 = new JSONObject(resp_body2);
+                mySuccess = true;
+                userType = 1;
+                return true;
+
+            } catch (ClientProtocolException e) {
+                Log.e("mylog", "didn't connect");
+            } catch (IOException e) {
+                Log.e("mylog", "didn't connect");
             }
+            catch(JSONException e)
+            {
+                Log.e("mylog", "json exception (provider)ap");
+
+            }
+
+
             return false;
         }
 
@@ -387,6 +434,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 intent.putExtra("com.porter.user_type", userType);
                 intent.putExtra("com.porter.email",mEmail);
                 intent.putExtra("com.porter.password",mPassword);
+                if(userType==0)
+                {
+
+                    intent.putExtra("com.porter.providerName", patientsProviderInfo[0]);
+                    intent.putExtra("com.porter.providerPhone", patientsProviderInfo[1]);
+                    intent.putExtra("com.porter.providerEmail", patientsProviderInfo[2]);
+
+                }
                 startActivity(intent);
               //  finish();
             } else {

@@ -1,6 +1,7 @@
 package com.porter.esas;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +18,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -34,10 +46,16 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     HistoryFragment historyFragment;
     PatientsFragment patientsFragment;
     RecentSurveysFragment recentSurveysFragment;
+    ProviderInfoFragment providerInfoFragment;
     int userType; //0 = patient, 1 = doctor
     String email;
     String password;
+    //patient-only
+String[] patientsProviderInfo;
+    //provider-only
     ArrayList<Survey> surveyList;
+    private UserDataTask mAuthTask = null;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -54,7 +72,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
        userType = extras.getInt("com.porter.user_type");
         email = extras.getString("com.porter.email");
         password = extras.getString("com.porter.password");
+        if(userType ==0)
+        {
+            patientsProviderInfo = new String[3];
+            patientsProviderInfo[0]=extras.getString("com.porter.providerName");
+            patientsProviderInfo[1]=extras.getString("com.porter.providerPhone");
+            patientsProviderInfo[2]=extras.getString("com.porter.providerEmail");
+
+        }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
+
+        mAuthTask = new UserDataTask(email, password,this);
+        mAuthTask.execute((Void) null);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -91,6 +120,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
         if(userType ==0) {
             historyFragment = HistoryFragment.newInstance(userType);
+            providerInfoFragment = ProviderInfoFragment.newInstance("","","");
             surveyList = new ArrayList<Survey>();
         }
         else
@@ -98,8 +128,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             recentSurveysFragment = RecentSurveysFragment.newInstance();
             patientsFragment = PatientsFragment.newInstance();
         }
-    }
 
+
+    }
+    public String[] getPatientsProviderInfo()
+    {
+        return patientsProviderInfo;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,6 +162,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
+
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
@@ -137,6 +173,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -154,6 +191,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             {
                 if (position == 0) {
                     return historyFragment;
+                }
+                if(position == 1)
+                {
+                    return providerInfoFragment;
                 }
                 if (position == 2) {
                     return SurveyFragment.newInstance(0);
@@ -253,8 +294,87 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     {
 
     }
+    public void setProviderInfoFragment(ProviderInfoFragment piFragment)
+    {
+      this.providerInfoFragment = piFragment;
+    }
     public void addSubmittedSurvey(Survey s)
     {
         surveyList.add(s);
+    }
+
+
+    public class UserDataTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mEmail;
+        private final String mPassword;
+        private final MainActivity activity;
+        private boolean mySuccess;
+
+        UserDataTask(String email, String password, MainActivity activity) {
+            mEmail = email;
+            mPassword = password;
+            this.activity =activity;
+            mySuccess= false;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            Log.e("mylog","signin?");
+            HttpClient httpclient = new DefaultHttpClient();
+            // HttpPost httppost = new HttpPost("http://10.0.2.2:3888/login");
+            if(userType==0) //patient data tasks
+            {
+                try {
+
+                    HttpGet httpGet = new HttpGet("http://10.0.2.2:3888/v1/providers");
+
+                    final String basicAuth = "Basic " + Base64.encodeToString((mEmail + ":" + mPassword).getBytes(), Base64.NO_WRAP);
+                    httpGet.setHeader("Authorization", basicAuth);
+
+                    HttpResponse httpResponse = httpclient.execute(httpGet);
+
+                    String resp_body = EntityUtils.toString(httpResponse.getEntity());
+                    JSONObject patientsProvider = new JSONObject(resp_body);
+                    String name = patientsProvider.get("firstname").toString()+" "+patientsProvider.get("lastname").toString();
+                    String phone =  patientsProvider.get("phone").toString();
+                    String email = patientsProvider.get("email").toString();
+
+
+                    mySuccess = true;
+                    userType = 0;
+                    Log.e("mylog", "user data task success: " + resp_body);
+
+                    return true;
+
+                } catch (ClientProtocolException e) {
+                    Log.e("mylog", "didn't connect");
+                } catch (IOException e) {
+                    Log.e("mylog", "didn't connect");
+                } catch (JSONException e) {
+                    Log.e("mylog", "json exception (patient)");
+
+                }
+            }
+            //prxovider data tasks
+            else if(userType==1)
+            {
+
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+
+        }
     }
 }
