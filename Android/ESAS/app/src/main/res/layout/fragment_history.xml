@@ -27,7 +27,24 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/selectedDate"
         android:text="Select Survey Date"
-        android:onClick="showDatePickerDialog" />
+        android:onClick="showDatePickerDialog"
+        android:id="@+id/selectButton"/>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/selectButton"
+        >
+        <TableLayout
+            android:id = "@+id/selectedSurveyTable"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            ></TableLayout>
+
+    </ScrollView>
 </RelativeLayout>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"

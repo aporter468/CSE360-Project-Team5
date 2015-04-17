@@ -5,10 +5,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HistoryFragment extends Fragment {
     /**
@@ -65,7 +71,37 @@ View rootView;
             }
         }
 
-        //popup list of surveys for selected date
-    }
+       //show first (= most recent survey for taht day) in top table
+        TableLayout.LayoutParams rowParams =
+                new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.FILL_PARENT, 1f);
+
+        TableRow.LayoutParams itemParams =
+                new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT,
+                        TableRow.LayoutParams.FILL_PARENT, 1f);
+
+
+            TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.selectedSurveyTable);
+tableLayout.removeAllViews();
+            for (int i = 0; i < Survey.NUM_SURVEY_FIELDS; i++) {
+                TableRow tableRow = new TableRow(getActivity());
+                tableRow.setLayoutParams(rowParams);
+
+                TextView rowTitleText = new TextView(getActivity());
+                rowTitleText.setLayoutParams(itemParams);
+                rowTitleText.setText(Survey.SURVEY_FIELDS[i]);
+                tableRow.addView(rowTitleText);
+                for (int column = 0; column < dateMatches.size(); column++) {
+
+                    TextView textView = new TextView(getActivity());
+                    textView.setLayoutParams(itemParams);
+                    textView.setText("" + dateMatches.get(column).getSurveyValues()[i]);
+                    tableRow.addView(textView);
+                }
+                tableLayout.addView(tableRow);
+
+            }
+
+        }
+
 
 }
