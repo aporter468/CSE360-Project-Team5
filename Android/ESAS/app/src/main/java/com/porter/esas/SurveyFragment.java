@@ -57,8 +57,8 @@ public class SurveyFragment extends Fragment {
             fieldBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
                 int progress = 0;
                 @Override
-                public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
-                    progress = progresValue;
+                public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                    progress = progressValue;
                     surveyValues[index] = progress;
                     fieldLabel.setText(Survey.SURVEY_FIELDS[index]+": "+progress);
                 }
@@ -73,15 +73,14 @@ public class SurveyFragment extends Fragment {
         }
 
 
-         TextView commentsLabel = new TextView(getActivity());
+      /*   TextView commentsLabel = new TextView(getActivity());
         commentsLabel.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT));
         commentsLabel.setText("Comments:");
         commentsLabel.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
         linearLayout.addView(commentsLabel);
-
            commentsET = new EditText(getActivity());
-           linearLayout.addView(commentsET);
+           linearLayout.addView(commentsET);*/
 
         Button submitButton = new Button(getActivity());
         submitButton.setText("Submit");
@@ -98,8 +97,8 @@ public class SurveyFragment extends Fragment {
     }
     private void submitSurvey()
     {
-        Survey survey = new Survey(surveyValues,commentsET.getText().toString(),Calendar.getInstance());
-        ((MainActivity) getActivity()).addSubmittedSurvey(survey);
+        Survey survey = new Survey(surveyValues,"",Calendar.getInstance());
+        ((MainActivity) getActivity()).submitSurvey(survey);
     }
 
 

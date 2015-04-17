@@ -22,12 +22,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -54,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 String[] patientsProviderInfo;
     //provider-only
     ArrayList<Survey> surveyList;
-    private UserDataTask mAuthTask = null;
+    private SubmitSurveyTask mAuthTask = null;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -82,8 +87,6 @@ String[] patientsProviderInfo;
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
-        mAuthTask = new UserDataTask(email, password,this);
-        mAuthTask.execute((Void) null);
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -290,79 +293,86 @@ String[] patientsProviderInfo;
     {
         historyFragment.setDate(selectedDate);
     }
-    public void submitSurvey()
+    public void submitSurvey(Survey s)
     {
-
+        mAuthTask = new SubmitSurveyTask(s,email, password,this);
+        mAuthTask.execute((Void) null);
     }
     public void setProviderInfoFragment(ProviderInfoFragment piFragment)
     {
       this.providerInfoFragment = piFragment;
     }
-    public void addSubmittedSurvey(Survey s)
-    {
-        surveyList.add(s);
-    }
 
 
-    public class UserDataTask extends AsyncTask<Void, Void, Boolean> {
+    public class SubmitSurveyTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
+        private final Survey mSurvey;
         private final MainActivity activity;
         private boolean mySuccess;
 
-        UserDataTask(String email, String password, MainActivity activity) {
+        SubmitSurveyTask(Survey s,String email,String password, MainActivity activity) {
             mEmail = email;
             mPassword = password;
             this.activity =activity;
+            mSurvey = s;
             mySuccess= false;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            Log.e("mylog","signin?");
             HttpClient httpclient = new DefaultHttpClient();
-            // HttpPost httppost = new HttpPost("http://10.0.2.2:3888/login");
-            if(userType==0) //patient data tasks
-            {
-                try {
+            HttpPost httppost = new HttpPost("http://10.0.2.2:3888/v1/surveys");
 
-                    HttpGet httpGet = new HttpGet("http://10.0.2.2:3888/v1/providers");
+            try {
 
-                    final String basicAuth = "Basic " + Base64.encodeToString((mEmail + ":" + mPassword).getBytes(), Base64.NO_WRAP);
-                    httpGet.setHeader("Authorization", basicAuth);
+                JSONObject json = new JSONObject();
+                final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
+                httppost.setHeader("Authorization", basicAuth);
+                 int[] surveyVals = mSurvey.getSurveyValues();
+                json.put("pain",surveyVals[0]);
+                json.put("drowsiness",surveyVals[2]);
+                json.put("nausea",surveyVals[3]);
+                json.put("appetite",surveyVals[4]);
+                json.put("shortnessofbreath",surveyVals[5]);
+                json.put("depression",surveyVals[6]);
+                json.put("anxiety",surveyVals[7]);
+                json.put("wellbeing",surveyVals[8]);
 
-                    HttpResponse httpResponse = httpclient.execute(httpGet);
 
-                    String resp_body = EntityUtils.toString(httpResponse.getEntity());
-                    JSONObject patientsProvider = new JSONObject(resp_body);
-                    String name = patientsProvider.get("firstname").toString()+" "+patientsProvider.get("lastname").toString();
-                    String phone =  patientsProvider.get("phone").toString();
-                    String email = patientsProvider.get("email").toString();
+                StringEntity se = new StringEntity( json.toString());
+                se.setContentType(new BasicHeader("Content-type", "application/json"));
+                httppost.setEntity(se);
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                BufferedReader reader = null;
+                Log.e("mylog","executed");
 
 
-                    mySuccess = true;
-                    userType = 0;
-                    Log.e("mylog", "user data task success: " + resp_body);
-
-                    return true;
-
-                } catch (ClientProtocolException e) {
-                    Log.e("mylog", "didn't connect");
-                } catch (IOException e) {
-                    Log.e("mylog", "didn't connect");
-                } catch (JSONException e) {
-                    Log.e("mylog", "json exception (patient)");
-
+                reader = new BufferedReader(new InputStreamReader(response
+                        .getEntity().getContent()));
+                String line = null;
+                String result = "";
+                while ((line = reader.readLine()) != null) {
+                    result += line;
                 }
+                Log.e("mylog", "result" + result);
+
+
+
+            } catch (ClientProtocolException e) {
+                Log.e("mylog", "didn't connect");
+            } catch (IOException e) {
+                Log.e("mylog", "didn't connect");
             }
-            //prxovider data tasks
-            else if(userType==1)
+            catch(JSONException e)
             {
 
             }
+return true;
 
-            return false;
         }
 
         @Override
