@@ -1,10 +1,12 @@
 package com.porter.esas;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -35,15 +37,24 @@ public class HistoryFragment extends Fragment {
         return fragment;
     }
 
+    View rootView;
+    boolean isSet;
+    GraphView graph;
+
     public HistoryFragment() {
     }
-View rootView;
-    boolean isSet;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          rootView = inflater.inflate(R.layout.fragment_history, container, false);
         ((MainActivity)getActivity()).setupHistoryTable();
+
+      //  graph =new GraphView((MainActivity)getActivity());
+      //  RelativeLayout graphViewLayout =  (RelativeLayout)(rootView.findViewById(R.id.graphContainer));
+        //graphViewLayout.addView(graph);
+       // graphViewLayout.setBackgroundColor(Color.parseColor("#ffffff"));
+
         isSet = true;
         return rootView;
     }

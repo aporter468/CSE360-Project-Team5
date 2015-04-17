@@ -149,7 +149,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void setupHistoryTable( ) {
 
 
-            TableLayout.LayoutParams rowParams =
+           /* TableLayout.LayoutParams rowParams =
                     new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.FILL_PARENT, 1f);
 
             TableRow.LayoutParams itemParams =
@@ -211,7 +211,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 }
 
             }
-            historyTableBuilt  = true;
+            historyTableBuilt  = true;*/
 
     }
 
