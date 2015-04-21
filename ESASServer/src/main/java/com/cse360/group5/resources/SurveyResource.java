@@ -8,6 +8,7 @@ import com.cse360.group5.users.ProviderUser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
@@ -18,34 +19,49 @@ import java.util.Date;
 public class SurveyResource extends ServerResource {
 
     @Get
-    public String getPatientSurveys(String jsonRequest) {
+    public String getPatientSurveys() {
         SurveyConnector surveyConnector = new SurveyConnector();
-        PatientUser patientUser;
+        ArrayList<SurveyResult> surveyResults;
 
         // Retrieve the patient id that we are submitting the survey for
         Object user = this.getRequest().getAttributes().get("user");
         if (user instanceof PatientUser) {
-            patientUser = (PatientUser) user;
+            PatientUser patientUser = (PatientUser) user;
+            int patientid = Integer.valueOf(patientUser.getIdentifier());
+            surveyResults = surveyConnector.getPatientSurveys(patientid);
         } else if (user instanceof ProviderUser) {
-            if (JSONValidator.validPatientInformationRequest(jsonRequest)) {
-                InformationConnector informationConnector = new InformationConnector();
-                try {
-                    JSONObject jsonObject = new JSONObject(jsonRequest);
-                    int patientid = jsonObject.getInt("patientid");
+            ProviderUser providerUser = (ProviderUser) user;
 
-                    patientUser = informationConnector.getPatientUser(patientid);
-                } catch (JSONException e) {
-                    throw new RuntimeException("Failed to retrieve json field");
+            // Retrieve the patientid in the URL
+            Integer patientid;
+            try {
+                Object obj = getRequest().getAttributes().get("patientid");
+                if (obj == null) {
+                    patientid = null;
+                } else {
+                    String patientidStr = obj.toString();
+                    patientid = Integer.valueOf(patientidStr);
+                }
+            } catch (ClassCastException e) {
+                getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                return "Patient ID in url is not of type Integer";
+            }
+
+            if (patientid != null) {
+                InformationConnector informationConnector = new InformationConnector();
+                PatientUser patientUser = informationConnector.getPatientUser(patientid);
+                if (patientUser.getProviderId() == Integer.valueOf(providerUser.getIdentifier())) {
+                    surveyResults = surveyConnector.getPatientSurveys(patientid);
+                } else {
+                    getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                    return "The requested patient is not one of your patients";
                 }
             } else {
-                throw new RuntimeException("Invalid json request");
+                surveyResults = surveyConnector.getTopSurveys(Integer.valueOf(providerUser.getIdentifier()));
             }
         } else {
             throw new RuntimeException("User is not instance of either type. Should not happen");
         }
-        int patientid = Integer.valueOf(patientUser.getIdentifier());
-
-        ArrayList<SurveyResult> surveyResults = surveyConnector.getPatientSurveys(patientid);
 
         JSONObject jsonResponse = new JSONObject();
 
@@ -111,6 +127,4 @@ public class SurveyResource extends ServerResource {
 
         return "Submitted Successfully";
     }
-
-    // GET TOP TEN PROVIDER SURVEYS
 }

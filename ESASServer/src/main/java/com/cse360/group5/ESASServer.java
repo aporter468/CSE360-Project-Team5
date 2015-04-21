@@ -39,7 +39,9 @@ public class ESASServer extends Application {
 
         Router privateRouter = new Router(getContext());
         privateRouter.attach("/surveys", SurveyResource.class);
+        privateRouter.attach("/surveys/{patientid}", SurveyResource.class);
         privateRouter.attach("/patients", PatientResource.class);
+        privateRouter.attach("/patients/{patientid}", PatientResource.class);
         privateRouter.attach("/providers", ProviderResource.class);
 
         // Define the authenticator using AuthenticationVerifier and HTTP_BASIC authentication
@@ -48,7 +50,6 @@ public class ESASServer extends Application {
         challengeAuthenticator.setNext(privateRouter);
 
         // Define the public resources
-        //baseRouter.attach("/login", LoginResource.class);
         baseRouter.attach("/register", RegistrationResource.class);
 
         // Attach the private resource routing guarded by challengeAuthenticator

@@ -307,6 +307,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         private boolean mySuccess;
         private String[] patientsProviderInfo;
         private String receivedSurveys;
+        private String topSurveys;
+        private String patientsList;
         UserLoginTask(String email, String password, LoginActivity activity) {
             mEmail = email;
             mPassword = password;
@@ -332,6 +334,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                 String resp_body = EntityUtils.toString(httpResponse.getEntity());
                 JSONObject jsobj = new JSONObject(resp_body);
+                String patientID = jsobj.get("patientid").toString();
+                Log.e("mylog","patient id: "+patientID);
 //provider data
                 HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
 
@@ -344,7 +348,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 String name = patientsProvider.get("firstname").toString()+" "+patientsProvider.get("lastname").toString();
                 String phone =  patientsProvider.get("phone").toString();
                 String email = patientsProvider.get("email").toString();
-                Log.e("mylog","name: "+name+" "+phone+" "+email);
+                Log.e("mylog","provider name: "+name+" "+phone+" "+email);
                 patientsProviderInfo = new String[3];
                 patientsProviderInfo[0] = name;
                 patientsProviderInfo[1] = phone;
@@ -404,6 +408,27 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 // JSONObject surveys = new JSONObject(resp_body3);
               //  receivedSurveys = resp_body3;
                 Log.e("mylog","provider info: "+resp_body3);
+//top surveys for this provider
+                HttpGet httpGet4 = new HttpGet("http://10.0.2.2:3888/v1/surveys");
+
+                httpGet4.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse4 = httpclient.execute(httpGet4);
+
+                String resp_body4 = EntityUtils.toString(httpResponse4.getEntity());
+                // JSONObject surveys = new JSONObject(resp_body3);
+                topSurveys = resp_body4;
+                Log.e("mylog","top surveys for provider: "+topSurveys);
+                HttpGet httpGet5 = new HttpGet("http://10.0.2.2:3888/v1/patients");
+
+                httpGet5.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse5 = httpclient.execute(httpGet5);
+
+                String resp_body5 = EntityUtils.toString(httpResponse5.getEntity());
+                // JSONObject surveys = new JSONObject(resp_body3);
+                patientsList = resp_body5;
+                Log.e("mylog","patients for provider: "+patientsList);
 
                 mySuccess = true;
                 userType = 1;
@@ -418,35 +443,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             {
                 Log.e("mylog", "json exception (provider)ap");
 
-            }  try {
-
-
-
-                //try as provider
-                HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
-                final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
-                httpGet2.setHeader("Authorization", basicAuth);
-
-                HttpResponse httpResponse2 = httpclient.execute(httpGet2);
-
-
-                String resp_body2 = EntityUtils.toString(httpResponse2.getEntity());
-                JSONObject jsobj2 = new JSONObject(resp_body2);
-                mySuccess = true;
-                userType = 1;
-                return true;
-
-            } catch (ClientProtocolException e) {
-                Log.e("mylog", "didn't connect");
-            } catch (IOException e) {
-                Log.e("mylog", "didn't connect");
             }
-            catch(JSONException e)
-            {
-                Log.e("mylog", "json exception (provider)ap");
-
-            }
-
 
             return false;
         }
