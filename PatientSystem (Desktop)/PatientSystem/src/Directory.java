@@ -19,6 +19,19 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
+import javax.swing.JScrollBar;
+import javax.swing.JList;
+import javax.swing.border.LineBorder;
+
+import java.awt.Color;
+
+import javax.swing.AbstractListModel;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.ListSelectionModel;
 
 public class Directory {
     //declaration of private variables
@@ -50,7 +63,7 @@ public class Directory {
 	private JTextField textField_ForgottenCredentialsSecretAnswer;
 	private JTextField textField_ForgottenCredentialsSecretQuestion;
 	private ArrayList<Patient> PatientList = new ArrayList<Patient>();
-	private int CurrentUser;
+	private int CurrentUser = -1;
 	
 	//main method
 	public static void main(String[] args) {
@@ -73,6 +86,10 @@ public class Directory {
 
 	//initialize contents of frame
 	private void initialize() {
+		//REMOVE
+		Patient DummyUser = new Patient("John Smith", "jsmith", "bababa", "Favorite Color", "Blue", "Ramoray");
+		PatientList.add(DummyUser);
+		
 		frmEsasSystem = new JFrame();
 		frmEsasSystem.setTitle("ESAS System");
 		frmEsasSystem.setBounds(100, 100, 450, 300);
@@ -441,12 +458,43 @@ public class Directory {
 		lblMainMenuWelcome.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMainMenuWelcome.setBounds(129, 31, 179, 22);
 		panelMainMenu.add(lblMainMenuWelcome);
-		
-		JButton btnMainMenuViewHistory = new JButton("View History");
+		//The View History Button checks if the user has surveys or not before going to the View History
+		//Panel
+		JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 		btnMainMenuViewHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				panelMainMenu.setVisible(false);
-				panelViewHistory.setVisible(true);
+				panelMainMenu.setVisible(false);  //hide Main Menu panel
+				panelViewHistory.setVisible(true); //show the View History panel
+				Patient temp = new Patient();   //make a temporary patient
+				temp = PatientList.get(CurrentUser); //set temporary equal to currentUser
+				if (temp.surveyIsEmpty()==true){
+					JOptionPane.showMessageDialog(null, "There are no surveys to view!", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else {
+					JList <String>survey_list = new JList<String>(temp.listmodel);
+					survey_list.setBorder(new LineBorder(new Color(0, 0, 0)));
+					survey_list.setBounds(27, 77, 120, 94);
+					panelViewHistory.add(survey_list);
+					//add the TextArea
+					JTextArea textArea_ViewHistory_Surveys = new JTextArea();
+					textArea_ViewHistory_Surveys.setBorder(new LineBorder(new Color(0, 0, 0)));
+					textArea_ViewHistory_Surveys.setEditable(false);
+					textArea_ViewHistory_Surveys.setBounds(211, 73, 183, 109);
+					panelViewHistory.add(textArea_ViewHistory_Surveys);
+					survey_list.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							int index = survey_list.locationToIndex(e.getPoint());
+							Survey selectedSurvey = new Survey();
+							Patient currentPatient = new Patient();
+							currentPatient = PatientList.get(CurrentUser);
+							selectedSurvey = currentPatient.getSurvey(index);
+							String info = selectedSurvey.getValuesOnString();
+							textArea_ViewHistory_Surveys.setText(info);
+						}
+					});
+				}
+				
 			}
 		});
 		btnMainMenuViewHistory.setBounds(108, 93, 200, 23);
@@ -531,7 +579,7 @@ public class Directory {
 		
 		
 		JSpinner spinnerCompleteSurveyDate = new JSpinner();
-		spinnerCompleteSurveyDate.setModel(new SpinnerDateModel(new Date(1427612400000L), null, null, Calendar.DAY_OF_YEAR));
+		spinnerCompleteSurveyDate.setModel(new SpinnerDateModel(new Date(1429426800000L), new Date(1429426800000L), null, Calendar.DAY_OF_YEAR));
 		spinnerCompleteSurveyDate.setBounds(268, 123, 120, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyDate);
 		
@@ -575,6 +623,7 @@ public class Directory {
 				temp = PatientList.get(CurrentUser);
 				//add the survey to the Correct Patient
 				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
+				completedSurvey.printAll();
 				temp.addSurvey(completedSurvey);
 				//reset JSpinners to default values
 				spinnerCompleteSurveyTiredness.setValue(1);
@@ -633,6 +682,7 @@ public class Directory {
 		
 		//View History Panel**********************************************************************************
 		panelViewHistory = new JPanel();
+		panelViewHistory.setBorder(new LineBorder(new Color(0, 0, 0)));
 		frmEsasSystem.getContentPane().add(panelViewHistory, "name_136921281711804");
 		panelViewHistory.setLayout(null);
 		
@@ -649,11 +699,13 @@ public class Directory {
 				panelMainMenu.setVisible(true);
 			}
 		});
-		btnViewHistoryPreviousScreen.setBounds(136, 179, 164, 23);
+		btnViewHistoryPreviousScreen.setBounds(136, 193, 164, 23);
 		panelViewHistory.add(btnViewHistoryPreviousScreen);
+		
 		//----------------------------------------------------------------------------------------------------
 	}
 	
+	//method to find users 
 	public int findUser(String pUsername){
 		//check if user name exists
 		boolean found = false;

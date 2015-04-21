@@ -51,4 +51,18 @@ public class Survey {
 		return Date;
 	}
 	
+	public void printAll(){
+		System.out.println("Pain is: "+Pain);
+		System.out.println("Tiredness is:" +Tiredness);
+		System.out.println("Nausea is: " +Nausea);
+		System.out.println("Depression is: "+Depression);
+		System.out.println("Anxiety is: "+Anxiety);
+		System.out.println("Date is: "+Date);
+	}
+	
+	public String getValuesOnString(){
+	    String values = String.format("Pain: %s \nTiredness: %s  \nNausea: %s \nDepression: %s "
+	    		+ "\nAnxiety: %s", Pain, Tiredness, Nausea, Depression, Anxiety);
+	    return values;
+	}
 }
