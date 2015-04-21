@@ -16,9 +16,12 @@ print(response.content)
 response = requests.get('http://localhost:3888/v1/patients', auth=('jdoe@gmail.com', 'password123'))
 print(response.json())
 
-# Retrieve patient information from provider: needs "patientid"
-json_request = {'patientid': 1}
-response = requests.get('http://localhost:3888/v1/patients', auth=('jsmith@gmail.com', 'Password'), json=json_request)
+# Retrieve all patients information for the provider
+response = requests.get('http://localhost:3888/v1/patients', auth=('jsmith@gmail.com', 'Password'))
+print(response.json())
+
+# Retrieve a specific patients information for the provider
+response = requests.get('http://localhost:3888/v1/patients/1', auth=('jsmith@gmail.com', 'Password'))
 print(response.json())
 
 # Retrieve provider information from patient
@@ -38,7 +41,10 @@ print(response.content)
 response = requests.get('http://localhost:3888/v1/surveys', auth=('jdoe@gmail.com', 'password123'))
 print(response.json())
 
-# Retrieve surveys from provider: needs patientid
-json_request = {'patientid': 1}
-response = requests.get('http://localhost:3888/v1/surveys', auth=('jsmith@gmail.com', 'Password'), json=json_request)
-print(response.content)
+# Retrieve top surveys from provider
+response = requests.get('http://localhost:3888/v1/surveys', auth=('jsmith@gmail.com', 'Password'))
+print(response.json())
+
+# Retrieve surveys for a patient from provider
+response = requests.get('http://localhost:3888/v1/surveys/1', auth=('jsmith@gmail.com', 'Password'))
+print(response.json())
