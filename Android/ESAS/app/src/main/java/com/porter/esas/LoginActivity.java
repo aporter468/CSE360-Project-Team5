@@ -307,6 +307,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         private boolean mySuccess;
         private String[] patientsProviderInfo;
         private String receivedSurveys;
+        private String topSurveys;
+        private String patientsList;
         UserLoginTask(String email, String password, LoginActivity activity) {
             mEmail = email;
             mPassword = password;
@@ -404,6 +406,27 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 // JSONObject surveys = new JSONObject(resp_body3);
               //  receivedSurveys = resp_body3;
                 Log.e("mylog","provider info: "+resp_body3);
+//top surveys for this provider
+                HttpGet httpGet4 = new HttpGet("http://10.0.2.2:3888/v1/surveys");
+
+                httpGet4.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse4 = httpclient.execute(httpGet4);
+
+                String resp_body4 = EntityUtils.toString(httpResponse4.getEntity());
+                // JSONObject surveys = new JSONObject(resp_body3);
+                topSurveys = resp_body4;
+                Log.e("mylog","top surveys for provider: "+topSurveys);
+                HttpGet httpGet5 = new HttpGet("http://10.0.2.2:3888/v1/surveys");
+
+                httpGet4.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse5 = httpclient.execute(httpGet5);
+
+                String resp_body5 = EntityUtils.toString(httpResponse5.getEntity());
+                // JSONObject surveys = new JSONObject(resp_body3);
+                patientsList = resp_body4;
+                Log.e("mylog","patients for provider: "+patientsList);
 
                 mySuccess = true;
                 userType = 1;
