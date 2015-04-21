@@ -77,7 +77,6 @@ View rootView;
             if(selectedDate[0] == c.get(Calendar.YEAR) && selectedDate[1] == c.get(Calendar.MONTH) && selectedDate[2] == c.get(Calendar.DAY_OF_MONTH))
             {
                 dateMatches.add(surveys.get(i));
-                Log.e("mylog","datematch: "+surveys.get(i).getSurveyValues());
             }
         }
 

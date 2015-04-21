@@ -30,14 +30,18 @@ public class RecentSurveysFragment extends Fragment {
     public RecentSurveysFragment() {
     }
 
+    private View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recent_surveys, container, false);
+         rootView = inflater.inflate(R.layout.fragment_recent_surveys, container, false);
 
         return rootView;
     }
 
 
-
+    public View getRootView()
+    {
+        return rootView;
+    }
 }

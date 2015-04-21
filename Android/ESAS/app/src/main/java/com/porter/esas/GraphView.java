@@ -87,7 +87,6 @@ public void setSurveysList(ArrayList<Survey> surveys)
         int width = getWidth();
 
         paint.setColor(Color.BLACK);
-        Log.e("mylog","paint graph");
             //axes
         float sideMargin = 70.0f;
         paint.setStrokeWidth(4.0f);

@@ -334,9 +334,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                 String resp_body = EntityUtils.toString(httpResponse.getEntity());
                 JSONObject jsobj = new JSONObject(resp_body);
-                String patientID = jsobj.get("patientid").toString();
-                Log.e("mylog","patient id: "+patientID);
-//provider data
+                String providerId = jsobj.get("providerid").toString();
+        //provider data
                 HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
 
                 httpGet2.setHeader("Authorization", basicAuth);
@@ -465,6 +464,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     intent.putExtra("com.porter.providerPhone", patientsProviderInfo[1]);
                     intent.putExtra("com.porter.providerEmail", patientsProviderInfo[2]);
                     intent.putExtra("com.porter.receivedSurveysJSON",receivedSurveys);
+                }
+                else if(userType==1)
+                {
+                    intent.putExtra("com.porter.topSurveys",topSurveys);
+                    intent.putExtra("com.porter.patientsList",patientsList);
                 }
                 startActivity(intent);
               //  finish();

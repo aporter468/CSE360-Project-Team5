@@ -65,6 +65,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     boolean historyTableBuilt = false;
     //provider-only
     private SubmitSurveyTask mAuthTask = null;
+    private String providersPatientsList;
+    private String topSurveys;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -92,6 +94,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
              surveyJSONStrings = extras.getString("com.porter.receivedSurveysJSON");
            historyFragment = HistoryFragment.newInstance(userType);
 
+        }
+        else if(userType==1)
+        {
+             topSurveys  = extras.getString("com.porter.topSurveys");
+             providersPatientsList =extras.getString("com.porter.patientsList");
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
@@ -149,12 +156,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void setupHistoryTable( ) {
 
 
-            TableLayout.LayoutParams rowParams =
-                    new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.FILL_PARENT, 1f);
-
-            TableRow.LayoutParams itemParams =
-                    new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT,
-                            TableRow.LayoutParams.FILL_PARENT, 1f);
 
 
             if (surveyJSONStrings.length() > 0)//send empty from register
@@ -178,6 +179,36 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 } catch (JSONException e) {
                 }
             }
+
+
+    }
+    public void setupProviderPatientsSurveys( ) {
+
+//TODO: set patients list, each owning survey; then do top surveys knowing patients by id
+
+ArrayList<Survey> topSurveysList;
+        ArrayList<Patient> patientsList;
+        if (topSurveys.length() > 0)//send empty from register
+        {
+            topSurveysList = new ArrayList<Survey>();
+            try {
+                JSONObject surveysJSON = new JSONObject(topSurveys);
+                JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
+                for (int i = 0; i < surveysArray.length(); i++) {
+                    JSONObject survey = (JSONObject) surveysArray.get(i);
+                    int[] surveyArray = new int[8];
+                    for (int j = 0; j < 8; j++) {
+
+                        surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
+                    }
+                    Survey newS = new Survey(surveyArray, "");
+                    newS.setDate(Long.parseLong(survey.get("timestamp").toString()), this);
+                    receivedSurveys.add(newS);
+                }
+
+            } catch (JSONException e) {
+            }
+        }
 
 
     }
@@ -401,7 +432,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 // Execute HTTP Post Request
                 HttpResponse response = httpclient.execute(httppost);
                 BufferedReader reader = null;
-                Log.e("mylog","executed");
 
 
                 reader = new BufferedReader(new InputStreamReader(response

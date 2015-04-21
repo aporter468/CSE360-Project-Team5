@@ -235,6 +235,7 @@ public class RegisterActivity extends Activity {
                 json.put("password", mPassword);
                 if(mUserType == 0)//is patient
                     json.put("providerid",1);
+                //TODO: actual id setting based on getting list and size?
 
                 StringEntity se = new StringEntity( json.toString());
                 se.setContentType(new BasicHeader("Content-type", "application/json"));
