@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
+import android.util.Log;
 /**
  * Created by Alex on 3/19/15.
  */
@@ -17,6 +17,8 @@ public class Survey {
     private int[] surveyValues;
     private String comments;
     private Calendar c;
+    private String patientID;
+    private Patient patient;
     public Survey(int[] surveyValues, String comments)
     {
         this.surveyValues= surveyValues;
@@ -65,5 +67,19 @@ public class Survey {
 
         }
         return s;
+    }
+
+
+    public void setPatient(Patient patient)
+    {
+        this.patient = patient;
+    }
+    public String getPatientString()
+    {
+        return patient.getID()+": "+patient.getFirstName()+" "+patient.getLastName();
+    }
+    public Patient getPatient()
+    {
+        return patient;
     }
 }

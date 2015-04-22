@@ -69,6 +69,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private String topSurveys;
     private ArrayList<String> patientSurveysStrings;
     ArrayList<Patient> patientsList;
+    private ArrayList<Survey> topSurveysList;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -190,10 +191,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     {
         return patientsList;
     }
+    public ArrayList<Survey> getTopSurveysList(){return topSurveysList;}
     public void setupProviderPatientsSurveys( ) {
 
 
-ArrayList<Survey> topSurveysList;
         if (providersPatientsList.length() > 0)//send empty from register
         {
             patientsList = new ArrayList<Patient>();
@@ -213,7 +214,8 @@ ArrayList<Survey> topSurveysList;
         }
 //TODO:set top surveys, connect to patients
 
-        /*if (topSurveys.length() > 0)//send empty from register
+        topSurveysList = new ArrayList<Survey>();
+        if (topSurveys.length() > 0)//send empty from register
         {
             topSurveysList = new ArrayList<Survey>();
             try {
@@ -228,12 +230,24 @@ ArrayList<Survey> topSurveysList;
                     }
                     Survey newS = new Survey(surveyArray, "");
                     newS.setDate(Long.parseLong(survey.get("timestamp").toString()), this);
-                    receivedSurveys.add(newS);
+                    int patientID = Integer.parseInt(survey.get("patientid").toString());
+                    for(int j =0; j<patientsList.size(); j++)
+                    {
+                        int compareID = patientsList.get(j).getID();
+                        if(patientID == compareID)
+                        {
+                            newS.setPatient(patientsList.get(j));
+                            break;
+                        }
+                    }
+                    topSurveysList.add(newS);
                 }
+
+
 
             } catch (JSONException e) {
             }
-        }*/
+        }
 
 
     }
@@ -269,7 +283,7 @@ ArrayList<Survey> topSurveysList;
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
-         if(historyFragment!=null && historyFragment.isSet()) {
+         if(historyFragment!=null && historyFragment.isSet() ) {
              setupHistoryTable();
              historyFragment.setGraphSurveys(receivedSurveys);
 
@@ -298,20 +312,18 @@ ArrayList<Survey> topSurveysList;
 
         @Override
         public Fragment getItem(int position) {
-            if(userType == 0) //patient
+            if (userType == 0) //patient
             {
                 if (position == 0) {
                     return historyFragment;
                 }
-                if(position == 1)
-                {
+                if (position == 1) {
                     return providerInfoFragment;
                 }
                 if (position == 2) {
                     return SurveyFragment.newInstance(0);
                 }
-            }
-            else//doctor
+            } else//doctor
             {
                 if (position == 0) {
                     return recentSurveysFragment;
@@ -320,9 +332,7 @@ ArrayList<Survey> topSurveysList;
                     return patientsFragment;
                 }
             }
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return null;
         }
 
         @Override
@@ -361,38 +371,7 @@ ArrayList<Survey> topSurveysList;
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
     public void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "datePicker");
