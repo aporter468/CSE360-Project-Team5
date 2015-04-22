@@ -13,6 +13,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import android.graphics.Color;
 
 public class RecentSurveysFragment extends Fragment {
     /**
@@ -71,8 +72,11 @@ private void makeTopSurveysTable()
         final Survey s = topSurveysList.get(i);
         TableRow tableRow = new TableRow(getActivity());
         tableRow.setLayoutParams(rowParams);
+        tableRow.setBackgroundResource(R.drawable.row_border);
 
         TextView rowTitleText = new TextView(getActivity());
+        rowTitleText.setTextSize(18);
+        rowTitleText.setTextColor(Color.BLACK);
         rowTitleText.setOnClickListener(new View.OnClickListener() {
 
             @Override

@@ -76,18 +76,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     ViewPager mViewPager;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         userType = 0;
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        setTitle("Settings");
        userType = extras.getInt("com.porter.user_type");
         email = extras.getString("com.porter.email");
         password = extras.getString("com.porter.password");
         if(userType ==0)
         {
+            setTitle("ESAS: Patient");
+
             patientsProviderInfo = new String[3];
             patientsProviderInfo[0]=extras.getString("com.porter.providerName");
             patientsProviderInfo[1]=extras.getString("com.porter.providerPhone");
@@ -99,9 +101,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
         else if(userType==1)
         {
-             topSurveys  = extras.getString("com.porter.topSurveys");
+
+            topSurveys  = extras.getString("com.porter.topSurveys");
              providersPatientsList =extras.getString("com.porter.patientsList");
             patientSurveysStrings=extras.getStringArrayList("com.porter.patientsSurveyStrings");
+            setTitle("ESAS: Provider");
+
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
@@ -272,9 +277,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+      //  if (id == R.id.action_settings) {
+      //      return true;
+      //  }
 
         return super.onOptionsItemSelected(item);
     }

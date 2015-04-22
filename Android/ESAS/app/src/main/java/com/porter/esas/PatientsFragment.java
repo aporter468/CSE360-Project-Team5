@@ -80,8 +80,10 @@ private void makePatientsTable()
        final Patient p = patientsList.get(i);
         TableRow tableRow = new TableRow(getActivity());
         tableRow.setLayoutParams(rowParams);
-
+        tableRow.setBackgroundResource(R.drawable.row_border);
         TextView rowTitleText = new TextView(getActivity());
+        rowTitleText.setTextColor(Color.BLACK);
+        rowTitleText.setTextSize(16);
         rowTitleText.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -120,6 +122,7 @@ private void openPatientDetails(Patient p) {
      TableLayout tableLayout = (TableLayout)rootView.findViewById(R.id.patientsSurveysTable);
      tableLayout.removeAllViews();
      TableRow buttonRow = new TableRow(getActivity());
+
      buttonRow.setLayoutParams(rowParams);
      Button contactButton = new Button(getActivity());
      contactButton.setText("Contact Info");
@@ -149,8 +152,10 @@ private void openPatientDetails(Patient p) {
      for (int i = 0; i <surveys.size(); i++) {
          TableRow tableRow = new TableRow(getActivity());
          tableRow.setLayoutParams(rowParams);
+         tableRow.setBackgroundResource(R.drawable.row_border);
         final Survey s = surveys.get(i);
          TextView rowTitleText = new TextView(getActivity());
+        rowTitleText.setTextColor(Color.BLACK);
          rowTitleText.setOnClickListener(new View.OnClickListener() {
 
              @Override
