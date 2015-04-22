@@ -1,16 +1,15 @@
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
-
 //This is the Patient class that will server to record individual patients information
 public class Patient {
-	String Name;
-	String Username;
-	String Password;
-	String SecretQuestion;
-	String SecretAnswer;
-	String CareProvider;
-	ArrayList<Survey> Surveys = new ArrayList<Survey>();
+	private String Name;
+	private String Username;
+	private String Password;
+	private String SecretQuestion;
+	private String SecretAnswer;
+	private String CareProvider;
+	private ArrayList<Survey> Surveys = new ArrayList<Survey>();
 	DefaultListModel<String> listmodel = new DefaultListModel<String>();
 	
 	//constructor methods
@@ -59,7 +58,6 @@ public class Patient {
 	}
 	
 	public void addSurvey(Survey pSurvey){
-		System.out.println("About to add a Survey");
 		String survey_date = pSurvey.getDate();
 		listmodel.addElement(survey_date);
 		Surveys.add(pSurvey);
@@ -90,23 +88,22 @@ public class Patient {
 		return CareProvider;
 	}
 	
+	//method to get single survey based on position
 	public Survey getSurvey(int position){
 		return Surveys.get(position);
 	}
 	
+	//method to return all of the surveys
 	public ArrayList<Survey> getAllSurveys(){
 		return Surveys;
 	}
+	
 	//method to check if the ArrayList of Surveys is empty
 	public boolean surveyIsEmpty(){
-		if (Surveys.isEmpty()==true){
-			System.out.println("Surveys is empty!");
+		if (Surveys.isEmpty()==true)
 			return true;
-		}
 		else
-		{	System.out.println("Surveys is not empty!");	
 			return false;
-		}
 	}
 	
 }

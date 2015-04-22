@@ -5,33 +5,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
-import javax.swing.JScrollBar;
 import javax.swing.JList;
 import javax.swing.border.LineBorder;
-
 import java.awt.Color;
-
-import javax.swing.AbstractListModel;
-
+//import javax.swing.AbstractListModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.ListSelectionModel;
+//import javax.swing.ListSelectionModel;
 
 public class Directory {
     //declaration of private variables
@@ -62,6 +55,13 @@ public class Directory {
 	private JTextField textField_ForgottenCredentialsUsername;
 	private JTextField textField_ForgottenCredentialsSecretAnswer;
 	private JTextField textField_ForgottenCredentialsSecretQuestion;
+	
+	//JSpinner, JList, and JTextArea from CompleteSurvey Panel
+	private JSpinner spinnerCompleteSurveyDate;
+	private JList <String>survey_list;
+	private JTextArea textArea_ViewHistory_Surveys;
+	private JScrollPane scroll_survey_list;
+	//Patient List
 	private ArrayList<Patient> PatientList = new ArrayList<Patient>();
 	private int CurrentUser = -1;
 	
@@ -86,10 +86,10 @@ public class Directory {
 
 	//initialize contents of frame
 	private void initialize() {
-		//REMOVE
+		//REMOVE+++++++++++++++++++++++++++++++++++++++++=================+++++++++++++++++++++++++++++
 		Patient DummyUser = new Patient("John Smith", "jsmith", "bababa", "Favorite Color", "Blue", "Ramoray");
 		PatientList.add(DummyUser);
-		
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		frmEsasSystem = new JFrame();
 		frmEsasSystem.setTitle("ESAS System");
 		frmEsasSystem.setBounds(100, 100, 450, 300);
@@ -109,23 +109,23 @@ public class Directory {
 				//call the function findUser that will return the position of the user in the ArrayList
 				int position = findUser(textField_LoginUsername.getText());
 				boolean found;
-				if (position >= 0)
+				if (position >= 0) //if position >=0 means that the user was found on the Patient List
 					found = true;
-				else
+				else //if the patient was not on the Patient List it was not found
 					found = false;
 				if(found==false){ //display message if user name does not exist
 					JOptionPane.showMessageDialog(null, "Username does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
-				else{
+				else{ //if the user was found, check the password
 					//check if the password matches
-					Patient temp = new Patient();
-					temp = PatientList.get(position);
-					if (passwordField_Login.getText().equals(temp.getPassword())){
-						textField_LoginUsername.setText("");
+					Patient temp = new Patient(); //make a temporary patient
+					temp = PatientList.get(position); //retrieve the corresponding user
+					if (passwordField_Login.getText().equals(temp.getPassword())){ //check that password matches stored password
+						textField_LoginUsername.setText("");//clear the fields
 						passwordField_Login.setText("");
 						panelLogin.setVisible(false); //set the panelLogin to not visible
 						panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
-						CurrentUser = position;
+						CurrentUser = position; //save the current position of the user logged in
 					}
 					else { //show Incorrect password message
 						JOptionPane.showMessageDialog(null, "Incorrect Password", "Error", JOptionPane.ERROR_MESSAGE);
@@ -148,18 +148,18 @@ public class Directory {
 		btnLoginSignUp.setBounds(108, 168, 89, 23);
 		panelLogin.add(btnLoginSignUp);    //add the sign up button to the JPanel
 		
-		textField_LoginUsername = new JTextField();
+		textField_LoginUsername = new JTextField(); //textField for Login User name
 		textField_LoginUsername.setBounds(181, 85, 112, 20);
-		panelLogin.add(textField_LoginUsername);
+		panelLogin.add(textField_LoginUsername); //add the textField to the panel Login
 		textField_LoginUsername.setColumns(10);
 		
 		JButton btnLoginForgottenCredentials = new JButton("Forgot you password?"); //Forgot Password Button
 		btnLoginForgottenCredentials.addActionListener(new ActionListener() { //Action Listener for Forgot Pass button
 			public void actionPerformed(ActionEvent e) {
-				textField_LoginUsername.setText("");
+				textField_LoginUsername.setText(""); //clear the textField and passwordField 
 				passwordField_Login.setText("");
-				panelLogin.setVisible(false);
-				panelForgottenCredentials.setVisible(true);
+				panelLogin.setVisible(false); //set Login panel to not visible
+				panelForgottenCredentials.setVisible(true); //set forgotten credentials panel to visible
 			}
 		});
 		btnLoginForgottenCredentials.setBounds(108, 202, 188, 23);
@@ -458,8 +458,8 @@ public class Directory {
 		lblMainMenuWelcome.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMainMenuWelcome.setBounds(129, 31, 179, 22);
 		panelMainMenu.add(lblMainMenuWelcome);
-		//The View History Button checks if the user has surveys or not before going to the View History
-		//Panel
+		//The View History Button checks if the user has surveys or not before going to 
+		//the View History Panel
 		JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 		btnMainMenuViewHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -471,26 +471,28 @@ public class Directory {
 					JOptionPane.showMessageDialog(null, "There are no surveys to view!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else {
-					JList <String>survey_list = new JList<String>(temp.listmodel);
+					survey_list = new JList<String>(temp.listmodel);
 					survey_list.setBorder(new LineBorder(new Color(0, 0, 0)));
-					survey_list.setBounds(27, 77, 120, 94);
-					panelViewHistory.add(survey_list);
+					scroll_survey_list = new JScrollPane(survey_list);
+					scroll_survey_list.setBounds(27, 77, 135, 94);
+					panelViewHistory.add(scroll_survey_list);
+					
 					//add the TextArea
-					JTextArea textArea_ViewHistory_Surveys = new JTextArea();
+					textArea_ViewHistory_Surveys = new JTextArea();
 					textArea_ViewHistory_Surveys.setBorder(new LineBorder(new Color(0, 0, 0)));
 					textArea_ViewHistory_Surveys.setEditable(false);
 					textArea_ViewHistory_Surveys.setBounds(211, 73, 183, 109);
 					panelViewHistory.add(textArea_ViewHistory_Surveys);
 					survey_list.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
 						@Override
-						public void mouseClicked(MouseEvent e) {
-							int index = survey_list.locationToIndex(e.getPoint());
-							Survey selectedSurvey = new Survey();
-							Patient currentPatient = new Patient();
-							currentPatient = PatientList.get(CurrentUser);
-							selectedSurvey = currentPatient.getSurvey(index);
-							String info = selectedSurvey.getValuesOnString();
-							textArea_ViewHistory_Surveys.setText(info);
+						public void mouseClicked(MouseEvent e) { 
+							int index = survey_list.locationToIndex(e.getPoint()); //get index where user clicked on
+							Survey selectedSurvey = new Survey();	//make a new Survey to hold the information
+							Patient currentPatient = new Patient(); //make a new Patient to retrieve the Surveys
+							currentPatient = PatientList.get(CurrentUser); //retrieve the Current User
+							selectedSurvey = currentPatient.getSurvey(index); //retrieve the corresponding Survey
+							String info = selectedSurvey.getValuesOnString(); //Obtain String with values
+							textArea_ViewHistory_Surveys.setText(info); //display info on textArea
 						}
 					});
 				}
@@ -513,6 +515,10 @@ public class Directory {
 		JButton btnMainMenuCompleteSurvey = new JButton("Complete Survey");
 		btnMainMenuCompleteSurvey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				spinnerCompleteSurveyDate.setModel(new SpinnerDateModel());
+				spinnerCompleteSurveyDate.setEditor(new JSpinner.DateEditor(spinnerCompleteSurveyDate, "dd/MM/yyyy hh:mm:ss"));
+				spinnerCompleteSurveyDate.setBounds(254, 123, 134, 20);
+				panelCompleteSurvey.add(spinnerCompleteSurveyDate);
 				panelMainMenu.setVisible(false);
 				panelCompleteSurvey.setVisible(true);
 			}
@@ -574,14 +580,10 @@ public class Directory {
 		
 		JLabel lblCompleteSurveyDate = new JLabel("Date:");
 		lblCompleteSurveyDate.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyDate.setBounds(212, 126, 46, 14);
+		lblCompleteSurveyDate.setBounds(201, 126, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDate);
 		
-		
-		JSpinner spinnerCompleteSurveyDate = new JSpinner();
-		spinnerCompleteSurveyDate.setModel(new SpinnerDateModel(new Date(1429426800000L), new Date(1429426800000L), null, Calendar.DAY_OF_YEAR));
-		spinnerCompleteSurveyDate.setBounds(268, 123, 120, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyDate);
+		spinnerCompleteSurveyDate = new JSpinner();
 		
 		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
 		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
@@ -617,13 +619,13 @@ public class Directory {
 				int nausea = (int)spinnerCompleteSurveyNausea.getValue();
 				int depression = (int)spinnerCompleteSurveyDepression.getValue();
 				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
-				String date = new SimpleDateFormat("yyyy/MM/dd").format(spinnerCompleteSurveyDate.getValue());
+				String date = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(spinnerCompleteSurveyDate.getValue());
 				//instantiate a temporary Patient and Survey to save the survey
 				Patient temp = new Patient();
 				temp = PatientList.get(CurrentUser);
 				//add the survey to the Correct Patient
 				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
-				completedSurvey.printAll();
+//--------------completedSurvey.printAll();
 				temp.addSurvey(completedSurvey);
 				//reset JSpinners to default values
 				spinnerCompleteSurveyTiredness.setValue(1);
@@ -697,10 +699,25 @@ public class Directory {
 			public void actionPerformed(ActionEvent e) {
 				panelViewHistory.setVisible(false);
 				panelMainMenu.setVisible(true);
+				Patient temp = new Patient();
+				temp = PatientList.get(CurrentUser);
+				if (temp.surveyIsEmpty()==false){
+					panelViewHistory.remove(textArea_ViewHistory_Surveys);
+					panelViewHistory.remove(scroll_survey_list);
+				}
+				//textArea_ViewHistory_Surveys.setText("");
+				//survey_list.removeAll();
+				//panelViewHistory.remove(textArea_ViewHistory_Surveys);
+				//panelViewHistory.remove(survey_list);
 			}
 		});
+
 		btnViewHistoryPreviousScreen.setBounds(136, 193, 164, 23);
 		panelViewHistory.add(btnViewHistoryPreviousScreen);
+		
+		JLabel lbl_View_History_Survey = new JLabel("Surveys:");
+		lbl_View_History_Survey.setBounds(28, 63, 66, 14);
+		panelViewHistory.add(lbl_View_History_Survey);
 		
 		//----------------------------------------------------------------------------------------------------
 	}

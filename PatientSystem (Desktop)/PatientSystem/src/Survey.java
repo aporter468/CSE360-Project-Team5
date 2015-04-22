@@ -1,11 +1,11 @@
 //Survey class that will be used to keep track of completed surveys
 public class Survey {
-	int Pain;
-	int Tiredness;
-	int Nausea;
-	int Depression;
-	int Anxiety;
-	String Date;
+	private int Pain;
+	private int Tiredness;
+	private int Nausea;
+	private int Depression;
+	private int Anxiety;
+	private String Date;
 	
 	//constructor methods
 	public Survey(){
@@ -51,6 +51,7 @@ public class Survey {
 		return Date;
 	}
 	
+	//method to printAll attributes for debugging purposes
 	public void printAll(){
 		System.out.println("Pain is: "+Pain);
 		System.out.println("Tiredness is:" +Tiredness);
@@ -60,9 +61,10 @@ public class Survey {
 		System.out.println("Date is: "+Date);
 	}
 	
+	//method to generate String with all attributes' values
 	public String getValuesOnString(){
-	    String values = String.format("Pain: %s \nTiredness: %s  \nNausea: %s \nDepression: %s "
-	    		+ "\nAnxiety: %s", Pain, Tiredness, Nausea, Depression, Anxiety);
+	    String values = String.format("Pain: \t%s \nTiredness: \t%s  \nNausea: \t%s \nDepression: \t%s "
+	    		+ "\nAnxiety: \t%s", Pain, Tiredness, Nausea, Depression, Anxiety);
 	    return values;
 	}
 }
