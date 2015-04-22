@@ -1,7 +1,8 @@
 package com.porter.esas;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import android.util.Log;
 import java.util.ArrayList;
 /**
  * Created by Alex on 4/20/15.
@@ -13,8 +14,10 @@ public class Patient {
     private String email;
     private int ID;
     private ArrayList<Survey> surveys;
-    public Patient(JSONObject jsoninfo)
+    MainActivity mainActivity;
+    public Patient(JSONObject jsoninfo, MainActivity mainActivity)
     {
+        this.mainActivity= mainActivity;
         try {
             firstName = jsoninfo.get("firstname").toString();
             lastName = jsoninfo.get("lastname").toString();
@@ -25,8 +28,32 @@ public class Patient {
         catch(JSONException e){}
 
     }
-    public void setupSurveys()
-    {}
+    public void setupSurveys(String surveysJSONstring)
+    {
+        Log.e("mylog","surveys for : "+ID);
+        if (surveysJSONstring.length() > 0)//send empty from register
+        {
+            surveys = new ArrayList<Survey>();
+            try {
+                JSONObject surveysJSON = new JSONObject(surveysJSONstring);
+                JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
+                for (int i = 0; i < surveysArray.length(); i++) {
+                    JSONObject survey = (JSONObject) surveysArray.get(i);
+                    int[] surveyArray = new int[8];
+                    for (int j = 0; j < 8; j++) {
+
+                        surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
+                    }
+                    Survey newS = new Survey(surveyArray, "");
+                    newS.setDate(Long.parseLong(survey.get("timestamp").toString()), mainActivity);
+                    surveys.add(newS);
+                }
+
+            } catch (JSONException e) {
+            }
+        }
+
+    }
 
     public String getFirstName() {
         return firstName;

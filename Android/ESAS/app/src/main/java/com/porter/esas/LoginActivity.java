@@ -60,6 +60,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -309,7 +310,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         private String receivedSurveys;
         private String topSurveys;
         private String patientsList;
-        String[] patientsSurveysStrings;
+        ArrayList<String> patientsSurveysStrings;
         UserLoginTask(String email, String password, LoginActivity activity) {
             mEmail = email;
             mPassword = password;
@@ -432,7 +433,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     JSONObject patientsJSON = new JSONObject(patientsList);
                     JSONArray patientsArray = patientsJSON.getJSONArray("patients");
 
-                 patientsSurveysStrings = new String[patientsArray.length()];
+                 patientsSurveysStrings = new ArrayList<String>();
                 for (int i = 0; i < patientsArray.length(); i++) {
                         JSONObject patient = (JSONObject) patientsArray.get(i);
                         String id = patient.get("patientid").toString();
@@ -440,7 +441,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     httpGet6.setHeader("Authorization", basicAuth);
                     HttpResponse httpResponse6 = httpclient.execute(httpGet6);
                     String resp_body6 = EntityUtils.toString(httpResponse6.getEntity());
-                    patientsSurveysStrings[i] = resp_body6;
+                    patientsSurveysStrings.add( resp_body6);
 
                     //TODO: request survyes and put it in surveys strings
                     }
@@ -483,9 +484,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 } else if (userType == 1) {
                     intent.putExtra("com.porter.topSurveys", topSurveys);
                     intent.putExtra("com.porter.patientsList", patientsList);
-                    Bundle b=new Bundle();
-                    b.putStringArray("surveystrings", patientsSurveysStrings);
-                    intent.putExtra("com.porter.patientsSurveyStrings", b);
+                    intent.putStringArrayListExtra("com.porter.patientsSurveyStrings", patientsSurveysStrings);
                     startActivity(intent);
                     //  finish();
                 } else {

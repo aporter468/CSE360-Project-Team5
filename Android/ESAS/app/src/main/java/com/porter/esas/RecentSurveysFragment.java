@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class RecentSurveysFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
@@ -35,7 +37,12 @@ public class RecentSurveysFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          rootView = inflater.inflate(R.layout.fragment_recent_surveys, container, false);
-
+        ArrayList<Patient> patientsList = ((MainActivity)getActivity()).getPatientsList();
+        if(patientsList == null || patientsList.size()==0)
+        {
+            ((MainActivity)getActivity()).setupProviderPatientsSurveys();
+            patientsList = ((MainActivity)getActivity()).getPatientsList();
+        }
         return rootView;
     }
 

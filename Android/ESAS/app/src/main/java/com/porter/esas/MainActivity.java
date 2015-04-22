@@ -67,8 +67,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private SubmitSurveyTask mAuthTask = null;
     private String providersPatientsList;
     private String topSurveys;
-    private String[] patientSurveysStrings;
-
+    private ArrayList<String> patientSurveysStrings;
+    ArrayList<Patient> patientsList;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -100,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         {
              topSurveys  = extras.getString("com.porter.topSurveys");
              providersPatientsList =extras.getString("com.porter.patientsList");
-            patientSurveysStrings=extras.getStringArray("surveystrings");
+            patientSurveysStrings=extras.getStringArrayList("com.porter.patientsSurveyStrings");
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
@@ -184,12 +184,16 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     }
+
+
+    public ArrayList<Patient> getPatientsList()
+    {
+        return patientsList;
+    }
     public void setupProviderPatientsSurveys( ) {
 
-//TODO: set patients list, each owning survey; then do top surveys knowing patients by id
 
 ArrayList<Survey> topSurveysList;
-        ArrayList<Patient> patientsList;
         if (providersPatientsList.length() > 0)//send empty from register
         {
             patientsList = new ArrayList<Patient>();
@@ -199,16 +203,17 @@ ArrayList<Survey> topSurveysList;
                 for (int i = 0; i < patientsArray.length(); i++) {
                     JSONObject patient = (JSONObject) patientsArray.get(i);
 
-                    Patient newP = new Patient(patient);
-                    newP.setupSurveys();
+                    Patient newP = new Patient(patient,this);
+                    newP.setupSurveys(patientSurveysStrings.get(i));
                     patientsList.add(newP);
                 }
 
             } catch (JSONException e) {
             }
         }
+//TODO:set top surveys, connect to patients
 
-        if (topSurveys.length() > 0)//send empty from register
+        /*if (topSurveys.length() > 0)//send empty from register
         {
             topSurveysList = new ArrayList<Survey>();
             try {
@@ -228,7 +233,7 @@ ArrayList<Survey> topSurveysList;
 
             } catch (JSONException e) {
             }
-        }
+        }*/
 
 
     }
