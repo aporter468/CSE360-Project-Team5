@@ -1,4 +1,7 @@
 package com.porter.esas;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 /**
  * Created by Alex on 4/20/15.
@@ -6,18 +9,24 @@ import java.util.ArrayList;
 public class Patient {
     private String firstName;
     private String lastName;
+    private String phone;
+    private String email;
     private int ID;
     private ArrayList<Survey> surveys;
-    public Patient(String firstName, String lastName, int ID)
+    public Patient(JSONObject jsoninfo)
     {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.ID = ID;
+        try {
+            firstName = jsoninfo.get("firstname").toString();
+            lastName = jsoninfo.get("lastname").toString();
+            ID = Integer.parseInt(jsoninfo.get("patientid").toString());
+            phone = jsoninfo.get("phone").toString();
+            email = jsoninfo.get("email").toString();
+        }
+        catch(JSONException e){}
+
     }
-    public void setSurveys(ArrayList<Survey> surveys)
-    {
-        this.surveys = surveys;
-    }
+    public void setupSurveys()
+    {}
 
     public String getFirstName() {
         return firstName;
@@ -37,4 +46,14 @@ public class Patient {
     public ArrayList<Survey> getSurveys() {
         return surveys;
     }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+
 }

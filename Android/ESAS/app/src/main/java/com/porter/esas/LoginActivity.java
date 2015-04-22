@@ -309,6 +309,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         private String receivedSurveys;
         private String topSurveys;
         private String patientsList;
+        String[] patientsSurveysStrings;
         UserLoginTask(String email, String password, LoginActivity activity) {
             mEmail = email;
             mPassword = password;
@@ -428,6 +429,22 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 // JSONObject surveys = new JSONObject(resp_body3);
                 patientsList = resp_body5;
                 Log.e("mylog","patients for provider: "+patientsList);
+                    JSONObject patientsJSON = new JSONObject(patientsList);
+                    JSONArray patientsArray = patientsJSON.getJSONArray("patients");
+
+                 patientsSurveysStrings = new String[patientsArray.length()];
+                for (int i = 0; i < patientsArray.length(); i++) {
+                        JSONObject patient = (JSONObject) patientsArray.get(i);
+                        String id = patient.get("patientid").toString();
+                    HttpGet httpGet6 = new HttpGet("http://10.0.2.2:3888/v1/surveys/"+id);
+                    httpGet6.setHeader("Authorization", basicAuth);
+                    HttpResponse httpResponse6 = httpclient.execute(httpGet6);
+                    String resp_body6 = EntityUtils.toString(httpResponse6.getEntity());
+                    patientsSurveysStrings[i] = resp_body6;
+
+                    //TODO: request survyes and put it in surveys strings
+                    }
+
 
                 mySuccess = true;
                 userType = 1;
@@ -455,29 +472,28 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             if (mySuccess) {
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.putExtra("com.porter.user_type", userType);
-                intent.putExtra("com.porter.email",mEmail);
-                intent.putExtra("com.porter.password",mPassword);
-                if(userType==0)
-                {
+                intent.putExtra("com.porter.email", mEmail);
+                intent.putExtra("com.porter.password", mPassword);
+                if (userType == 0) {
 
                     intent.putExtra("com.porter.providerName", patientsProviderInfo[0]);
                     intent.putExtra("com.porter.providerPhone", patientsProviderInfo[1]);
                     intent.putExtra("com.porter.providerEmail", patientsProviderInfo[2]);
-                    intent.putExtra("com.porter.receivedSurveysJSON",receivedSurveys);
+                    intent.putExtra("com.porter.receivedSurveysJSON", receivedSurveys);
+                } else if (userType == 1) {
+                    intent.putExtra("com.porter.topSurveys", topSurveys);
+                    intent.putExtra("com.porter.patientsList", patientsList);
+                    Bundle b=new Bundle();
+                    b.putStringArray("surveystrings", patientsSurveysStrings);
+                    intent.putExtra("com.porter.patientsSurveyStrings", b);
+                    startActivity(intent);
+                    //  finish();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
                 }
-                else if(userType==1)
-                {
-                    intent.putExtra("com.porter.topSurveys",topSurveys);
-                    intent.putExtra("com.porter.patientsList",patientsList);
-                }
-                startActivity(intent);
-              //  finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
             }
         }
-
         @Override
         protected void onCancelled() {
             mAuthTask = null;

@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private SubmitSurveyTask mAuthTask = null;
     private String providersPatientsList;
     private String topSurveys;
+    private String[] patientSurveysStrings;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -99,6 +100,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         {
              topSurveys  = extras.getString("com.porter.topSurveys");
              providersPatientsList =extras.getString("com.porter.patientsList");
+            patientSurveysStrings=extras.getStringArray("surveystrings");
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
@@ -188,6 +190,24 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 ArrayList<Survey> topSurveysList;
         ArrayList<Patient> patientsList;
+        if (providersPatientsList.length() > 0)//send empty from register
+        {
+            patientsList = new ArrayList<Patient>();
+            try {
+                JSONObject patientsJSON = new JSONObject(providersPatientsList);
+                JSONArray patientsArray = patientsJSON.getJSONArray("patients");
+                for (int i = 0; i < patientsArray.length(); i++) {
+                    JSONObject patient = (JSONObject) patientsArray.get(i);
+
+                    Patient newP = new Patient(patient);
+                    newP.setupSurveys();
+                    patientsList.add(newP);
+                }
+
+            } catch (JSONException e) {
+            }
+        }
+
         if (topSurveys.length() > 0)//send empty from register
         {
             topSurveysList = new ArrayList<Survey>();
