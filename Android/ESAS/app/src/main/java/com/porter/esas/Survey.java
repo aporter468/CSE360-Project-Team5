@@ -38,7 +38,6 @@ public class Survey {
 
     public void setDate(long timestamp, MainActivity activity)
     {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = new Date(timestamp );
         c = Calendar.getInstance();
         c.setTime(d);
@@ -48,6 +47,10 @@ public class Survey {
     public Calendar getCalendar()
     {
         return c;
+    }
+    public String getDateText()
+    {
+        return c.get(Calendar.MONTH)+"/"+c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.YEAR);
     }
 
     public void setComments(String comments) {

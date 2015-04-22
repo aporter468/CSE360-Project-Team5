@@ -35,6 +35,14 @@
             android:name=".ForgotLoginActivity"
             android:label="@string/title_activity_forgot_login" >
         </activity>
+        <activity
+            android:name=".PatientDetailsActivity"
+            android:label="@string/title_activity_patient_details"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.porter.esas.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
