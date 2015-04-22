@@ -397,6 +397,7 @@ ArrayList<Survey> topSurveysList;
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "datePicker");
     }
+
     public void setHistoryDate(int[] selectedDate)
     {
 

@@ -56,4 +56,14 @@ public class Survey {
     public void setComments(String comments) {
         this.comments = comments;
     }
+    public String getFullValueString()
+    {
+        String s = "";
+        for(int i =0; i<NUM_SURVEY_FIELDS; i++)
+        {
+            s+=SURVEY_FIELDS[i]+": "+surveyValues[i]+"\n";
+
+        }
+        return s;
+    }
 }

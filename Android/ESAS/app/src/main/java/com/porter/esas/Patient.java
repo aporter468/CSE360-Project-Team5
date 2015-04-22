@@ -81,6 +81,11 @@ public class Patient {
     public String getEmail() {
         return email;
     }
-
+    public String getInfoString()
+    {
+        return "Name: "+firstName+" "+lastName+
+                "\n Email: "+email+
+                "\n Phone: "+phone;
+    }
 
 }
