@@ -46,6 +46,17 @@ public class Doctor {
 		securityA = securityA1;
 	}
 	
+	public void addPatient(Patient p) {
+		for(int i = 0; i < Patients.size(); i++) {
+			if(p.getName().equals(Patients.get(i).getName())) {
+				System.out.println("The Patient is already a patient of this Doctor.");
+				return;
+			}
+		}
+		Patients.add(p);
+		System.out.println("Patient has been added");
+	}
+	
 	//getters
 	public String getName()
 	{
@@ -71,12 +82,16 @@ public class Doctor {
 		return securityA;
 	}
 	
-	/*
-	public String getPatient(Patient patient)
+	public Patient getPatient(String patientN)
 	{
-		Patient.get(patient); //NEED GET PATIENT METHOD
+		for(int i = 0; i < Patients.size(); i++) {
+			if(patientN.equals(Patients.get(i).getName()))
+				return Patients.get(i);
+		}
+		
+		System.out.println("No Patient Found");
+		return null;
 	}
-	*/
 	
 	
 	
