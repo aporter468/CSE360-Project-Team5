@@ -13,6 +13,14 @@ public class Doctor {
 		securityA = securityA1;
 	}	
 	
+	public Doctor(){
+		name = "";
+		username = "";
+		password = "";
+		securityQ = "";
+		securityA = "";
+	}
+	
 	//setters
 	public void setName(String name1)
 	{

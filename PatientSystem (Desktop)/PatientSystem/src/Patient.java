@@ -10,7 +10,7 @@ public class Patient {
 	private String SecretAnswer;
 	private String CareProvider;
 	private ArrayList<Survey> Surveys = new ArrayList<Survey>();
-	DefaultListModel<String> listmodel = new DefaultListModel<String>();
+	private DefaultListModel<String> surveyList = new DefaultListModel<String>();
 	
 	//constructor methods
 	public Patient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
@@ -59,7 +59,7 @@ public class Patient {
 	
 	public void addSurvey(Survey pSurvey){
 		String survey_date = pSurvey.getDate();
-		listmodel.addElement(survey_date);
+		surveyList.addElement(survey_date);
 		Surveys.add(pSurvey);
 	}
 	
@@ -106,4 +106,7 @@ public class Patient {
 			return false;
 	}
 	
+	public DefaultListModel<String> getList(){
+		return surveyList;
+	}
 }
