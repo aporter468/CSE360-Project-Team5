@@ -37,6 +37,8 @@ public class Directory {
 	private JPanel panelViewHistory;
 	private JPanel panelDoctorSignUp;
 	private JPanel panelMainMenuDoctor;
+	private JPanel panelViewHistoryDoctor;
+	private JPanel panelViewPatientInfo;
 	
 	//textField and passwordField from Login Panel
 	private JTextField textField_LoginUsername;
@@ -924,10 +926,22 @@ public class Directory {
 		panelMainMenuDoctor.add(lbl_MainMenuDoctor_Welcome);
 		
 		JButton btn_MainMenuDoctor_ViewPatientHistory = new JButton("View Patient History");
+		btn_MainMenuDoctor_ViewPatientHistory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenuDoctor.setVisible(false);
+				panelViewHistoryDoctor.setVisible(true);
+			}
+		});
 		btn_MainMenuDoctor_ViewPatientHistory.setBounds(108, 79, 190, 33);
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientHistory);
 		
 		JButton btn_MainMenuDoctor_ViewPatientInfo = new JButton("View Patient Contact Info");
+		btn_MainMenuDoctor_ViewPatientInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenuDoctor.setVisible(false);
+				panelViewPatientInfo.setVisible(true);
+			}
+		});
 		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 188, 33);
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientInfo);
 		
@@ -940,6 +954,50 @@ public class Directory {
 		});
 		btn_View.setBounds(108, 169, 186, 33);
 		panelMainMenuDoctor.add(btn_View);
+		//-------------------------------------------------------------------------------------------------------------------
+		
+		//View History Doctor Panel************************************************************************************************
+		panelViewHistoryDoctor = new JPanel();
+		frmEsasSystem.getContentPane().add(panelViewHistoryDoctor, "name_44443382672325");
+		panelViewHistoryDoctor.setLayout(null);
+		
+		JLabel lbl_ViewPatientHistory_title = new JLabel("View Patient History");
+		lbl_ViewPatientHistory_title.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lbl_ViewPatientHistory_title.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_ViewPatientHistory_title.setBounds(97, 31, 207, 28);
+		panelViewHistoryDoctor.add(lbl_ViewPatientHistory_title);
+		
+		JButton btn_ViewHistoryDoctor_PreviousScreen = new JButton("Previous Screen");
+		btn_ViewHistoryDoctor_PreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelViewHistoryDoctor.setVisible(false);
+				panelMainMenuDoctor.setVisible(true);
+			}
+		});
+		btn_ViewHistoryDoctor_PreviousScreen.setBounds(147, 178, 123, 28);
+		panelViewHistoryDoctor.add(btn_ViewHistoryDoctor_PreviousScreen);
+		//--------------------------------------------------------------------------------------------------------------------
+		
+		//View Patient Info as a Doctor panel************************************************************************************
+		panelViewPatientInfo = new JPanel();
+		frmEsasSystem.getContentPane().add(panelViewPatientInfo, "name_44471001791997");
+		panelViewPatientInfo.setLayout(null);
+		
+		JLabel lblViewPatientInfo = new JLabel("View Patient Info");
+		lblViewPatientInfo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblViewPatientInfo.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblViewPatientInfo.setBounds(107, 26, 201, 45);
+		panelViewPatientInfo.add(lblViewPatientInfo);
+		
+		JButton btn_ViewPatientInfo_PreviousScreen = new JButton("Previous Screen");
+		btn_ViewPatientInfo_PreviousScreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelViewPatientInfo.setVisible(false);
+				panelMainMenuDoctor.setVisible(true);
+			}
+		});
+		btn_ViewPatientInfo_PreviousScreen.setBounds(148, 178, 136, 30);
+		panelViewPatientInfo.add(btn_ViewPatientInfo_PreviousScreen);
 		
 		//----------------------------------------------------------------------------------------------------
 	}
@@ -986,5 +1044,4 @@ public class Directory {
 		else
 			return -1;
 	}
-	
 }
