@@ -36,6 +36,7 @@ public class Directory {
 	private JPanel panelViewCareProviderInfo;
 	private JPanel panelViewHistory;
 	private JPanel panelDoctorSignUp;
+	private JPanel panelMainMenuDoctor;
 	
 	//textField and passwordField from Login Panel
 	private JTextField textField_LoginUsername;
@@ -130,29 +131,37 @@ public class Directory {
 						panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
 						currentPatient = temp;  //save the currently logged patient in currentPatient
 					}
-					else { //show Incorrect password message
-						JOptionPane.showMessageDialog(null, "Incorrect Password", "Error", JOptionPane.ERROR_MESSAGE);
-					}	
 				}
-				else if (position == -1){ //if the user is not in the Patient List, then check the Doctor List
-					position = findDoctor(textField_LoginUsername.getText());
-					if (position >=0 ){ //the user name was found in the Doctor List
-						Doctor tempDoctor = new Doctor(); //make a temporary doctor
-						tempDoctor = DoctorList.get(position); //retrieve the corresponding user
-						if (passwordField_Login.getText().equals(tempDoctor.getPassword())){ //check that password matches stored password
+				else { //look for the user name in the Doctor List
+						position = findDoctor(textField_LoginUsername.getText());
+						Doctor tempDoctor = new Doctor();
+						if (position >=0) {
 							textField_LoginUsername.setText("");//clear the fields
 							passwordField_Login.setText("");
-							panelLogin.setVisible(false); //set the panelLogin to not visible
-							panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
+							panelMainMenuDoctor.setVisible(true); //set the MainMenuDoctor panel to visible
+							panelLogin.setVisible(false);//set the panelLogin to not visible
 							currentDoctor = tempDoctor;
 						}
-					}
-					else if (position==-1){//display message if user name does not exist
-						JOptionPane.showMessageDialog(null, "Username does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
-					}
-				} 
+						
+					} if (position == -1){ //if the user is not in the Patient List, then check the Doctor List
+						position = findDoctor(textField_LoginUsername.getText());
+						if (position >=0 ){ //the user name was found in the Doctor List
+							Doctor tempDoctor = new Doctor(); //make a temporary doctor
+							tempDoctor = DoctorList.get(position); //retrieve the corresponding user
+							if (passwordField_Login.getText().equals(tempDoctor.getPassword())){ //check that password matches stored password
+								textField_LoginUsername.setText("");//clear the fields
+								passwordField_Login.setText("");
+								panelLogin.setVisible(false); //set the panelLogin to not visible
+								panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
+								currentDoctor = tempDoctor;
+							}
+						}
+						else if (position==-1){//display message if user name does not exist
+							JOptionPane.showMessageDialog(null, "Username does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
+						}
+					} 
 				
-			}
+				}
 		});
 		btnLogin.setBounds(207, 168, 89, 23);
 		panelLogin.add(btnLogin); //add the Login button to the JPanel
@@ -904,9 +913,33 @@ public class Directory {
 		//-----------------------------------------------------------------------------------------------------
 		
 		// Main Menu Doctor panel *****************************************************************************
-		JPanel panelMainMenuDoctor = new JPanel();
+		panelMainMenuDoctor = new JPanel();
 		frmEsasSystem.getContentPane().add(panelMainMenuDoctor, "name_41199396829377");
 		panelMainMenuDoctor.setLayout(null);
+		
+		JLabel lbl_MainMenuDoctor_Welcome = new JLabel("Welcome");
+		lbl_MainMenuDoctor_Welcome.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_MainMenuDoctor_Welcome.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lbl_MainMenuDoctor_Welcome.setBounds(108, 25, 200, 33);
+		panelMainMenuDoctor.add(lbl_MainMenuDoctor_Welcome);
+		
+		JButton btn_MainMenuDoctor_ViewPatientHistory = new JButton("View Patient History");
+		btn_MainMenuDoctor_ViewPatientHistory.setBounds(108, 79, 190, 33);
+		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientHistory);
+		
+		JButton btn_MainMenuDoctor_ViewPatientInfo = new JButton("View Patient Contact Info");
+		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 188, 33);
+		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientInfo);
+		
+		JButton btn_View = new JButton("Previous Screen");
+		btn_View.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMainMenuDoctor.setVisible(false);
+				panelLogin.setVisible(true);
+			}
+		});
+		btn_View.setBounds(108, 169, 186, 33);
+		panelMainMenuDoctor.add(btn_View);
 		
 		//----------------------------------------------------------------------------------------------------
 	}
