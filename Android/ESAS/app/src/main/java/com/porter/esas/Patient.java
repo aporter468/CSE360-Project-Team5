@@ -18,22 +18,24 @@ public class Patient {
     public Patient(JSONObject jsoninfo, MainActivity mainActivity)
     {
         this.mainActivity= mainActivity;
-        try {
-            firstName = jsoninfo.get("firstname").toString();
-            lastName = jsoninfo.get("lastname").toString();
-            ID = Integer.parseInt(jsoninfo.get("patientid").toString());
-            phone = jsoninfo.get("phone").toString();
-            email = jsoninfo.get("email").toString();
+        if(jsoninfo!=null) {
+            try {
+                firstName = jsoninfo.get("firstname").toString();
+                lastName = jsoninfo.get("lastname").toString();
+                ID = Integer.parseInt(jsoninfo.get("patientid").toString());
+                phone = jsoninfo.get("phone").toString();
+                email = jsoninfo.get("email").toString();
+            } catch (JSONException e) {
+            }
         }
-        catch(JSONException e){}
 
     }
     public void setupSurveys(String surveysJSONstring)
     {
         Log.e("mylog","surveys for : "+ID);
+        surveys = new ArrayList<Survey>();
         if (surveysJSONstring.length() > 0)//send empty from register
         {
-            surveys = new ArrayList<Survey>();
             try {
                 JSONObject surveysJSON = new JSONObject(surveysJSONstring);
                 JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
