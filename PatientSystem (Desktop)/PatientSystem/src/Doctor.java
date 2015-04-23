@@ -71,12 +71,16 @@ public class Doctor {
 		return securityA;
 	}
 	
-	/*
-	public String getPatient(Patient patient)
+	public Patient getPatient(String patientN)
 	{
-		Patient.get(patient); //NEED GET PATIENT METHOD
+		for(int i = 0; i < Patients.size(); i++) {
+			if(patientN.equals(Patients.get(i).getName))
+				return Patients.get(i);
+		}
+		
+		System.out.println("No Patient Found");
+		return null;
 	}
-	*/
 	
 	
 	
