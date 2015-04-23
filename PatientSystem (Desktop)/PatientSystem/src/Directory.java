@@ -216,6 +216,11 @@ public class Directory {
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
 		
+		//Determines if user is a doctor
+		JCheckBox checkboxForDoctor = new JCheckBox("Doctor");
+		checkboxForDoctor.setBounds(181, 143, 97, 23);
+		panelLogin.add(checkboxForDoctor);
+	
 		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
 		btnDoctorSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -321,6 +326,17 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
+					
+					for(int i = 0; i < DoctorList.size(); i++)
+					{
+						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
+							{
+								DoctorList.get(i).addPatient(newUser);
+							}
+						else
+							System.out.println("Care Provider does not exist");
+					}
+					
 				}
 			}
 		});
