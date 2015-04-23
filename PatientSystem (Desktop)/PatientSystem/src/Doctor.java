@@ -74,7 +74,7 @@ public class Doctor {
 	public Patient getPatient(String patientN)
 	{
 		for(int i = 0; i < Patients.size(); i++) {
-			if(patientN.equals(Patients.get(i).getName))
+			if(patientN.equals(Patients.get(i).getName()))
 				return Patients.get(i);
 		}
 		
