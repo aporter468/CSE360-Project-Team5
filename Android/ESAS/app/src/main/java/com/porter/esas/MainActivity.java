@@ -67,25 +67,29 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private SubmitSurveyTask mAuthTask = null;
     private String providersPatientsList;
     private String topSurveys;
-
+    private ArrayList<String> patientSurveysStrings;
+    ArrayList<Patient> patientsList;
+    private ArrayList<Survey> topSurveysList;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         userType = 0;
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        setTitle("Settings");
        userType = extras.getInt("com.porter.user_type");
         email = extras.getString("com.porter.email");
         password = extras.getString("com.porter.password");
         if(userType ==0)
         {
+            setTitle("ESAS: Patient");
+
             patientsProviderInfo = new String[3];
             patientsProviderInfo[0]=extras.getString("com.porter.providerName");
             patientsProviderInfo[1]=extras.getString("com.porter.providerPhone");
@@ -97,8 +101,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
         else if(userType==1)
         {
-             topSurveys  = extras.getString("com.porter.topSurveys");
+
+            topSurveys  = extras.getString("com.porter.topSurveys");
              providersPatientsList =extras.getString("com.porter.patientsList");
+            patientSurveysStrings=extras.getStringArrayList("com.porter.patientsSurveyStrings");
+            setTitle("ESAS: Provider");
+
         }
         Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
@@ -182,12 +190,36 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     }
+
+
+    public ArrayList<Patient> getPatientsList()
+    {
+        return patientsList;
+    }
+    public ArrayList<Survey> getTopSurveysList(){return topSurveysList;}
     public void setupProviderPatientsSurveys( ) {
 
-//TODO: set patients list, each owning survey; then do top surveys knowing patients by id
 
-ArrayList<Survey> topSurveysList;
-        ArrayList<Patient> patientsList;
+        if (providersPatientsList.length() > 0)//send empty from register
+        {
+            patientsList = new ArrayList<Patient>();
+            try {
+                JSONObject patientsJSON = new JSONObject(providersPatientsList);
+                JSONArray patientsArray = patientsJSON.getJSONArray("patients");
+                for (int i = 0; i < patientsArray.length(); i++) {
+                    JSONObject patient = (JSONObject) patientsArray.get(i);
+
+                    Patient newP = new Patient(patient,this);
+                    newP.setupSurveys(patientSurveysStrings.get(i));
+                    patientsList.add(newP);
+                }
+
+            } catch (JSONException e) {
+            }
+        }
+//TODO:set top surveys, connect to patients
+
+        topSurveysList = new ArrayList<Survey>();
         if (topSurveys.length() > 0)//send empty from register
         {
             topSurveysList = new ArrayList<Survey>();
@@ -203,8 +235,20 @@ ArrayList<Survey> topSurveysList;
                     }
                     Survey newS = new Survey(surveyArray, "");
                     newS.setDate(Long.parseLong(survey.get("timestamp").toString()), this);
-                    receivedSurveys.add(newS);
+                    int patientID = Integer.parseInt(survey.get("patientid").toString());
+                    for(int j =0; j<patientsList.size(); j++)
+                    {
+                        int compareID = patientsList.get(j).getID();
+                        if(patientID == compareID)
+                        {
+                            newS.setPatient(patientsList.get(j));
+                            break;
+                        }
+                    }
+                    topSurveysList.add(newS);
                 }
+
+
 
             } catch (JSONException e) {
             }
@@ -233,9 +277,9 @@ ArrayList<Survey> topSurveysList;
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+      //  if (id == R.id.action_settings) {
+      //      return true;
+      //  }
 
         return super.onOptionsItemSelected(item);
     }
@@ -244,7 +288,7 @@ ArrayList<Survey> topSurveysList;
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
-         if(historyFragment!=null && historyFragment.isSet()) {
+         if(historyFragment!=null && historyFragment.isSet() ) {
              setupHistoryTable();
              historyFragment.setGraphSurveys(receivedSurveys);
 
@@ -273,20 +317,18 @@ ArrayList<Survey> topSurveysList;
 
         @Override
         public Fragment getItem(int position) {
-            if(userType == 0) //patient
+            if (userType == 0) //patient
             {
                 if (position == 0) {
                     return historyFragment;
                 }
-                if(position == 1)
-                {
+                if (position == 1) {
                     return providerInfoFragment;
                 }
                 if (position == 2) {
                     return SurveyFragment.newInstance(0);
                 }
-            }
-            else//doctor
+            } else//doctor
             {
                 if (position == 0) {
                     return recentSurveysFragment;
@@ -295,9 +337,7 @@ ArrayList<Survey> topSurveysList;
                     return patientsFragment;
                 }
             }
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return null;
         }
 
         @Override
@@ -336,42 +376,12 @@ ArrayList<Survey> topSurveysList;
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
     public void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "datePicker");
     }
+
     public void setHistoryDate(int[] selectedDate)
     {
 

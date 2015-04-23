@@ -53,7 +53,7 @@ public class SurveyConnector extends ESASConnector {
     }
 
     public ArrayList<SurveyResult> getTopSurveys(int providerid) {
-        final String query = "SELECT patients.patientid, pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp FROM surveys JOIN patients ON patients.patientid WHERE patients.providerid = ? ORDER BY timestamp DESC LIMIT 10";
+        final String query = "SELECT patients.patientid, pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp FROM surveys JOIN patients ON surveys.patientid = patients.patientid WHERE patients.providerid = ? ORDER BY timestamp DESC LIMIT 10";
         ArrayList<SurveyResult> surveys = new ArrayList<SurveyResult>();
         Connection connection = getConnection();
 

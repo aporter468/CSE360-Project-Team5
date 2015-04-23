@@ -1,4 +1,8 @@
 package com.porter.esas;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.util.Log;
 import java.util.ArrayList;
 /**
  * Created by Alex on 4/20/15.
@@ -6,17 +10,49 @@ import java.util.ArrayList;
 public class Patient {
     private String firstName;
     private String lastName;
+    private String phone;
+    private String email;
     private int ID;
     private ArrayList<Survey> surveys;
-    public Patient(String firstName, String lastName, int ID)
+    MainActivity mainActivity;
+    public Patient(JSONObject jsoninfo, MainActivity mainActivity)
     {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.ID = ID;
+        this.mainActivity= mainActivity;
+        try {
+            firstName = jsoninfo.get("firstname").toString();
+            lastName = jsoninfo.get("lastname").toString();
+            ID = Integer.parseInt(jsoninfo.get("patientid").toString());
+            phone = jsoninfo.get("phone").toString();
+            email = jsoninfo.get("email").toString();
+        }
+        catch(JSONException e){}
+
     }
-    public void setSurveys(ArrayList<Survey> surveys)
+    public void setupSurveys(String surveysJSONstring)
     {
-        this.surveys = surveys;
+        Log.e("mylog","surveys for : "+ID);
+        if (surveysJSONstring.length() > 0)//send empty from register
+        {
+            surveys = new ArrayList<Survey>();
+            try {
+                JSONObject surveysJSON = new JSONObject(surveysJSONstring);
+                JSONArray surveysArray = surveysJSON.getJSONArray("surveys");
+                for (int i = 0; i < surveysArray.length(); i++) {
+                    JSONObject survey = (JSONObject) surveysArray.get(i);
+                    int[] surveyArray = new int[8];
+                    for (int j = 0; j < 8; j++) {
+
+                        surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
+                    }
+                    Survey newS = new Survey(surveyArray, "");
+                    newS.setDate(Long.parseLong(survey.get("timestamp").toString()), mainActivity);
+                    surveys.add(newS);
+                }
+
+            } catch (JSONException e) {
+            }
+        }
+
     }
 
     public String getFirstName() {
@@ -37,4 +73,19 @@ public class Patient {
     public ArrayList<Survey> getSurveys() {
         return surveys;
     }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public String getInfoString()
+    {
+        return "Name: "+firstName+" "+lastName+
+                "\n Email: "+email+
+                "\n Phone: "+phone;
+    }
+
 }

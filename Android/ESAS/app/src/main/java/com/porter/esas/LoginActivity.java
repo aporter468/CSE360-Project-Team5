@@ -60,6 +60,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -309,6 +310,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         private String receivedSurveys;
         private String topSurveys;
         private String patientsList;
+        ArrayList<String> patientsSurveysStrings;
         UserLoginTask(String email, String password, LoginActivity activity) {
             mEmail = email;
             mPassword = password;
@@ -320,8 +322,80 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Boolean doInBackground(Void... params) {
             Log.e("mylog","signin?");
             HttpClient httpclient = new DefaultHttpClient();
-           // HttpPost httppost = new HttpPost("http://10.0.2.2:3888/login");
+            try {
+                //try as provider
 
+                HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
+                final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
+                httpGet2.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse2 = httpclient.execute(httpGet2);
+
+
+                String resp_body2 = EntityUtils.toString(httpResponse2.getEntity());
+                JSONObject jsobj2 = new JSONObject(resp_body2);
+
+                //provider info
+
+                HttpGet httpGet3 = new HttpGet("http://10.0.2.2:3888/v1/providers");
+
+                httpGet3.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse3 = httpclient.execute(httpGet3);
+
+                String resp_body3 = EntityUtils.toString(httpResponse3.getEntity());
+                Log.e("mylog","provider info: "+resp_body3);
+                //top surveys for this provider
+                HttpGet httpGet4 = new HttpGet("http://10.0.2.2:3888/v1/surveys");
+
+                httpGet4.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse4 = httpclient.execute(httpGet4);
+
+                String resp_body4 = EntityUtils.toString(httpResponse4.getEntity());
+                // JSONObject surveys = new JSONObject(resp_body3);
+                topSurveys = resp_body4;
+                Log.e("mylog","top surveys for provider: "+topSurveys);
+                HttpGet httpGet5 = new HttpGet("http://10.0.2.2:3888/v1/patients");
+
+                httpGet5.setHeader("Authorization", basicAuth);
+
+                HttpResponse httpResponse5 = httpclient.execute(httpGet5);
+
+                String resp_body5 = EntityUtils.toString(httpResponse5.getEntity());
+                // JSONObject surveys = new JSONObject(resp_body3);
+                patientsList = resp_body5;
+                Log.e("mylog","patients for provider: "+patientsList);
+                JSONObject patientsJSON = new JSONObject(patientsList);
+                JSONArray patientsArray = patientsJSON.getJSONArray("patients");
+
+                patientsSurveysStrings = new ArrayList<String>();
+                for (int i = 0; i < patientsArray.length(); i++) {
+                    JSONObject patient = (JSONObject) patientsArray.get(i);
+                    String id = patient.get("patientid").toString();
+                    HttpGet httpGet6 = new HttpGet("http://10.0.2.2:3888/v1/surveys/"+id);
+                    httpGet6.setHeader("Authorization", basicAuth);
+                    HttpResponse httpResponse6 = httpclient.execute(httpGet6);
+                    String resp_body6 = EntityUtils.toString(httpResponse6.getEntity());
+                    patientsSurveysStrings.add( resp_body6);
+
+                }
+
+
+                mySuccess = true;
+                userType = 1;
+                return true;
+
+            } catch (ClientProtocolException e) {
+                Log.e("mylog", "didn't connect");
+            } catch (IOException e) {
+                Log.e("mylog", "didn't connect");
+            }
+            catch(JSONException e)
+            {
+                Log.e("mylog", "json exception (provider)ap");
+
+            }
             try {
 //user's own info- attempt login
                 HttpGet httpGet = new HttpGet("http://10.0.2.2:3888/v1/patients");
@@ -380,69 +454,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 Log.e("mylog", "json exception (patient)");
 
             }
-            try {
 
-
-
-                //try as provider
-                HttpGet httpGet2 = new HttpGet("http://10.0.2.2:3888/v1/providers");
-                final String basicAuth = "Basic " + Base64.encodeToString((mEmail+":"+mPassword).getBytes(), Base64.NO_WRAP);
-                httpGet2.setHeader("Authorization", basicAuth);
-
-                HttpResponse httpResponse2 = httpclient.execute(httpGet2);
-
-
-                String resp_body2 = EntityUtils.toString(httpResponse2.getEntity());
-                JSONObject jsobj2 = new JSONObject(resp_body2);
-
-                //provider info
-
-                HttpGet httpGet3 = new HttpGet("http://10.0.2.2:3888/v1/providers");
-
-                httpGet3.setHeader("Authorization", basicAuth);
-
-                HttpResponse httpResponse3 = httpclient.execute(httpGet3);
-
-                String resp_body3 = EntityUtils.toString(httpResponse3.getEntity());
-                // JSONObject surveys = new JSONObject(resp_body3);
-              //  receivedSurveys = resp_body3;
-                Log.e("mylog","provider info: "+resp_body3);
-//top surveys for this provider
-                HttpGet httpGet4 = new HttpGet("http://10.0.2.2:3888/v1/surveys");
-
-                httpGet4.setHeader("Authorization", basicAuth);
-
-                HttpResponse httpResponse4 = httpclient.execute(httpGet4);
-
-                String resp_body4 = EntityUtils.toString(httpResponse4.getEntity());
-                // JSONObject surveys = new JSONObject(resp_body3);
-                topSurveys = resp_body4;
-                Log.e("mylog","top surveys for provider: "+topSurveys);
-                HttpGet httpGet5 = new HttpGet("http://10.0.2.2:3888/v1/patients");
-
-                httpGet5.setHeader("Authorization", basicAuth);
-
-                HttpResponse httpResponse5 = httpclient.execute(httpGet5);
-
-                String resp_body5 = EntityUtils.toString(httpResponse5.getEntity());
-                // JSONObject surveys = new JSONObject(resp_body3);
-                patientsList = resp_body5;
-                Log.e("mylog","patients for provider: "+patientsList);
-
-                mySuccess = true;
-                userType = 1;
-                return true;
-
-            } catch (ClientProtocolException e) {
-                Log.e("mylog", "didn't connect");
-            } catch (IOException e) {
-                Log.e("mylog", "didn't connect");
-            }
-            catch(JSONException e)
-            {
-                Log.e("mylog", "json exception (provider)ap");
-
-            }
 
             return false;
         }
@@ -455,29 +467,26 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             if (mySuccess) {
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.putExtra("com.porter.user_type", userType);
-                intent.putExtra("com.porter.email",mEmail);
-                intent.putExtra("com.porter.password",mPassword);
-                if(userType==0)
-                {
-
+                intent.putExtra("com.porter.email", mEmail);
+                intent.putExtra("com.porter.password", mPassword);
+                if (userType == 0) {
                     intent.putExtra("com.porter.providerName", patientsProviderInfo[0]);
                     intent.putExtra("com.porter.providerPhone", patientsProviderInfo[1]);
                     intent.putExtra("com.porter.providerEmail", patientsProviderInfo[2]);
-                    intent.putExtra("com.porter.receivedSurveysJSON",receivedSurveys);
+                    intent.putExtra("com.porter.receivedSurveysJSON", receivedSurveys);
+                    startActivity(intent);
+                } else if (userType == 1) {
+                    intent.putExtra("com.porter.topSurveys", topSurveys);
+                    intent.putExtra("com.porter.patientsList", patientsList);
+                    intent.putStringArrayListExtra("com.porter.patientsSurveyStrings", patientsSurveysStrings);
+                    startActivity(intent);
+                    //  finish();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
                 }
-                else if(userType==1)
-                {
-                    intent.putExtra("com.porter.topSurveys",topSurveys);
-                    intent.putExtra("com.porter.patientsList",patientsList);
-                }
-                startActivity(intent);
-              //  finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
             }
         }
-
         @Override
         protected void onCancelled() {
             mAuthTask = null;

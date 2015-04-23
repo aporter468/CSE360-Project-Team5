@@ -32,7 +32,6 @@ public class DatePickerFragment extends DialogFragment
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        // TODO Auto-generated method stub
         int[] returnDate = {((DatePickerDialog) dialog).getDatePicker().getYear(), ((DatePickerDialog) dialog).getDatePicker().getMonth(), ((DatePickerDialog) dialog).getDatePicker().getDayOfMonth()};
 
         ( (MainActivity) getActivity()).setHistoryDate(returnDate);

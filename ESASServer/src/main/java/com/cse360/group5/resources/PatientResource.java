@@ -58,6 +58,7 @@ public class PatientResource extends ServerResource {
         // Populate the patient information jsonResponse
         JSONObject jsonResponse = new JSONObject();
         try {
+            jsonResponse.put("patientid", Integer.valueOf(patientUser.getIdentifier()));
             jsonResponse.put("firstname", patientUser.getFirstName());
             jsonResponse.put("lastname", patientUser.getLastName());
             jsonResponse.put("email", patientUser.getEmail());

@@ -94,10 +94,11 @@ tableLayout.removeAllViews();
             for (int i = 0; i < Survey.NUM_SURVEY_FIELDS; i++) {
                 TableRow tableRow = new TableRow(getActivity());
                 tableRow.setLayoutParams(rowParams);
-
+                tableRow.setBackgroundResource(R.drawable.row_border);
                 TextView rowTitleText = new TextView(getActivity());
                 rowTitleText.setLayoutParams(itemParams);
                 rowTitleText.setText(Survey.SURVEY_FIELDS[i]);
+                rowTitleText.setTextColor(Color.BLACK);
                 tableRow.addView(rowTitleText);
                 for (int column = dateMatches.size()-1; column >-1; column--) {
 
