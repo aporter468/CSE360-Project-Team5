@@ -93,7 +93,11 @@ public class Doctor {
 		return null;
 	}
 	
-	
+	public void showPatient() {
+		for(int i = 0; i < Patients.size(); i++) {
+			System.out.println(Patients.get(i).getName());
+		}
+	}
 	
 	
 	
