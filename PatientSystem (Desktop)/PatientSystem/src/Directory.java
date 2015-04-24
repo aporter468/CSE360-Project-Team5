@@ -812,21 +812,21 @@ public class Directory {
 		JLabel lblCreateANew = new JLabel("Create A New User");
 		lblCreateANew.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCreateANew.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblCreateANew.setBounds(109, 40, 211, 14);
+		lblCreateANew.setBounds(112, 26, 211, 14);
 		panelDoctorSignUp.add(lblCreateANew);
 		
 		textField_DoctorSignUp_FirstName = new JTextField();
-		textField_DoctorSignUp_FirstName.setBounds(96, 70, 89, 20);
+		textField_DoctorSignUp_FirstName.setBounds(81, 51, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_FirstName);
 		textField_DoctorSignUp_FirstName.setColumns(10);
 		
 		textField_DoctorSignUp_LastName = new JTextField();
-		textField_DoctorSignUp_LastName.setBounds(296, 70, 95, 20);
+		textField_DoctorSignUp_LastName.setBounds(81, 82, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_LastName);
 		textField_DoctorSignUp_LastName.setColumns(10);
 		
 		textField_DoctorSignUp_Username = new JTextField();
-		textField_DoctorSignUp_Username.setBounds(99, 101, 86, 20);
+		textField_DoctorSignUp_Username.setBounds(317, 51, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_Username);
 		textField_DoctorSignUp_Username.setColumns(10);
 		
@@ -842,35 +842,35 @@ public class Directory {
 		
 		JLabel lbl_DoctorSignUp_FirstName = new JLabel("First Name:");
 		lbl_DoctorSignUp_FirstName.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_FirstName.setBounds(0, 72, 86, 14);
+		lbl_DoctorSignUp_FirstName.setBounds(-15, 54, 86, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_FirstName);
 		
 		JLabel lbl_DoctorSignUp_LastName = new JLabel("Last Name:");
 		lbl_DoctorSignUp_LastName.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_LastName.setBounds(209, 72, 76, 14);
+		lbl_DoctorSignUp_LastName.setBounds(-5, 85, 76, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_LastName);
 		
 		JLabel lbl_DoctorSignUp_Username = new JLabel("Username:");
 		lbl_DoctorSignUp_Username.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_Username.setBounds(23, 104, 66, 14);
+		lbl_DoctorSignUp_Username.setBounds(241, 54, 66, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_Username);
 		
 		passwordField_DoctorSignUp_Password = new JPasswordField();
-		passwordField_DoctorSignUp_Password.setBounds(297, 101, 94, 20);
+		passwordField_DoctorSignUp_Password.setBounds(317, 82, 95, 20);
 		panelDoctorSignUp.add(passwordField_DoctorSignUp_Password);
 		
 		passwordField_DoctorSignUp_ConfirmPassword = new JPasswordField();
-		passwordField_DoctorSignUp_ConfirmPassword.setBounds(297, 132, 96, 20);
+		passwordField_DoctorSignUp_ConfirmPassword.setBounds(316, 113, 96, 20);
 		panelDoctorSignUp.add(passwordField_DoctorSignUp_ConfirmPassword);
 		
 		JLabel lbl_DoctorSignUp_Password = new JLabel("Password:");
 		lbl_DoctorSignUp_Password.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_Password.setBounds(222, 104, 63, 14);
+		lbl_DoctorSignUp_Password.setBounds(244, 85, 63, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_Password);
 		
 		JLabel lbl_DoctorSignUp_ConfirmPassword = new JLabel("Confirm Password:");
 		lbl_DoctorSignUp_ConfirmPassword.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_ConfirmPassword.setBounds(157, 135, 128, 14);
+		lbl_DoctorSignUp_ConfirmPassword.setBounds(179, 113, 128, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_ConfirmPassword);
 		
 		JLabel lbl_DoctorSignUp_SecurityQuestion = new JLabel("Security Question:");
@@ -944,7 +944,7 @@ public class Directory {
 				panelLogin.setVisible(true);
 			}
 		});
-		btn_DoctorSignUp_PreviousScreen.setBounds(279, 208, 133, 25);
+		btn_DoctorSignUp_PreviousScreen.setBounds(277, 208, 135, 25);
 		panelDoctorSignUp.add(btn_DoctorSignUp_PreviousScreen);
 		
 		textField_DoctorPhone = new JTextField();
