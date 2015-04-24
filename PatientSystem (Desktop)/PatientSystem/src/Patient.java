@@ -109,4 +109,5 @@ public class Patient {
 	public DefaultListModel<String> getList(){
 		return surveyList;
 	}
+	
 }

@@ -1,8 +1,11 @@
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
+
 public class Doctor {
 	String name,username,password,securityQ,securityA;
 	ArrayList<Patient> Patients = new ArrayList<Patient>();
+	private DefaultListModel<String> patientList = new DefaultListModel<String>();
 	
 	public Doctor(String name1, String username1, String password1, String securityQ1, String securityA1)
 	{
@@ -44,6 +47,10 @@ public class Doctor {
 	public void setSecurityA(String securityA1)
 	{
 		securityA = securityA1;
+	}
+	
+	public void addPatientName(String pPatientName){
+		patientList.addElement(pPatientName);
 	}
 	
 	public void addPatient(Patient p) {
@@ -99,32 +106,17 @@ public class Doctor {
 		}
 	}
 	
+	public DefaultListModel<String> getList(){
+		return patientList;
+	}
 	
+	public boolean isPatientListEmpty(){
+		return patientList.isEmpty();
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public String getPatientName(int index){
+		String name = patientList.get(index);
+		return name;
+	}
 	
 }
