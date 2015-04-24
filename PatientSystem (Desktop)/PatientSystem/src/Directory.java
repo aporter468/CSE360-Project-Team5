@@ -23,9 +23,6 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JTextPane;
-import javax.swing.JCheckBox;
-
 
 public class Directory {
     //declaration of private variables
@@ -81,6 +78,8 @@ public class Directory {
 	private JTextField textField_DoctorSignUp_SecurityAnswer;
 	private JPasswordField passwordField_DoctorSignUp_Password;
 	private JPasswordField passwordField_DoctorSignUp_ConfirmPassword;
+	private JTextField textField_DoctorPhone;
+	private JTextField textField_DoctorEmail;
 	
 	//JList and JTextArea from ViewPatientHistory as a Doctor
 	private JList <String>patient_list;
@@ -232,13 +231,6 @@ public class Directory {
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
 		
-
-		//Determines if user is a doctor
-		JCheckBox checkboxForDoctor = new JCheckBox("Doctor");
-		checkboxForDoctor.setBounds(181, 143, 97, 23);
-		panelLogin.add(checkboxForDoctor);
-	
-
 		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
 		btnDoctorSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -345,8 +337,7 @@ public class Directory {
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
 					
-					for(int i = 0; i < DoctorList.size(); i++)
-					{
+					for(int i = 0; i < DoctorList.size(); i++){
 						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
 							{
 								DoctorList.get(i).addPatient(newUser);
@@ -354,7 +345,6 @@ public class Directory {
 						else
 							System.out.println("Care Provider does not exist");
 					}
-					
 				}
 			}
 		});
@@ -585,7 +575,6 @@ public class Directory {
 						}
 					});
 				}
-				
 			}
 		});
 		btnMainMenuViewHistory.setBounds(108, 93, 200, 23);
@@ -596,6 +585,18 @@ public class Directory {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);
 				panelViewCareProviderInfo.setVisible(true);
+				
+				JTextArea textArea = new JTextArea();
+				textArea.setEditable(false);
+				textArea.setBounds(95, 85, 232, 79);
+				panelViewCareProviderInfo.add(textArea);
+			
+					for(int i = 0; i < DoctorList.size(); i++){
+						if(currentPatient.getCareProvider().equals(DoctorList.get(i).getName()))
+						{
+							textArea.setText("\n" + "     " + DoctorList.get(i).getName() + "\n" + "     Phone: " + DoctorList.get(i).getPhone() + "\n" + "     Email: " + DoctorList.get(i).getEmail());		
+						}
+					}
 			}
 		});
 		btnMainMenuAccessCPInformation.setBounds(108, 127, 200, 23);
@@ -767,10 +768,7 @@ public class Directory {
 		});
 		btnCareProviderInfoPreviousScreen.setBounds(128, 189, 158, 23);
 		panelViewCareProviderInfo.add(btnCareProviderInfoPreviousScreen);
-		
-		JTextPane textPane = new JTextPane();
-		textPane.setBounds(106, 93, 200, 50);
-		panelViewCareProviderInfo.add(textPane);
+	
 		//----------------------------------------------------------------------------------------------------
 		
 		//View History Panel**********************************************************************************
@@ -892,6 +890,8 @@ public class Directory {
 				String lastName = textField_DoctorSignUp_LastName.getText();
 				String name = firstName + " " + lastName;
 				String userName = textField_DoctorSignUp_Username.getText();
+				String phone = textField_DoctorPhone.getText();
+				String email = textField_DoctorEmail.getText();
 				String secretQuestion = textField_DoctorSignUp_SecurityQuestion.getText();
 				String secretAnswer = textField_DoctorSignUp_SecurityAnswer.getText();
 				@SuppressWarnings("deprecation")
@@ -912,7 +912,7 @@ public class Directory {
 					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{//create a new user and add it to the ArrayList
-					Doctor newUser = new Doctor(name, userName, password, secretQuestion, secretAnswer);
+					Doctor newUser = new Doctor(name, userName, password, secretQuestion, secretAnswer, phone, email);
 					DoctorList.add(newUser);
 					JOptionPane.showMessageDialog(null, "User: " + userName +" was created!");
 					System.out.println("New Doctor user: " + name + " was added!");
@@ -946,6 +946,29 @@ public class Directory {
 		});
 		btn_DoctorSignUp_PreviousScreen.setBounds(279, 208, 133, 25);
 		panelDoctorSignUp.add(btn_DoctorSignUp_PreviousScreen);
+		
+		textField_DoctorPhone = new JTextField();
+		textField_DoctorPhone.setBounds(81, 146, 95, 20);
+		panelDoctorSignUp.add(textField_DoctorPhone);
+		textField_DoctorPhone.setColumns(10);
+		
+		textField_DoctorEmail = new JTextField();
+		textField_DoctorEmail.setBounds(81, 113, 95, 20);
+		panelDoctorSignUp.add(textField_DoctorEmail);
+		textField_DoctorEmail.setColumns(10);
+		
+		JLabel lblPhone = new JLabel("Phone:");
+		lblPhone.setBounds(36, 143, 45, 23);
+		panelDoctorSignUp.add(lblPhone);
+		
+		JLabel lblEmail = new JLabel("Email:");
+		lblEmail.setBounds(42, 113, 128, 20);
+		panelDoctorSignUp.add(lblEmail);
+		
+		JLabel lblExxxxXxxxxxx = new JLabel("Ex. (xxx)xxx-xxxx");
+		lblExxxxXxxxxxx.setBounds(189, 143, 223, 23);
+		panelDoctorSignUp.add(lblExxxxXxxxxxx);
+		
 		//-----------------------------------------------------------------------------------------------------
 		
 		// Main Menu Doctor panel *****************************************************************************
