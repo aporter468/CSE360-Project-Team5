@@ -24,6 +24,8 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTextPane;
+import javax.swing.JCheckBox;
+
 
 public class Directory {
     //declaration of private variables
@@ -80,16 +82,15 @@ public class Directory {
 	private JPasswordField passwordField_DoctorSignUp_Password;
 	private JPasswordField passwordField_DoctorSignUp_ConfirmPassword;
 	
-<<<<<<< HEAD
 	//JList and JTextArea from ViewPatientHistory as a Doctor
 	private JList <String>patient_list;
 	private JTextArea textArea_ViewPatient_Names;
 	private JScrollPane scroll_patient_list;
 	private JList <String>survey_list_doctor;
 	private JScrollPane scroll_survey_list_doctor;
+	private JCheckBox checkboxForDoctor;
 	
-=======
->>>>>>> origin/master
+
 	//main method
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -112,16 +113,11 @@ public class Directory {
 	//initialize contents of frame
 	private void initialize() {
 		//REMOVE+++++++++++++++++++++++++++++++++++++++++=================+++++++++++++++++++++++++++++
-<<<<<<< HEAD
 		Patient DummyUser = new Patient("John Smith", "jsmith", "password", "Favorite Color?", "Blue", "Drake Ramoray");
 		PatientList.add(DummyUser);
 		Doctor DummyDoctor = new Doctor("Drake Ramoray", "dramoray", "password", "Favorite Food?", "Pizza");
 		DummyDoctor.addPatientName("John Smith");
 		DoctorList.add(DummyDoctor);
-=======
-		Patient DummyUser = new Patient("John Smith", "jsmith", "bababa", "Favorite Color", "Blue", "Ramoray");
-		PatientList.add(DummyUser);
->>>>>>> origin/master
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		frmEsasSystem = new JFrame();
 		frmEsasSystem.setTitle("ESAS System");
@@ -156,19 +152,13 @@ public class Directory {
 						position = findDoctor(textField_LoginUsername.getText());
 						Doctor tempDoctor = new Doctor();
 						if (position >=0) {
-<<<<<<< HEAD
 							tempDoctor = DoctorList.get(position); //retrieve the corresponding user
-=======
->>>>>>> origin/master
 							textField_LoginUsername.setText("");//clear the fields
 							passwordField_Login.setText("");
 							panelMainMenuDoctor.setVisible(true); //set the MainMenuDoctor panel to visible
 							panelLogin.setVisible(false);//set the panelLogin to not visible
-<<<<<<< HEAD
 							currentDoctor = tempDoctor; //save the currently logged patient in currentDoctor
-=======
 							currentDoctor = tempDoctor;
->>>>>>> origin/master
 						}
 						
 					} if (position == -1){ //if the user is not in the Patient List, then check the Doctor List
@@ -242,14 +232,13 @@ public class Directory {
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
 		
-<<<<<<< HEAD
-=======
+
 		//Determines if user is a doctor
 		JCheckBox checkboxForDoctor = new JCheckBox("Doctor");
 		checkboxForDoctor.setBounds(181, 143, 97, 23);
 		panelLogin.add(checkboxForDoctor);
 	
->>>>>>> origin/master
+
 		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
 		btnDoctorSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -355,8 +344,6 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
-<<<<<<< HEAD
-=======
 					
 					for(int i = 0; i < DoctorList.size(); i++)
 					{
@@ -368,7 +355,6 @@ public class Directory {
 							System.out.println("Care Provider does not exist");
 					}
 					
->>>>>>> origin/master
 				}
 			}
 		});
@@ -978,7 +964,6 @@ public class Directory {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenuDoctor.setVisible(false);
 				panelViewHistoryDoctor.setVisible(true);
-<<<<<<< HEAD
 				if (currentDoctor.isPatientListEmpty()==true){
 					JOptionPane.showMessageDialog(null, "There are no patients to view!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -1039,13 +1024,7 @@ public class Directory {
 			}
 		});
 		btn_MainMenuDoctor_ViewPatientHistory.setBounds(108, 79, 200, 33);
-=======
-			}
-		});
-		btn_MainMenuDoctor_ViewPatientHistory.setBounds(108, 79, 190, 33);
->>>>>>> origin/master
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientHistory);
-		
 		JButton btn_MainMenuDoctor_ViewPatientInfo = new JButton("View Patient Contact Info");
 		btn_MainMenuDoctor_ViewPatientInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1053,13 +1032,8 @@ public class Directory {
 				panelViewPatientInfo.setVisible(true);
 			}
 		});
-<<<<<<< HEAD
-		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 200, 33);
-=======
 		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 188, 33);
->>>>>>> origin/master
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientInfo);
-		
 		JButton btn_View = new JButton("Previous Screen");
 		btn_View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1067,11 +1041,7 @@ public class Directory {
 				panelLogin.setVisible(true);
 			}
 		});
-<<<<<<< HEAD
 		btn_View.setBounds(108, 169, 200, 33);
-=======
-		btn_View.setBounds(108, 169, 186, 33);
->>>>>>> origin/master
 		panelMainMenuDoctor.add(btn_View);
 		//-------------------------------------------------------------------------------------------------------------------
 		
@@ -1093,11 +1063,11 @@ public class Directory {
 				panelMainMenuDoctor.setVisible(true);
 			}
 		});
-<<<<<<< HEAD
+
 		btn_ViewHistoryDoctor_PreviousScreen.setBounds(137, 223, 133, 28);
-=======
+
 		btn_ViewHistoryDoctor_PreviousScreen.setBounds(147, 178, 123, 28);
->>>>>>> origin/master
+
 		panelViewHistoryDoctor.add(btn_ViewHistoryDoctor_PreviousScreen);
 		//--------------------------------------------------------------------------------------------------------------------
 		
@@ -1135,11 +1105,8 @@ public class Directory {
 		int i = 0;                     //counter
 		while ((found==false)&&(i<length)){ //go through ArrayList looking for match on user name
 			tempPatient = PatientList.get(i);
-<<<<<<< HEAD
+
 			if (pUsername.equalsIgnoreCase(tempPatient.getUsername())){ //check if user name matches
-=======
-			if (pUsername.equals(tempPatient.getUsername())){ //check if user name matches
->>>>>>> origin/master
 				found = true;  // if it is found change condition and save the index
 				position = i; //save the current position 
 			}
@@ -1148,7 +1115,7 @@ public class Directory {
 		if (found==true)
 			return position;
 		else
-		return -1;
+			return -1;
 	}
 	
 	public int findDoctor(String pUsername){
@@ -1160,11 +1127,7 @@ public class Directory {
 		int i = 0;                     //counter
 		while ((found==false)&&(i<length)){ //go through ArrayList looking for match on user name
 			tempDoctor = DoctorList.get(i);
-<<<<<<< HEAD
 			if (pUsername.equalsIgnoreCase(tempDoctor.getUsername())){ //check if user name matches
-=======
-			if (pUsername.equals(tempDoctor.getUsername())){ //check if user name matches
->>>>>>> origin/master
 				found = true;  // if it is found change condition and save the index
 				position = i; //save the current position 
 			}
@@ -1175,7 +1138,7 @@ public class Directory {
 		else
 			return -1;
 	}
-<<<<<<< HEAD
+
 	
 	public int findPatientByName(String pName){
 		//check if the name exists in the PatientList
@@ -1197,6 +1160,4 @@ public class Directory {
 		else 
 			return -1;
 	}
-=======
->>>>>>> origin/master
 }
