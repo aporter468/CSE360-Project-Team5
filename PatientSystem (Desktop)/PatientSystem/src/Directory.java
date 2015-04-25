@@ -641,33 +641,45 @@ public class Directory {
 		JLabel lblCompleteSurvey = new JLabel("Complete Survey");
 		lblCompleteSurvey.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblCompleteSurvey.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCompleteSurvey.setBounds(111, 24, 216, 30);
+		lblCompleteSurvey.setBounds(111, 11, 216, 30);
 		panelCompleteSurvey.add(lblCompleteSurvey);
 		
 		JLabel lblCompleteSurveyPain = new JLabel("Pain");
 		lblCompleteSurveyPain.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyPain.setBounds(48, 81, 46, 14);
+		lblCompleteSurveyPain.setBounds(55, 44, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyPain);
 		
-		JLabel lblCompleteSurveyTiredness = new JLabel("Tiredness");
+		JLabel lblCompleteSurveyBreath = new JLabel("Shortness of Breath");
 		lblCompleteSurveyTiredness.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyTiredness.setBounds(27, 113, 67, 14);
-		panelCompleteSurvey.add(lblCompleteSurveyTiredness);
+		lblCompleteSurveyTiredness.setBounds(-14, 147, 115, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyBreath);
 		
 		JLabel lblCompleteSurveyNausea = new JLabel("Nausea");
 		lblCompleteSurveyNausea.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyNausea.setBounds(48, 144, 46, 14);
+		lblCompleteSurveyNausea.setBounds(55, 96, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyNausea);
 		
 		JLabel lblCompleteSurveyDepression = new JLabel("Depression");
 		lblCompleteSurveyDepression.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyDepression.setBounds(27, 175, 67, 14);
+		lblCompleteSurveyDepression.setBounds(34, 175, 67, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDepression);
 		
 		JLabel lblCompleteSurveyAnxiety = new JLabel("Anxiety");
 		lblCompleteSurveyAnxiety.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyAnxiety.setBounds(48, 209, 46, 14);
+		lblCompleteSurveyAnxiety.setBounds(55, 200, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyAnxiety);
+		
+		JLabel lblCompleteSurveyDrowsiness = new JLabel("Drowsiness");
+		lblCompleteSurveyDrowsiness.setBounds(48, 71, 85, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDrowsiness);
+		
+		JLabel lblCompleteSurveyAppetite = new JLabel("Appetite");
+		lblCompleteSurveyAppetite.setBounds(60, 122, 53, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyAppetite);
+		
+		JLabel lblCompleteSurveyWellbeing = new JLabel("Wellbeing");
+		lblCompleteSurveyWellbeing.setBounds(55, 225, 46, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyWellbeing);
 		
 		JLabel lblCompleteSurveyDate = new JLabel("Date:");
 		lblCompleteSurveyDate.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -676,30 +688,45 @@ public class Directory {
 		
 		spinnerCompleteSurveyDate = new JSpinner();
 		
-		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
-		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyTiredness.setBounds(111, 110, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyTiredness);
+		JSpinner spinnerCompleteSurveyBreath = new JSpinner();
+		spinnerCompleteSurveyBreath.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyBreath.setBounds(121, 93, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyBreath);
 		
 		JSpinner spinnerCompleteSurveyNausea = new JSpinner();
 		spinnerCompleteSurveyNausea.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyNausea.setBounds(111, 141, 40, 20);
+		spinnerCompleteSurveyNausea.setBounds(121, 93, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyNausea);
 		
 		JSpinner spinnerCompleteSurveyDepression = new JSpinner();
 		spinnerCompleteSurveyDepression.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyDepression.setBounds(111, 172, 40, 20);
+		spinnerCompleteSurveyDepression.setBounds(121, 171, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyDepression);
 		
 		JSpinner spinnerCompleteSurveyAnxiety = new JSpinner();
 		spinnerCompleteSurveyAnxiety.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyAnxiety.setBounds(111, 203, 40, 20);
+		spinnerCompleteSurveyAnxiety.setBounds(121, 197, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyAnxiety);
 		
 		JSpinner spinnerCompleteSurveyPain = new JSpinner();
 		spinnerCompleteSurveyPain.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyPain.setBounds(111, 78, 40, 20);
+		spinnerCompleteSurveyPain.setBounds(121, 41, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyPain);
+		
+			JSpinner spinnerCompleteSurveyDrowsiness = new JSpinner();
+		spinnerCompleteSurveyDrowsiness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyDrowsiness.setBounds(121, 67, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDrowsiness);
+		
+		JSpinner spinnerCompleteSurveyAppetite = new JSpinner();
+		spinnerCompleteSurveyAppetite.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyAppetite.setBounds(121, 119, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyAppetite);
+		
+		JSpinner spinnerCompleteSurveyWellbeing = new JSpinner();
+		spinnerCompleteSurveyWellbeing.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyWellbeing.setBounds(121, 223, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyWellbeing);
 		
 		JButton btnCompleteSurveySaveSurvey = new JButton("Save Survey");
 		btnCompleteSurveySaveSurvey.addActionListener(new ActionListener() {
