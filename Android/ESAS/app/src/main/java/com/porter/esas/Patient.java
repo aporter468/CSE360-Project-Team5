@@ -1,8 +1,10 @@
 package com.porter.esas;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.util.Log;
+
 import java.util.ArrayList;
 /**
  * Created by Alex on 4/20/15.
