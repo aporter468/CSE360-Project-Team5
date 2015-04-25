@@ -87,8 +87,6 @@ public class Directory {
 	private JScrollPane scroll_patient_list;
 	private JList <String>survey_list_doctor;
 	private JScrollPane scroll_survey_list_doctor;
-	private JCheckBox checkboxForDoctor;
-	
 
 	//main method
 	public static void main(String[] args) {
@@ -650,8 +648,8 @@ public class Directory {
 		panelCompleteSurvey.add(lblCompleteSurveyPain);
 		
 		JLabel lblCompleteSurveyBreath = new JLabel("Shortness of Breath");
-		lblCompleteSurveyTiredness.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyTiredness.setBounds(-14, 147, 115, 14);
+		lblCompleteSurveyBreath.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyBreath.setBounds(-14, 147, 115, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyBreath);
 		
 		JLabel lblCompleteSurveyNausea = new JLabel("Nausea");
@@ -732,22 +730,28 @@ public class Directory {
 		btnCompleteSurveySaveSurvey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//collect current values from JSpinner
-				int tiredness = (int)spinnerCompleteSurveyTiredness.getValue();
 				int pain = (int)spinnerCompleteSurveyPain.getValue();
+				int drowsiness = (int)spinnerCompleteSurveyDrowsiness.getValue();
 				int nausea = (int)spinnerCompleteSurveyNausea.getValue();
+				int appetite = (int)spinnerCompleteSurveyAppetite.getValue();
+				int shortnessOfBreath = (int)spinnerCompleteSurveyBreath.getValue();
 				int depression = (int)spinnerCompleteSurveyDepression.getValue();
 				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
+				int wellbeing = (int)spinnerCompleteSurveyWellbeing.getValue();
 				String date = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(spinnerCompleteSurveyDate.getValue());
 				//add the survey to the Correct Patient
-				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
+				Survey completedSurvey = new Survey(pain, drowsiness, nausea, appetite, shortnessOfBreath, depression, anxiety, wellbeing, date);
 //--------------completedSurvey.printAll();
 				currentPatient.addSurvey(completedSurvey);
 				//reset JSpinners to default values
-				spinnerCompleteSurveyTiredness.setValue(1);
 				spinnerCompleteSurveyPain.setValue(1);
+				spinnerCompleteSurveyDrowsiness.setValue(1);
 				spinnerCompleteSurveyNausea.setValue(1);
+				spinnerCompleteSurveyAppetite.setValue(1);
+				spinnerCompleteSurveyBreath.setValue(1);
 				spinnerCompleteSurveyDepression.setValue(1);
 				spinnerCompleteSurveyAnxiety.setValue(1);
+				spinnerCompleteSurveyWellbeing.setValue(1);
 				JOptionPane.showMessageDialog(null, "Survey was saved!");
 			}
 		});
