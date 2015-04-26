@@ -86,8 +86,8 @@ public class Survey {
 	
 	//method to generate String with all attributes' values
 	public String getValuesOnString(){
-	    String values = String.format("Pain: \t%s \nDrowsiness: \t%s  \nNausea: \t%s \nAppetite: \t%s \nDepression: \t%s \nAnxiety \t%s \nWellbeing \t%s "
-	    		, Pain, Drowsiness, Nausea, Appetite, Depression, Anxiety, Wellbeing);
+	    String values = String.format(" Pain: \t            %s \n Drowsiness: \t            %s  \n Nausea: \t            %s \n Appetite: \t            %s \n Shortness of Breath:   %s \n Depression: \t            %s \n Anxiety \t            %s \n Wellbeing \t            %s "
+	    		, Pain, Drowsiness, Nausea, Appetite, ShortnessOfBreath, Depression, Anxiety, Wellbeing);
 	    return values;
 	}
 }
