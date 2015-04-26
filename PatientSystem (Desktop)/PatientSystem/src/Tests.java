@@ -1,6 +1,8 @@
 import org.junit.Test;
 import org.junit.Ignore;
 import static org.junit.Assert;
+import java.lang.Object;
+import java.lang.Enum<KeyCode>;
 
 public class DirectoryTest {
 
@@ -65,6 +67,11 @@ public void guitTest() {
         rob.keyRelease(B);
 
         rob.mouseMove(dir.getLocationLogin());
+        rob.mousePress(InputEvent.BUTTON1_MASK);
+        rob.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        dir.addSurvey();
+        rob.mouseMove(dir.getLocationHistory());
         rob.mousePress(InputEvent.BUTTON1_MASK);
         rob.mouseRelease(InputEvent.BUTTON1_MASK);
     }
