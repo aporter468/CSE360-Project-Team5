@@ -3,17 +3,20 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
 public class Doctor {
-	String name,username,password,securityQ,securityA;
+	String name,username,password,securityQ,securityA phone, email;
 	ArrayList<Patient> Patients = new ArrayList<Patient>();
 	private DefaultListModel<String> patientList = new DefaultListModel<String>();
 	
-	public Doctor(String name1, String username1, String password1, String securityQ1, String securityA1)
+	//Constructor
+	public Doctor(String name1, String username1, String password1, String securityQ1, String securityA1, String phone1, String email1)
 	{
 		name = name1;
 		username = username1;
 		password = password1;
 		securityQ = securityQ1;
 		securityA = securityA1;
+		phone = phone1;
+		email = email1;
 	}	
 	
 	public Doctor(){
@@ -22,6 +25,9 @@ public class Doctor {
 		password = "";
 		securityQ = "";
 		securityA = "";
+		phone = "";
+		email = "";
+		
 	}
 	
 	//setters
@@ -47,6 +53,16 @@ public class Doctor {
 	public void setSecurityA(String securityA1)
 	{
 		securityA = securityA1;
+	}
+	
+	public void setPhone(String phone1)
+	{
+		phone = phone1;
+	}
+	
+	public void setEmail(String email1)
+	{
+		email = email1;
 	}
 	
 	public void addPatientName(String pPatientName){
@@ -89,6 +105,16 @@ public class Doctor {
 		return securityA;
 	}
 	
+	public String getPhone()
+	{
+		return phone;
+	}
+	
+	public String getEmail()
+	{
+		return email;
+	}
+	
 	public Patient getPatient(String patientN)
 	{
 		for(int i = 0; i < Patients.size(); i++) {
@@ -98,12 +124,6 @@ public class Doctor {
 		
 		System.out.println("No Patient Found");
 		return null;
-	}
-	
-	public void showPatient() {
-		for(int i = 0; i < Patients.size(); i++) {
-			System.out.println(Patients.get(i).getName());
-		}
 	}
 	
 	public DefaultListModel<String> getList(){

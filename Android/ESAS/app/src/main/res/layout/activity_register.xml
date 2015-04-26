@@ -44,12 +44,6 @@
                 android:imeOptions="actionUnspecified" android:inputType="textPassword"
                 android:maxLines="1" android:singleLine="true" />
 
-            <EditText android:id="@+id/confirm_password" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/prompt_confirm_password"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified" android:inputType="textPassword"
-                android:maxLines="1" android:singleLine="true" />
 
             <Switch
                 android:id="@+id/user_type_switch"

@@ -27,9 +27,12 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+<<<<<<< HEAD
 
 import javax.swing.JTextPane;
 
+=======
+>>>>>>> origin/master
 
 public class Directory {
     //declaration of private variables
@@ -85,6 +88,8 @@ public class Directory {
 	private JTextField textField_DoctorSignUp_SecurityAnswer;
 	private JPasswordField passwordField_DoctorSignUp_Password;
 	private JPasswordField passwordField_DoctorSignUp_ConfirmPassword;
+	private JTextField textField_DoctorPhone;
+	private JTextField textField_DoctorEmail;
 	
 	//JList and JTextArea from ViewPatientHistory as a Doctor
 	private JList <String>patient_list;
@@ -92,7 +97,11 @@ public class Directory {
 	private JScrollPane scroll_patient_list;
 	private JList <String> survey_list_doctor;
 	private JScrollPane scroll_survey_list_doctor;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> origin/master
 	//main method
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -240,7 +249,11 @@ public class Directory {
 		passwordField_Login = new JPasswordField();   //JPasswordField for the password
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> origin/master
 		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
 		btnDoctorSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -349,9 +362,15 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
+<<<<<<< HEAD
 					for(int i = 0; i < DoctorList.size(); i++)
 					{
 						if(careProvider.equals(DoctorList.get(i).getName()))
+=======
+					
+					for(int i = 0; i < DoctorList.size(); i++){
+						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
+>>>>>>> origin/master
 							{
 								DoctorList.get(i).addPatient(newUser);
 								DoctorList.get(i).addPatientName(name);
@@ -360,7 +379,6 @@ public class Directory {
 								break;
 							}
 					}
-					
 				}
 			}
 		});
@@ -591,7 +609,6 @@ public class Directory {
 						}
 					});
 				}
-				
 			}
 		});
 		btnMainMenuViewHistory.setBounds(108, 93, 200, 23);
@@ -602,6 +619,18 @@ public class Directory {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);
 				panelViewCareProviderInfo.setVisible(true);
+				
+				JTextArea textArea = new JTextArea();
+				textArea.setEditable(false);
+				textArea.setBounds(95, 85, 232, 79);
+				panelViewCareProviderInfo.add(textArea);
+			
+					for(int i = 0; i < DoctorList.size(); i++){
+						if(currentPatient.getCareProvider().equals(DoctorList.get(i).getName()))
+						{
+							textArea.setText("\n" + "     " + DoctorList.get(i).getName() + "\n" + "     Phone: " + DoctorList.get(i).getPhone() + "\n" + "     Email: " + DoctorList.get(i).getEmail());		
+						}
+					}
 			}
 		});
 		btnMainMenuAccessCPInformation.setBounds(108, 127, 200, 23);
@@ -646,33 +675,45 @@ public class Directory {
 		JLabel lblCompleteSurvey = new JLabel("Complete Survey");
 		lblCompleteSurvey.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblCompleteSurvey.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCompleteSurvey.setBounds(111, 24, 216, 30);
+		lblCompleteSurvey.setBounds(111, 11, 216, 30);
 		panelCompleteSurvey.add(lblCompleteSurvey);
 		
 		JLabel lblCompleteSurveyPain = new JLabel("Pain");
 		lblCompleteSurveyPain.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyPain.setBounds(48, 81, 46, 14);
+		lblCompleteSurveyPain.setBounds(79, 44, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyPain);
 		
-		JLabel lblCompleteSurveyTiredness = new JLabel("Tiredness");
-		lblCompleteSurveyTiredness.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyTiredness.setBounds(27, 113, 67, 14);
-		panelCompleteSurvey.add(lblCompleteSurveyTiredness);
+		JLabel lblCompleteSurveyBreath = new JLabel("Shortness \r\nof breath");
+		lblCompleteSurveyBreath.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyBreath.setBounds(12, 147, 113, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyBreath);
 		
 		JLabel lblCompleteSurveyNausea = new JLabel("Nausea");
 		lblCompleteSurveyNausea.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyNausea.setBounds(48, 144, 46, 14);
+		lblCompleteSurveyNausea.setBounds(79, 96, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyNausea);
 		
 		JLabel lblCompleteSurveyDepression = new JLabel("Depression");
 		lblCompleteSurveyDepression.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyDepression.setBounds(27, 175, 67, 14);
+		lblCompleteSurveyDepression.setBounds(58, 175, 67, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDepression);
 		
 		JLabel lblCompleteSurveyAnxiety = new JLabel("Anxiety");
 		lblCompleteSurveyAnxiety.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyAnxiety.setBounds(48, 209, 46, 14);
+		lblCompleteSurveyAnxiety.setBounds(79, 201, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyAnxiety);
+		
+		JLabel lblCompleteSurveyDrowsiness = new JLabel("Drowsiness");
+		lblCompleteSurveyDrowsiness.setBounds(58, 71, 79, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDrowsiness);
+		
+		JLabel lblCompleteSurveyAppetite = new JLabel("Appetite");
+		lblCompleteSurveyAppetite.setBounds(79, 122, 58, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyAppetite);
+		
+		JLabel lblCompleteSurveyWellbeing = new JLabel("Wellbeing");
+		lblCompleteSurveyWellbeing.setBounds(70, 226, 67, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyWellbeing);
 		
 		JLabel lblCompleteSurveyDate = new JLabel("Date:");
 		lblCompleteSurveyDate.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -681,51 +722,72 @@ public class Directory {
 		
 		spinnerCompleteSurveyDate = new JSpinner();
 		
-		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
-		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyTiredness.setBounds(111, 110, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyTiredness);
+		JSpinner spinnerCompleteSurveyBreath = new JSpinner();
+		spinnerCompleteSurveyBreath.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyBreath.setBounds(140, 144, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyBreath);
 		
 		JSpinner spinnerCompleteSurveyNausea = new JSpinner();
 		spinnerCompleteSurveyNausea.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyNausea.setBounds(111, 141, 40, 20);
+		spinnerCompleteSurveyNausea.setBounds(140, 93, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyNausea);
 		
 		JSpinner spinnerCompleteSurveyDepression = new JSpinner();
 		spinnerCompleteSurveyDepression.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyDepression.setBounds(111, 172, 40, 20);
+		spinnerCompleteSurveyDepression.setBounds(140, 171, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyDepression);
 		
 		JSpinner spinnerCompleteSurveyAnxiety = new JSpinner();
 		spinnerCompleteSurveyAnxiety.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyAnxiety.setBounds(111, 203, 40, 20);
+		spinnerCompleteSurveyAnxiety.setBounds(140, 197, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyAnxiety);
 		
 		JSpinner spinnerCompleteSurveyPain = new JSpinner();
 		spinnerCompleteSurveyPain.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyPain.setBounds(111, 78, 40, 20);
+		spinnerCompleteSurveyPain.setBounds(140, 41, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyPain);
+		
+		JSpinner spinnerCompleteSurveyDrowsiness = new JSpinner();
+		spinnerCompleteSurveyDrowsiness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyDrowsiness.setBounds(140, 67, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDrowsiness);
+		
+		JSpinner spinnerCompleteSurveyAppetite = new JSpinner();
+		spinnerCompleteSurveyAppetite.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyAppetite.setBounds(140, 119, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyAppetite);
+		
+		JSpinner spinnerCompleteSurveyWellbeing = new JSpinner();
+		spinnerCompleteSurveyWellbeing.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyWellbeing.setBounds(140, 223, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyWellbeing);
 		
 		JButton btnCompleteSurveySaveSurvey = new JButton("Save Survey");
 		btnCompleteSurveySaveSurvey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//collect current values from JSpinner
-				int tiredness = (int)spinnerCompleteSurveyTiredness.getValue();
 				int pain = (int)spinnerCompleteSurveyPain.getValue();
+				int drowsiness = (int)spinnerCompleteSurveyDrowsiness.getValue();
 				int nausea = (int)spinnerCompleteSurveyNausea.getValue();
+				int appetite = (int)spinnerCompleteSurveyAppetite.getValue();
+				int shortnessOfBreath = (int)spinnerCompleteSurveyBreath.getValue();
 				int depression = (int)spinnerCompleteSurveyDepression.getValue();
 				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
+				int wellbeing = (int)spinnerCompleteSurveyWellbeing.getValue();
 				String date = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(spinnerCompleteSurveyDate.getValue());
 				//add the survey to the Correct Patient
-				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
+				Survey completedSurvey = new Survey(pain, drowsiness, nausea, appetite, shortnessOfBreath, depression, anxiety, wellbeing, date);
 //--------------completedSurvey.printAll();
 				currentPatient.addSurvey(completedSurvey);
 				//reset JSpinners to default values
-				spinnerCompleteSurveyTiredness.setValue(1);
 				spinnerCompleteSurveyPain.setValue(1);
+				spinnerCompleteSurveyDrowsiness.setValue(1);
 				spinnerCompleteSurveyNausea.setValue(1);
+				spinnerCompleteSurveyAppetite.setValue(1);
+				spinnerCompleteSurveyBreath.setValue(1);
 				spinnerCompleteSurveyDepression.setValue(1);
 				spinnerCompleteSurveyAnxiety.setValue(1);
+				spinnerCompleteSurveyWellbeing.setValue(1);
 				JOptionPane.showMessageDialog(null, "Survey was saved!");
 			}
 		});
@@ -743,12 +805,12 @@ public class Directory {
 		panelCompleteSurvey.add(btnCompleSurveyPreviousScreen);
 		
 		JLabel lblCompleteSurveyDescription1 = new JLabel("1 is lowest level of symptom possible");
-		lblCompleteSurveyDescription1.setBounds(174, 65, 242, 30);
+		lblCompleteSurveyDescription1.setBounds(201, 63, 242, 30);
 		panelCompleteSurvey.add(lblCompleteSurveyDescription1);
 		
 		JLabel lblCompleteSurveyDescription2 = new JLabel("10 is highest level of symptom possible");
 		lblCompleteSurveyDescription2.setHorizontalAlignment(SwingConstants.LEFT);
-		lblCompleteSurveyDescription2.setBounds(174, 93, 242, 14);
+		lblCompleteSurveyDescription2.setBounds(201, 96, 242, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDescription2);
 
 		//----------------------------------------------------------------------------------------------------
@@ -773,10 +835,7 @@ public class Directory {
 		});
 		btnCareProviderInfoPreviousScreen.setBounds(128, 189, 158, 23);
 		panelViewCareProviderInfo.add(btnCareProviderInfoPreviousScreen);
-		
-		JTextPane textPane = new JTextPane();
-		textPane.setBounds(106, 93, 200, 50);
-		panelViewCareProviderInfo.add(textPane);
+	
 		//----------------------------------------------------------------------------------------------------
 		
 		//View History Panel**********************************************************************************
@@ -820,21 +879,21 @@ public class Directory {
 		JLabel lblCreateANew = new JLabel("Create A New User");
 		lblCreateANew.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCreateANew.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblCreateANew.setBounds(109, 40, 211, 14);
+		lblCreateANew.setBounds(112, 26, 211, 14);
 		panelDoctorSignUp.add(lblCreateANew);
 		
 		textField_DoctorSignUp_FirstName = new JTextField();
-		textField_DoctorSignUp_FirstName.setBounds(96, 70, 89, 20);
+		textField_DoctorSignUp_FirstName.setBounds(81, 51, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_FirstName);
 		textField_DoctorSignUp_FirstName.setColumns(10);
 		
 		textField_DoctorSignUp_LastName = new JTextField();
-		textField_DoctorSignUp_LastName.setBounds(296, 70, 95, 20);
+		textField_DoctorSignUp_LastName.setBounds(81, 82, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_LastName);
 		textField_DoctorSignUp_LastName.setColumns(10);
 		
 		textField_DoctorSignUp_Username = new JTextField();
-		textField_DoctorSignUp_Username.setBounds(99, 101, 86, 20);
+		textField_DoctorSignUp_Username.setBounds(317, 51, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_Username);
 		textField_DoctorSignUp_Username.setColumns(10);
 		
@@ -850,35 +909,35 @@ public class Directory {
 		
 		JLabel lbl_DoctorSignUp_FirstName = new JLabel("First Name:");
 		lbl_DoctorSignUp_FirstName.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_FirstName.setBounds(0, 72, 86, 14);
+		lbl_DoctorSignUp_FirstName.setBounds(-15, 54, 86, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_FirstName);
 		
 		JLabel lbl_DoctorSignUp_LastName = new JLabel("Last Name:");
 		lbl_DoctorSignUp_LastName.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_LastName.setBounds(209, 72, 76, 14);
+		lbl_DoctorSignUp_LastName.setBounds(-5, 85, 76, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_LastName);
 		
 		JLabel lbl_DoctorSignUp_Username = new JLabel("Username:");
 		lbl_DoctorSignUp_Username.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_Username.setBounds(23, 104, 66, 14);
+		lbl_DoctorSignUp_Username.setBounds(241, 54, 66, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_Username);
 		
 		passwordField_DoctorSignUp_Password = new JPasswordField();
-		passwordField_DoctorSignUp_Password.setBounds(297, 101, 94, 20);
+		passwordField_DoctorSignUp_Password.setBounds(317, 82, 95, 20);
 		panelDoctorSignUp.add(passwordField_DoctorSignUp_Password);
 		
 		passwordField_DoctorSignUp_ConfirmPassword = new JPasswordField();
-		passwordField_DoctorSignUp_ConfirmPassword.setBounds(297, 132, 96, 20);
+		passwordField_DoctorSignUp_ConfirmPassword.setBounds(316, 113, 96, 20);
 		panelDoctorSignUp.add(passwordField_DoctorSignUp_ConfirmPassword);
 		
 		JLabel lbl_DoctorSignUp_Password = new JLabel("Password:");
 		lbl_DoctorSignUp_Password.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_Password.setBounds(222, 104, 63, 14);
+		lbl_DoctorSignUp_Password.setBounds(244, 85, 63, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_Password);
 		
 		JLabel lbl_DoctorSignUp_ConfirmPassword = new JLabel("Confirm Password:");
 		lbl_DoctorSignUp_ConfirmPassword.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_ConfirmPassword.setBounds(157, 135, 128, 14);
+		lbl_DoctorSignUp_ConfirmPassword.setBounds(179, 113, 128, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_ConfirmPassword);
 		
 		JLabel lbl_DoctorSignUp_SecurityQuestion = new JLabel("Security Question:");
@@ -898,6 +957,8 @@ public class Directory {
 				String lastName = textField_DoctorSignUp_LastName.getText();
 				String name = firstName + " " + lastName;
 				String userName = textField_DoctorSignUp_Username.getText();
+				String phone = textField_DoctorPhone.getText();
+				String email = textField_DoctorEmail.getText();
 				String secretQuestion = textField_DoctorSignUp_SecurityQuestion.getText();
 				String secretAnswer = textField_DoctorSignUp_SecurityAnswer.getText();
 				@SuppressWarnings("deprecation")
@@ -918,7 +979,7 @@ public class Directory {
 					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{//create a new user and add it to the ArrayList
-					Doctor newUser = new Doctor(name, userName, password, secretQuestion, secretAnswer);
+					Doctor newUser = new Doctor(name, userName, password, secretQuestion, secretAnswer, phone, email);
 					DoctorList.add(newUser);
 					JOptionPane.showMessageDialog(null, "User: " + userName +" was created!");
 					System.out.println("New Doctor user: " + name + " was added!");
@@ -950,8 +1011,31 @@ public class Directory {
 				panelLogin.setVisible(true);
 			}
 		});
-		btn_DoctorSignUp_PreviousScreen.setBounds(279, 208, 133, 25);
+		btn_DoctorSignUp_PreviousScreen.setBounds(277, 208, 135, 25);
 		panelDoctorSignUp.add(btn_DoctorSignUp_PreviousScreen);
+		
+		textField_DoctorPhone = new JTextField();
+		textField_DoctorPhone.setBounds(81, 146, 95, 20);
+		panelDoctorSignUp.add(textField_DoctorPhone);
+		textField_DoctorPhone.setColumns(10);
+		
+		textField_DoctorEmail = new JTextField();
+		textField_DoctorEmail.setBounds(81, 113, 95, 20);
+		panelDoctorSignUp.add(textField_DoctorEmail);
+		textField_DoctorEmail.setColumns(10);
+		
+		JLabel lblPhone = new JLabel("Phone:");
+		lblPhone.setBounds(36, 143, 45, 23);
+		panelDoctorSignUp.add(lblPhone);
+		
+		JLabel lblEmail = new JLabel("Email:");
+		lblEmail.setBounds(42, 113, 128, 20);
+		panelDoctorSignUp.add(lblEmail);
+		
+		JLabel lblExxxxXxxxxxx = new JLabel("Ex. (xxx)xxx-xxxx");
+		lblExxxxXxxxxxx.setBounds(189, 143, 223, 23);
+		panelDoctorSignUp.add(lblExxxxXxxxxxx);
+		
 		//-----------------------------------------------------------------------------------------------------
 		
 		// Main Menu Doctor panel *****************************************************************************

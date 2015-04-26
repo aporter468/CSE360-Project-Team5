@@ -1,11 +1,6 @@
 package com.porter.esas;
-import android.widget.Toast;
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
-import android.util.Log;
 /**
  * Created by Alex on 3/19/15.
  */

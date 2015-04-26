@@ -124,6 +124,8 @@ public class RegisterActivity extends Activity {
             cancel = true;
         }
 
+
+
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -186,12 +188,10 @@ public class RegisterActivity extends Activity {
         }
     }
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -285,8 +285,8 @@ public class RegisterActivity extends Activity {
                 intent.putExtra("com.porter.user_type", mUserType);
                 intent.putExtra("com.porter.email",mEmail);
                 intent.putExtra("com.porter.password",mPassword);
-                startActivity(intent);
-                //finish();
+              //  startActivity(intent);
+                finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
