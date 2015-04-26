@@ -97,6 +97,7 @@ public class Directory {
 	
 	//Put the Button here to access later
 	JButton btnLogin = new JButton("Log In");  // Log In 
+	JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 
 	
 	//main method
@@ -562,7 +563,6 @@ public class Directory {
 		panelMainMenu.add(lblMainMenuWelcome);
 		//The View History Button checks if the user has surveys or not before going to 
 		//the View History Panel
-		JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 		btnMainMenuViewHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);  //hide Main Menu panel
@@ -1347,6 +1347,11 @@ public class Directory {
 		return false;
 	}
 	
+	public void addSurvey() {
+		Survey newSurvey = new Survey(1, 2, 3, 4, 5, 6, 7, 8, "Today");
+		currentPatient.addSurvey(newSurvey);
+	}
+	
 	public Point getLocationLogin() {
 		return btnLogin.getLocationOnScreen();
 	}
@@ -1357,5 +1362,9 @@ public class Directory {
 	
 	public Point getLocationPassword() {
 		return passwordField_Login.getLocationOnScreen();
+	}
+	
+	public Point getLocationHistory() {
+		return btnMainMenuViewHistory.getLocationOnScreen();
 	}
 }
