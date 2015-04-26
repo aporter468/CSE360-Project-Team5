@@ -1351,20 +1351,4 @@ public class Directory {
 		Survey newSurvey = new Survey(1, 2, 3, 4, 5, 6, 7, 8, "Today");
 		currentPatient.addSurvey(newSurvey);
 	}
-	
-	public Point getLocationLogin() {
-		return btnLogin.getLocationOnScreen();
-	}
-	
-	public Point getLocationUserName() {
-		return textField_LoginUsername.getLocationOnScreen();
-	}
-	
-	public Point getLocationPassword() {
-		return passwordField_Login.getLocationOnScreen();
-	}
-	
-	public Point getLocationHistory() {
-		return btnMainMenuViewHistory.getLocationOnScreen();
-	}
 }
