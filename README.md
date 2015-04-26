@@ -2,6 +2,7 @@
 
 Desktop Application
 -------------------
+To run the desktop application open the project in Eclipse and press run on the Patient.java class.
 
 Android Application
 -------------------
