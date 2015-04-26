@@ -1318,4 +1318,30 @@ public class Directory {
 		}
 		return false;
 	}
+	
+	//For Testing Purposes*********************************************************************************************
+	
+	public boolean addPatient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
+			String pCareProvider) {
+				try{
+					Patient newPatient = new Patient(pName, pUserName, pPassword, pSecretQuestion, pSecretAnswer, pCareProvider);
+					PatientList.add(newPatient);
+					return true;
+				}
+				catch(Exception e) {
+					System.out.println(e);
+				}
+				return false;
+			}
+	public boolean addDoctor(String name1, String username1, String password1, String securityQ1, String securityA1, String phone1, String email1) {
+		try{
+			Doctor newDoctor = new Doctor(name1, username1, password1, securityQ1, securityA1, email);
+			DoctorList.add(newDoctor);	
+			return true;
+			}
+			catch(Exception e) {
+				System.out.println(e);
+			}
+		return false;
+	}
 }
