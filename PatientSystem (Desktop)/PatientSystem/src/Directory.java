@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,8 +28,6 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTextPane;
-
-
 
 public class Directory {
     //declaration of private variables
@@ -577,7 +576,7 @@ public class Directory {
 					textArea_ViewHistory_Surveys = new JTextArea();
 					textArea_ViewHistory_Surveys.setBorder(new LineBorder(new Color(0, 0, 0)));
 					textArea_ViewHistory_Surveys.setEditable(false);
-					textArea_ViewHistory_Surveys.setBounds(211, 73, 183, 109);
+					textArea_ViewHistory_Surveys.setBounds(211, 73, 155, 130);
 					panelViewHistory.add(textArea_ViewHistory_Surveys);
 					survey_list.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
 						@Override
@@ -743,6 +742,38 @@ public class Directory {
 		spinnerCompleteSurveyWellbeing.setBounds(140, 223, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyWellbeing);
 		
+		JFormattedTextField tfpain = ((JSpinner.DefaultEditor)spinnerCompleteSurveyPain.getEditor()).getTextField();
+		tfpain.setEditable(false);
+		tfpain.setBackground(Color.white);
+		
+		JFormattedTextField tfdrowsiness = ((JSpinner.DefaultEditor)spinnerCompleteSurveyDrowsiness.getEditor()).getTextField();
+		tfdrowsiness.setEditable(false);
+		tfdrowsiness.setBackground(Color.white);
+
+		JFormattedTextField tfnausea = ((JSpinner.DefaultEditor)spinnerCompleteSurveyNausea.getEditor()).getTextField();
+		tfnausea.setEditable(false);
+		tfnausea.setBackground(Color.white);
+		
+		JFormattedTextField tfappetite = ((JSpinner.DefaultEditor)spinnerCompleteSurveyAppetite.getEditor()).getTextField();
+		tfappetite.setEditable(false);
+		tfappetite.setBackground(Color.white);
+		
+		JFormattedTextField tfbreath = ((JSpinner.DefaultEditor)spinnerCompleteSurveyBreath.getEditor()).getTextField();
+		tfbreath.setEditable(false);
+		tfbreath.setBackground(Color.white);
+
+		JFormattedTextField tfdepression = ((JSpinner.DefaultEditor)spinnerCompleteSurveyDepression.getEditor()).getTextField();
+		tfdepression.setEditable(false);
+		tfdepression.setBackground(Color.white);
+
+		JFormattedTextField tfanxiety = ((JSpinner.DefaultEditor)spinnerCompleteSurveyAnxiety.getEditor()).getTextField();
+		tfanxiety.setEditable(false);
+		tfanxiety.setBackground(Color.white);
+
+		JFormattedTextField tfwellbeing = ((JSpinner.DefaultEditor)spinnerCompleteSurveyWellbeing.getEditor()).getTextField();
+		tfwellbeing.setEditable(false);
+		tfwellbeing.setBackground(Color.white);
+		
 		JButton btnCompleteSurveySaveSurvey = new JButton("Save Survey");
 		btnCompleteSurveySaveSurvey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -758,7 +789,7 @@ public class Directory {
 				String date = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(spinnerCompleteSurveyDate.getValue());
 				//add the survey to the Correct Patient
 				Survey completedSurvey = new Survey(pain, drowsiness, nausea, appetite, shortnessOfBreath, depression, anxiety, wellbeing, date);
-//--------------completedSurvey.printAll();
+				//--------------completedSurvey.printAll();
 				currentPatient.addSurvey(completedSurvey);
 				//reset JSpinners to default values
 				spinnerCompleteSurveyPain.setValue(1);
@@ -844,7 +875,7 @@ public class Directory {
 			}
 		});
 
-		btnViewHistoryPreviousScreen.setBounds(136, 193, 164, 23);
+		btnViewHistoryPreviousScreen.setBounds(136, 213, 164, 23);
 		panelViewHistory.add(btnViewHistoryPreviousScreen);
 		
 		JLabel lbl_View_History_Survey = new JLabel("Surveys:");
