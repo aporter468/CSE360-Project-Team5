@@ -5,12 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
-
 import javax.swing.DefaultListModel;
 import javax.swing.JFormattedTextField;
->>>>>>> origin/master
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -882,11 +878,8 @@ public class Directory {
 			}
 		});
 
-<<<<<<< HEAD
 		btnViewHistoryPreviousScreen.setBounds(136, 215, 164, 23);
-=======
 		btnViewHistoryPreviousScreen.setBounds(136, 213, 164, 23);
->>>>>>> origin/master
 		panelViewHistory.add(btnViewHistoryPreviousScreen);
 		
 		JLabel lbl_View_History_Survey = new JLabel("Surveys:");
