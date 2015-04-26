@@ -37,17 +37,18 @@ public class ESASServer extends Application {
     public Restlet createInboundRoot() {
         Router baseRouter = new Router(getContext());
 
-        Router privateRouter = new Router(getContext());
-        privateRouter.attach("/surveys", SurveyResource.class);
-        privateRouter.attach("/surveys/{patientid}", SurveyResource.class);
-        privateRouter.attach("/patients", PatientResource.class);
-        privateRouter.attach("/patients/{patientid}", PatientResource.class);
-        privateRouter.attach("/providers", ProviderResource.class);
+        // Define the resources behind the authentication wall
+        Router authenticationRequiredRouter = new Router(getContext());
+        authenticationRequiredRouter.attach("/surveys", SurveyResource.class);
+        authenticationRequiredRouter.attach("/surveys/{patientid}", SurveyResource.class);
+        authenticationRequiredRouter.attach("/patients", PatientResource.class);
+        authenticationRequiredRouter.attach("/patients/{patientid}", PatientResource.class);
+        authenticationRequiredRouter.attach("/providers", ProviderResource.class);
 
         // Define the authenticator using AuthenticationVerifier and HTTP_BASIC authentication
         ChallengeAuthenticator challengeAuthenticator = new ChallengeAuthenticator(getContext(), ChallengeScheme.HTTP_BASIC, "Edmonton Symptom Assessment System Data");
         challengeAuthenticator.setVerifier(new AuthenticationVerifier());
-        challengeAuthenticator.setNext(privateRouter);
+        challengeAuthenticator.setNext(authenticationRequiredRouter);
 
         // Define the public resources
         baseRouter.attach("/register", RegistrationResource.class);

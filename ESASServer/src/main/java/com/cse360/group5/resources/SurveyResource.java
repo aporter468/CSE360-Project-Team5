@@ -9,28 +9,49 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.Status;
+import org.restlet.ext.json.JsonRepresentation;
+import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class SurveyResource extends ServerResource {
+public class SurveyResource extends BaseResource {
 
+    /**
+     * Responds to GET requests to "/surveys" and "/surveys/{patientid}". If the
+     * user is a patient we return the patients surveys that have been submitted.
+     * If the user is a provider and requests to "/surveys" we return the top
+     * surveys their patients have submitted. If the request goes to "/surveys/{patientid}"
+     * then the specific patient's surveys are returned if the patient is one
+     * of the provider's patients.
+     *
+     * @return
+     */
     @Get
-    public String getPatientSurveys() {
+    public Representation getPatientSurveys() {
         SurveyConnector surveyConnector = new SurveyConnector();
         ArrayList<SurveyResult> surveyResults;
+        JSONObject jsonResults;
 
-        // Retrieve the patient id that we are submitting the survey for
         Object user = this.getRequest().getAttributes().get("user");
         if (user instanceof PatientUser) {
             PatientUser patientUser = (PatientUser) user;
             int patientid = Integer.valueOf(patientUser.getIdentifier());
             surveyResults = surveyConnector.getPatientSurveys(patientid);
+
+            try {
+                jsonResults = surveysToJSON(surveyResults);
+            } catch (JSONException e) {
+                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                return messageRepresentation("Error creating JSON of surveys");
+            }
+
+            return new JsonRepresentation(jsonResults);
         } else if (user instanceof ProviderUser) {
             ProviderUser providerUser = (ProviderUser) user;
+            int providerid = Integer.valueOf(providerUser.getIdentifier());
 
             // Retrieve the patientid in the URL
             Integer patientid;
@@ -44,87 +65,121 @@ public class SurveyResource extends ServerResource {
                 }
             } catch (ClassCastException e) {
                 getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                return "Patient ID in url is not of type Integer";
+                return messageRepresentation("Patient ID in url is not of type: Integer");
             }
 
+            // Check if the request is routed to "/surveys" or "/surveys/{patientid}"
             if (patientid != null) {
+                // Retrieve the patient with the specific patient id
                 InformationConnector informationConnector = new InformationConnector();
                 PatientUser patientUser = informationConnector.getPatientUser(patientid);
-                if (patientUser.getProviderId() == Integer.valueOf(providerUser.getIdentifier())) {
-                    surveyResults = surveyConnector.getPatientSurveys(patientid);
-                } else {
-                    getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
-                    return "The requested patient is not one of your patients";
+
+                // Check that the patient is one of the provider's patients
+                if (patientUser.getProviderId() != providerid) {
+                    getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+                    return messageRepresentation("Cannot request information for patients that are not yours");
                 }
+
+                surveyResults = surveyConnector.getPatientSurveys(patientid);
+
+                try {
+                    jsonResults = surveysToJSON(surveyResults);
+                } catch (JSONException e) {
+                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    return messageRepresentation("Error creating JSON of surveys");
+                }
+
+                return new JsonRepresentation(jsonResults);
             } else {
-                surveyResults = surveyConnector.getTopSurveys(Integer.valueOf(providerUser.getIdentifier()));
+                // No specific patient: grab top surveys for provider
+                surveyResults = surveyConnector.getTopSurveys(providerid);
+
+                try {
+                    jsonResults = surveysToJSON(surveyResults);
+                } catch (JSONException e) {
+                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    return messageRepresentation("Error creating JSON of surveys");
+                }
+
+                return new JsonRepresentation(jsonResults);
             }
         } else {
-            throw new RuntimeException("User is not instance of either type. Should not happen");
+            getResponse().setStatus(Status.CLIENT_ERROR_PRECONDITION_FAILED);
+            return messageRepresentation("User is not a provider or patient");
         }
-
-        JSONObject jsonResponse = new JSONObject();
-
-        try {
-            JSONArray jsonArray = new JSONArray();
-            for (SurveyResult survey : surveyResults) {
-                jsonArray.put(survey.toJSON());
-            }
-
-            jsonResponse.put("surveys", jsonArray);
-        } catch (JSONException e) {
-            throw new RuntimeException("Failed to add survey results to json response");
-        }
-
-        return jsonResponse.toString();
     }
 
+    /**
+     * Creates a JSONObject containing {surveys: [(each survey converted to json]}
+     * from the ArrayList of SurveyResult's.
+     *
+     * @param surveys An ArrayList of SurveyResult's to convert to JSON
+     * @return A JSONObject containing {surveys: [(each survey converted to json]}
+     * @throws JSONException
+     */
+    private JSONObject surveysToJSON(ArrayList<SurveyResult> surveys) throws JSONException {
+        JSONObject jsonResponse = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (SurveyResult survey: surveys) {
+            jsonArray.put(survey.toJSON());
+        }
+        jsonResponse.put("surveys", jsonArray);
+        return jsonResponse;
+    }
+
+    /**
+     * Responds to POST requests to "/surveys". If the user submitting the survey
+     * is a patient we retrieve necessary survey fields from their POST request
+     * and add the survey to the database.
+     *
+     * @param jsonRequest
+     * @return
+     */
     @Post("json")
-    public String submitSurvey(String jsonRequest) {
+    public Representation submitSurvey(JSONObject jsonRequest) {
         SurveyConnector surveyConnector = new SurveyConnector();
-        PatientUser patientUser;
+        int patientid;
 
         // Retrieve the patient id that we are submitting the survey for
         Object user = this.getRequest().getAttributes().get("user");
         if (user instanceof PatientUser) {
-            patientUser = (PatientUser) user;
+            PatientUser patientUser = (PatientUser) user;
+            patientid = Integer.valueOf(patientUser.getIdentifier());
         } else if (user instanceof ProviderUser) {
-            throw new RuntimeException("Providers cannot submit surveys");
+            getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+            return messageRepresentation("Providers cannot submit surveys");
         } else {
-            throw new RuntimeException("User is not instance of either type. Should not happen");
-        }
-        int patientid = Integer.valueOf(patientUser.getIdentifier());
-
-        // Validate the json request
-        if (!JSONValidator.validSurveySubmissionRequest(jsonRequest)) {
-            throw new RuntimeException("Invalid json request");
+            getResponse().setStatus(Status.CLIENT_ERROR_PRECONDITION_FAILED);
+            return messageRepresentation("User is not a provider or patient");
         }
 
         // Extract json survey data and submit into database
         try {
-            JSONObject jsonObject = new JSONObject(jsonRequest);
-            int pain = jsonObject.getInt("pain");
-            int drowsiness = jsonObject.getInt("drowsiness");
-            int nausea = jsonObject.getInt("nausea");
-            int appetite = jsonObject.getInt("appetite");
-            int shortnessofbreath = jsonObject.getInt("shortnessofbreath");
-            int depression = jsonObject.getInt("depression");
-            int anxiety = jsonObject.getInt("anxiety");
-            int wellbeing = jsonObject.getInt("wellbeing");
+            int pain = jsonRequest.getInt("pain");
+            int drowsiness = jsonRequest.getInt("drowsiness");
+            int nausea = jsonRequest.getInt("nausea");
+            int appetite = jsonRequest.getInt("appetite");
+            int shortnessofbreath = jsonRequest.getInt("shortnessofbreath");
+            int depression = jsonRequest.getInt("depression");
+            int anxiety = jsonRequest.getInt("anxiety");
+            int wellbeing = jsonRequest.getInt("wellbeing");
 
+            // Check for optional comments section
             String comments = "";
-            if (jsonObject.has("comment")) {
-                comments = jsonObject.getString("comments");
+            if (jsonRequest.has("comment")) {
+                comments = jsonRequest.getString("comments");
             }
 
+            // Grab the server current timestamp
             long timestamp = (new Date()).getTime();
 
             surveyConnector.submitSurvey(patientid, pain, drowsiness, nausea, appetite,
                     shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp);
-        } catch (JSONException e) {
-            throw new RuntimeException("Failed to retrieve json variable");
-        }
 
-        return "Submitted Successfully";
+            return messageRepresentation("Submitted survey successfully");
+        } catch (JSONException e) {
+            getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+            return messageRepresentation("Required fields missing or invalid data types from JSON request");
+        }
     }
 }

@@ -3,6 +3,9 @@ package com.cse360.group5.surveys;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Contains all of the information that a survey contains.
+ */
 public class SurveyResult {
     private int patientid;
     private int pain;
@@ -32,25 +35,27 @@ public class SurveyResult {
         this.timestamp = timestamp;
     }
 
-    public JSONObject toJSON() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("patientid", this.patientid);
-            jsonObject.put("pain", this.pain);
-            jsonObject.put("drowsiness", this.drowsiness);
-            jsonObject.put("nausea", this.nausea);
-            jsonObject.put("appetite", this.appetite);
-            jsonObject.put("shortnessofbreath", this.shortnessofbreath);
-            jsonObject.put("depression", this.depression);
-            jsonObject.put("anxiety", this.anxiety);
-            jsonObject.put("wellbeing", this.wellbeing);
-            jsonObject.put("comments", this.comments);
-            jsonObject.put("timestamp", this.timestamp);
+    /**
+     * JSONifys the SurveyResult to a JSONObject containing all of its fields.
+     *
+     * @return
+     * @throws JSONException
+     */
+    public JSONObject toJSON() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("patientid", this.patientid);
+        jsonObject.put("pain", this.pain);
+        jsonObject.put("drowsiness", this.drowsiness);
+        jsonObject.put("nausea", this.nausea);
+        jsonObject.put("appetite", this.appetite);
+        jsonObject.put("shortnessofbreath", this.shortnessofbreath);
+        jsonObject.put("depression", this.depression);
+        jsonObject.put("anxiety", this.anxiety);
+        jsonObject.put("wellbeing", this.wellbeing);
+        jsonObject.put("comments", this.comments);
+        jsonObject.put("timestamp", this.timestamp);
 
-            return jsonObject;
-        } catch (JSONException e) {
-            throw new RuntimeException("Could not populate json object in survey result");
-        }
+        return jsonObject;
     }
 
     public int getPatientid() {

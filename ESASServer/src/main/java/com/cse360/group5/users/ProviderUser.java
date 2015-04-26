@@ -1,5 +1,7 @@
 package com.cse360.group5.users;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.restlet.security.User;
 
 /**
@@ -16,5 +18,21 @@ public class ProviderUser extends User {
 
     public int getPhone() {
         return this.phone;
+    }
+
+    /**
+     * JSONifys the ProviderUser to a JSONObject containing publishable fields.
+     *
+     * @return
+     * @throws JSONException
+     */
+    public JSONObject toJSON() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("identifier", this.getIdentifier());
+        jsonObject.put("firstname", this.getFirstName());
+        jsonObject.put("lastname", this.getLastName());
+        jsonObject.put("email", this.getEmail());
+        jsonObject.put("phone", this.getPhone());
+        return jsonObject;
     }
 }

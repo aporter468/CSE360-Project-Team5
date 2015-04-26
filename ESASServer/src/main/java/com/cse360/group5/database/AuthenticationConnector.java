@@ -13,7 +13,7 @@ import java.sql.SQLException;
 /**
  * Manages all database requests involving authentication including logins and registrations.
  */
-public class AuthenticationConnector extends ESASConnector {
+public class AuthenticationConnector extends BaseConnector {
 
     /**
      * Authenticates the user first trying as a provider, then as a patient.

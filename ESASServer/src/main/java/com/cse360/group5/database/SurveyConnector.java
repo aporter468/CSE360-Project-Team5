@@ -2,15 +2,20 @@ package com.cse360.group5.database;
 
 import com.cse360.group5.surveys.SurveyResult;
 
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class SurveyConnector extends ESASConnector {
+public class SurveyConnector extends BaseConnector {
+
+    /**
+     * Returns all of the patient's surveys in most recent to least recent order.
+     *
+     * @param patientid
+     * @return
+     */
     public ArrayList<SurveyResult> getPatientSurveys(int patientid) {
         final String query = "SELECT pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp FROM surveys WHERE patientid = ? ORDER BY timestamp DESC";
         ArrayList<SurveyResult> surveys = new ArrayList<SurveyResult>();
@@ -43,8 +48,7 @@ public class SurveyConnector extends ESASConnector {
             }
 
         } catch (SQLException e) {
-            // TODO: When does this occur?
-            throw new IllegalArgumentException("TBD", e);
+            throw new IllegalArgumentException(e);
         } finally {
             releaseConnection(connection);
         }
@@ -52,6 +56,12 @@ public class SurveyConnector extends ESASConnector {
         return surveys;
     }
 
+    /**
+     * Returns the top surveys for a provider. Top is defined as the ten most recent submitted surveys.
+     *
+     * @param providerid
+     * @return
+     */
     public ArrayList<SurveyResult> getTopSurveys(int providerid) {
         final String query = "SELECT patients.patientid, pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp FROM surveys JOIN patients ON surveys.patientid = patients.patientid WHERE patients.providerid = ? ORDER BY timestamp DESC LIMIT 10";
         ArrayList<SurveyResult> surveys = new ArrayList<SurveyResult>();
@@ -85,8 +95,7 @@ public class SurveyConnector extends ESASConnector {
             }
 
         } catch (SQLException e) {
-            // TODO: When does this occur?
-            throw new IllegalArgumentException("TBD", e);
+            throw new IllegalArgumentException(e);
         } finally {
             releaseConnection(connection);
         }
@@ -94,6 +103,21 @@ public class SurveyConnector extends ESASConnector {
         return surveys;
     }
 
+    /**
+     * Adds a survey to the database.
+     *
+     * @param patientid
+     * @param pain
+     * @param drowsiness
+     * @param nausea
+     * @param appetite
+     * @param shortnessofbreath
+     * @param depression
+     * @param anxiety
+     * @param wellbeing
+     * @param comments
+     * @param timestamp
+     */
     public void submitSurvey(int patientid, int pain, int drowsiness, int nausea, int appetite, int shortnessofbreath, int depression, int anxiety, int wellbeing, String comments, long timestamp) {
         final String query = "INSERT INTO surveys (patientid, pain, drowsiness, nausea, appetite, shortnessofbreath, depression, anxiety, wellbeing, comments, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Connection connection = getConnection();
@@ -115,8 +139,7 @@ public class SurveyConnector extends ESASConnector {
 
             pstat.execute();
         } catch (SQLException e) {
-            // TODO: When does this occur?
-            throw new IllegalArgumentException("TBD", e);
+            throw new IllegalArgumentException(e);
         } finally {
             releaseConnection(connection);
         }
