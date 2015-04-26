@@ -1326,7 +1326,7 @@ public class Directory {
 	public boolean addPatient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
 			String pCareProvider) {
 				try{
-					Patient newPatient = new Patient(pName, pUserName, pPassword, pSecretQuestion, pSecretAnswer, pCareProvider);
+					Patient newPatient = new Patient(pName, pUsername, pPassword, pSecretQuestion, pSecretAnswer, pCareProvider);
 					PatientList.add(newPatient);
 					return true;
 				}
@@ -1346,9 +1346,9 @@ public class Directory {
 			}
 		return false;
 	}
-	
+	/*
 	public void addSurvey() {
 		Survey newSurvey = new Survey(1, 2, 3, 4, 5, 6, 7, 8, "Today");
 		currentPatient.addSurvey(newSurvey);
-	}
+	}*/
 }
