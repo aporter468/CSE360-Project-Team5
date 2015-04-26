@@ -48,4 +48,25 @@ public void findDoctor() {
 
 @Test
 
+//Tests GUI Features
+public void guitTest() {
+    Robot rob = new Robot();
+    if(dir.addDoctor("a", "b", "c", "d", "e")) {
+        rob.mouseMove(dir.getLocationUserName());
+        rob.mousePress(InputEvent.BUTTON1_MASK);
+        rob.mouseRelease(InputEvent.BUTTON1_MASK);
+        rob.keyPress(A);
+        rob.keyRelease(A);
+
+        rob.mouseMove(dir.getLocationPassword());
+        rob.mousePress(InputEvent.BUTTON1_MASK);
+        rob.mouseRelease(InputEvent.BUTTON1_MASK);
+        rob.keyPress(B);
+        rob.keyRelease(B);
+
+        rob.mouseMove(dir.getLocationLogin());
+        rob.mousePress(InputEvent.BUTTON1_MASK);
+        rob.mouseRelease(InputEvent.BUTTON1_MASK);
+    }
+}
 }
