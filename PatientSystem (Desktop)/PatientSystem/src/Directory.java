@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,9 +25,6 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JTextPane;
-import javax.swing.JCheckBox;
-
 
 public class Directory {
     //declaration of private variables
@@ -81,16 +80,26 @@ public class Directory {
 	private JTextField textField_DoctorSignUp_SecurityAnswer;
 	private JPasswordField passwordField_DoctorSignUp_Password;
 	private JPasswordField passwordField_DoctorSignUp_ConfirmPassword;
+	private JTextField textField_DoctorPhone;
+	private JTextField textField_DoctorEmail;
 	
 	//JList and JTextArea from ViewPatientHistory as a Doctor
 	private JList <String>patient_list;
 	private JTextArea textArea_ViewPatient_Names;
 	private JScrollPane scroll_patient_list;
-	private JList <String>survey_list_doctor;
+	private JList <String> survey_list_doctor;
 	private JScrollPane scroll_survey_list_doctor;
-	private JCheckBox checkboxForDoctor;
+    
+	//JList and JTextArea from ViewPatientInfo as a Doctor
+	private JList <String>patient_list_view_patient_info;
+	private JTextArea textArea_ViewPatient_Info;
+	private JScrollPane scroll_patient_list_view_patient_info;
 	
+	//Put the Button here to access later
+	JButton btnLogin = new JButton("Log In");  // Log In 
+	JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 
+	
 	//main method
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -115,8 +124,15 @@ public class Directory {
 		//REMOVE+++++++++++++++++++++++++++++++++++++++++=================+++++++++++++++++++++++++++++
 		Patient DummyUser = new Patient("John Smith", "jsmith", "password", "Favorite Color?", "Blue", "Drake Ramoray");
 		PatientList.add(DummyUser);
-		Doctor DummyDoctor = new Doctor("Drake Ramoray", "dramoray", "password", "Favorite Food?", "Pizza");
+		Survey DummySurvey = new Survey(10, 10, 10, 10, 10, 10, 10, 10, "4/05/2015 1:52 pm");
+		DummyUser.addSurvey(DummySurvey);
+		DummyUser = new Patient("Andres Iniesta", "ainiesta", "password", "Favorite Play?", "Croqueta", "Drake Ramoray");
+		PatientList.add(DummyUser);
+		DummySurvey = new Survey(8, 8, 8, 8, 8, 8, 8, 8, "4/30/2015 2:52 pm");
+		DummyUser.addSurvey(DummySurvey);
+		Doctor DummyDoctor = new Doctor("Drake Ramoray", "dramoray", "password", "Favorite Food?", "Pizza", "555-555-1234", "doctor@esas.com");
 		DummyDoctor.addPatientName("John Smith");
+		DummyDoctor.addPatientName("Andres Iniesta");
 		DoctorList.add(DummyDoctor);
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		frmEsasSystem = new JFrame();
@@ -130,7 +146,6 @@ public class Directory {
 		frmEsasSystem.getContentPane().add(panelLogin, "name_136526590665903");
 		panelLogin.setLayout(null);
 		
-		JButton btnLogin = new JButton("Log In");  // Log In 
 		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
@@ -181,7 +196,7 @@ public class Directory {
 				
 				}
 		});
-		btnLogin.setBounds(207, 168, 89, 23);
+		btnLogin.setBounds(207, 154, 89, 23);
 		panelLogin.add(btnLogin); //add the Login button to the JPanel
 		
 		JButton btnLoginSignUp = new JButton("Sign Up"); //SignUp Button
@@ -193,7 +208,7 @@ public class Directory {
 				panelSignUp.setVisible(true); //set the sign up panel to visible
 			}
 		});
-		btnLoginSignUp.setBounds(108, 168, 89, 23);
+		btnLoginSignUp.setBounds(108, 154, 89, 23);
 		panelLogin.add(btnLoginSignUp);    //add the sign up button to the JPanel
 		
 		textField_LoginUsername = new JTextField(); //textField for Login User name
@@ -210,7 +225,7 @@ public class Directory {
 				panelForgottenCredentials.setVisible(true); //set forgotten credentials panel to visible
 			}
 		});
-		btnLoginForgottenCredentials.setBounds(108, 198, 188, 23);
+		btnLoginForgottenCredentials.setBounds(108, 184, 188, 23);
 		panelLogin.add(btnLoginForgottenCredentials);  //add the Forgotten Password button to the JPanel
 		
 		JLabel lblLoginTitle = new JLabel("Welcome to the ESAS System"); //Window Title
@@ -231,14 +246,6 @@ public class Directory {
 		passwordField_Login = new JPasswordField();   //JPasswordField for the password
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
-		
-
-		//Determines if user is a doctor
-		JCheckBox checkboxForDoctor = new JCheckBox("Doctor");
-		checkboxForDoctor.setBounds(181, 143, 97, 23);
-		panelLogin.add(checkboxForDoctor);
-	
-
 		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
 		btnDoctorSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -246,7 +253,7 @@ public class Directory {
 				panelDoctorSignUp.setVisible(true);
 			}
 		});
-		btnDoctorSignUp.setBounds(108, 230, 188, 23);
+		btnDoctorSignUp.setBounds(108, 216, 188, 23);
 		panelLogin.add(btnDoctorSignUp);
 		
 		panelLogin.setVisible(true); //Set the panelLogin to be visible
@@ -329,6 +336,9 @@ public class Directory {
 				} //check that user name is at least 6 characters long
 				else if(userName.length()<= 5){
 					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check that the care provider exists
+				else if(doctorExists(careProvider)==false){
+					JOptionPane.showMessageDialog(null, "Care Provider doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{//create a new user and add it to the ArrayList
 					Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, careProvider);
@@ -344,17 +354,17 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
-					
 					for(int i = 0; i < DoctorList.size(); i++)
 					{
 						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
 							{
 								DoctorList.get(i).addPatient(newUser);
+								DoctorList.get(i).addPatientName(name);
+								System.out.print("Patient: "+newUser.getName());
+								System.out.println(" was added to: " +DoctorList.get(i).getName());
+								break;
 							}
-						else
-							System.out.println("Care Provider does not exist");
 					}
-					
 				}
 			}
 		});
@@ -553,7 +563,6 @@ public class Directory {
 		panelMainMenu.add(lblMainMenuWelcome);
 		//The View History Button checks if the user has surveys or not before going to 
 		//the View History Panel
-		JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 		btnMainMenuViewHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);  //hide Main Menu panel
@@ -572,7 +581,7 @@ public class Directory {
 					textArea_ViewHistory_Surveys = new JTextArea();
 					textArea_ViewHistory_Surveys.setBorder(new LineBorder(new Color(0, 0, 0)));
 					textArea_ViewHistory_Surveys.setEditable(false);
-					textArea_ViewHistory_Surveys.setBounds(211, 73, 183, 109);
+					textArea_ViewHistory_Surveys.setBounds(211, 73, 155, 130);
 					panelViewHistory.add(textArea_ViewHistory_Surveys);
 					survey_list.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
 						@Override
@@ -585,7 +594,6 @@ public class Directory {
 						}
 					});
 				}
-				
 			}
 		});
 		btnMainMenuViewHistory.setBounds(108, 93, 200, 23);
@@ -596,6 +604,18 @@ public class Directory {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);
 				panelViewCareProviderInfo.setVisible(true);
+				
+				JTextArea textArea = new JTextArea();
+				textArea.setEditable(false);
+				textArea.setBounds(95, 85, 232, 79);
+				panelViewCareProviderInfo.add(textArea);
+			
+					for(int i = 0; i < DoctorList.size(); i++){
+						if(currentPatient.getCareProvider().equals(DoctorList.get(i).getName()))
+						{
+							textArea.setText("\n" + "     " + DoctorList.get(i).getName() + "\n" + "     Phone: " + DoctorList.get(i).getPhone() + "\n" + "     Email: " + DoctorList.get(i).getEmail());		
+						}
+					}
 			}
 		});
 		btnMainMenuAccessCPInformation.setBounds(108, 127, 200, 23);
@@ -640,33 +660,45 @@ public class Directory {
 		JLabel lblCompleteSurvey = new JLabel("Complete Survey");
 		lblCompleteSurvey.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblCompleteSurvey.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCompleteSurvey.setBounds(111, 24, 216, 30);
+		lblCompleteSurvey.setBounds(111, 11, 216, 30);
 		panelCompleteSurvey.add(lblCompleteSurvey);
 		
 		JLabel lblCompleteSurveyPain = new JLabel("Pain");
 		lblCompleteSurveyPain.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyPain.setBounds(48, 81, 46, 14);
+		lblCompleteSurveyPain.setBounds(79, 44, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyPain);
 		
-		JLabel lblCompleteSurveyTiredness = new JLabel("Tiredness");
-		lblCompleteSurveyTiredness.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyTiredness.setBounds(27, 113, 67, 14);
-		panelCompleteSurvey.add(lblCompleteSurveyTiredness);
+		JLabel lblCompleteSurveyBreath = new JLabel("Shortness \r\nof breath");
+		lblCompleteSurveyBreath.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCompleteSurveyBreath.setBounds(12, 147, 113, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyBreath);
 		
 		JLabel lblCompleteSurveyNausea = new JLabel("Nausea");
 		lblCompleteSurveyNausea.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyNausea.setBounds(48, 144, 46, 14);
+		lblCompleteSurveyNausea.setBounds(79, 96, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyNausea);
 		
 		JLabel lblCompleteSurveyDepression = new JLabel("Depression");
 		lblCompleteSurveyDepression.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyDepression.setBounds(27, 175, 67, 14);
+		lblCompleteSurveyDepression.setBounds(58, 175, 67, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDepression);
 		
 		JLabel lblCompleteSurveyAnxiety = new JLabel("Anxiety");
 		lblCompleteSurveyAnxiety.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCompleteSurveyAnxiety.setBounds(48, 209, 46, 14);
+		lblCompleteSurveyAnxiety.setBounds(79, 201, 46, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyAnxiety);
+		
+		JLabel lblCompleteSurveyDrowsiness = new JLabel("Drowsiness");
+		lblCompleteSurveyDrowsiness.setBounds(58, 71, 79, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyDrowsiness);
+		
+		JLabel lblCompleteSurveyAppetite = new JLabel("Appetite");
+		lblCompleteSurveyAppetite.setBounds(79, 122, 58, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyAppetite);
+		
+		JLabel lblCompleteSurveyWellbeing = new JLabel("Wellbeing");
+		lblCompleteSurveyWellbeing.setBounds(70, 226, 67, 14);
+		panelCompleteSurvey.add(lblCompleteSurveyWellbeing);
 		
 		JLabel lblCompleteSurveyDate = new JLabel("Date:");
 		lblCompleteSurveyDate.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -675,51 +707,104 @@ public class Directory {
 		
 		spinnerCompleteSurveyDate = new JSpinner();
 		
-		JSpinner spinnerCompleteSurveyTiredness = new JSpinner();
-		spinnerCompleteSurveyTiredness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyTiredness.setBounds(111, 110, 40, 20);
-		panelCompleteSurvey.add(spinnerCompleteSurveyTiredness);
+		JSpinner spinnerCompleteSurveyBreath = new JSpinner();
+		spinnerCompleteSurveyBreath.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyBreath.setBounds(140, 144, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyBreath);
 		
 		JSpinner spinnerCompleteSurveyNausea = new JSpinner();
 		spinnerCompleteSurveyNausea.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyNausea.setBounds(111, 141, 40, 20);
+		spinnerCompleteSurveyNausea.setBounds(140, 93, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyNausea);
 		
 		JSpinner spinnerCompleteSurveyDepression = new JSpinner();
 		spinnerCompleteSurveyDepression.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyDepression.setBounds(111, 172, 40, 20);
+		spinnerCompleteSurveyDepression.setBounds(140, 171, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyDepression);
 		
 		JSpinner spinnerCompleteSurveyAnxiety = new JSpinner();
 		spinnerCompleteSurveyAnxiety.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyAnxiety.setBounds(111, 203, 40, 20);
+		spinnerCompleteSurveyAnxiety.setBounds(140, 197, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyAnxiety);
 		
 		JSpinner spinnerCompleteSurveyPain = new JSpinner();
 		spinnerCompleteSurveyPain.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		spinnerCompleteSurveyPain.setBounds(111, 78, 40, 20);
+		spinnerCompleteSurveyPain.setBounds(140, 41, 40, 20);
 		panelCompleteSurvey.add(spinnerCompleteSurveyPain);
+		
+		JSpinner spinnerCompleteSurveyDrowsiness = new JSpinner();
+		spinnerCompleteSurveyDrowsiness.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyDrowsiness.setBounds(140, 67, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyDrowsiness);
+		
+		JSpinner spinnerCompleteSurveyAppetite = new JSpinner();
+		spinnerCompleteSurveyAppetite.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyAppetite.setBounds(140, 119, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyAppetite);
+		
+		JSpinner spinnerCompleteSurveyWellbeing = new JSpinner();
+		spinnerCompleteSurveyWellbeing.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+		spinnerCompleteSurveyWellbeing.setBounds(140, 223, 40, 20);
+		panelCompleteSurvey.add(spinnerCompleteSurveyWellbeing);
+		
+		JFormattedTextField tfpain = ((JSpinner.DefaultEditor)spinnerCompleteSurveyPain.getEditor()).getTextField();
+		tfpain.setEditable(false);
+		tfpain.setBackground(Color.white);
+		
+		JFormattedTextField tfdrowsiness = ((JSpinner.DefaultEditor)spinnerCompleteSurveyDrowsiness.getEditor()).getTextField();
+		tfdrowsiness.setEditable(false);
+		tfdrowsiness.setBackground(Color.white);
+
+		JFormattedTextField tfnausea = ((JSpinner.DefaultEditor)spinnerCompleteSurveyNausea.getEditor()).getTextField();
+		tfnausea.setEditable(false);
+		tfnausea.setBackground(Color.white);
+		
+		JFormattedTextField tfappetite = ((JSpinner.DefaultEditor)spinnerCompleteSurveyAppetite.getEditor()).getTextField();
+		tfappetite.setEditable(false);
+		tfappetite.setBackground(Color.white);
+		
+		JFormattedTextField tfbreath = ((JSpinner.DefaultEditor)spinnerCompleteSurveyBreath.getEditor()).getTextField();
+		tfbreath.setEditable(false);
+		tfbreath.setBackground(Color.white);
+
+		JFormattedTextField tfdepression = ((JSpinner.DefaultEditor)spinnerCompleteSurveyDepression.getEditor()).getTextField();
+		tfdepression.setEditable(false);
+		tfdepression.setBackground(Color.white);
+
+		JFormattedTextField tfanxiety = ((JSpinner.DefaultEditor)spinnerCompleteSurveyAnxiety.getEditor()).getTextField();
+		tfanxiety.setEditable(false);
+		tfanxiety.setBackground(Color.white);
+
+		JFormattedTextField tfwellbeing = ((JSpinner.DefaultEditor)spinnerCompleteSurveyWellbeing.getEditor()).getTextField();
+		tfwellbeing.setEditable(false);
+		tfwellbeing.setBackground(Color.white);
 		
 		JButton btnCompleteSurveySaveSurvey = new JButton("Save Survey");
 		btnCompleteSurveySaveSurvey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//collect current values from JSpinner
-				int tiredness = (int)spinnerCompleteSurveyTiredness.getValue();
 				int pain = (int)spinnerCompleteSurveyPain.getValue();
+				int drowsiness = (int)spinnerCompleteSurveyDrowsiness.getValue();
 				int nausea = (int)spinnerCompleteSurveyNausea.getValue();
+				int appetite = (int)spinnerCompleteSurveyAppetite.getValue();
+				int shortnessOfBreath = (int)spinnerCompleteSurveyBreath.getValue();
 				int depression = (int)spinnerCompleteSurveyDepression.getValue();
 				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
+				int wellbeing = (int)spinnerCompleteSurveyWellbeing.getValue();
 				String date = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(spinnerCompleteSurveyDate.getValue());
 				//add the survey to the Correct Patient
-				Survey completedSurvey = new Survey(pain, tiredness, nausea, depression, anxiety, date);
-//--------------completedSurvey.printAll();
+				Survey completedSurvey = new Survey(pain, drowsiness, nausea, appetite, shortnessOfBreath, depression, anxiety, wellbeing, date);
+				//--------------completedSurvey.printAll();
 				currentPatient.addSurvey(completedSurvey);
 				//reset JSpinners to default values
-				spinnerCompleteSurveyTiredness.setValue(1);
 				spinnerCompleteSurveyPain.setValue(1);
+				spinnerCompleteSurveyDrowsiness.setValue(1);
 				spinnerCompleteSurveyNausea.setValue(1);
+				spinnerCompleteSurveyAppetite.setValue(1);
+				spinnerCompleteSurveyBreath.setValue(1);
 				spinnerCompleteSurveyDepression.setValue(1);
 				spinnerCompleteSurveyAnxiety.setValue(1);
+				spinnerCompleteSurveyWellbeing.setValue(1);
 				JOptionPane.showMessageDialog(null, "Survey was saved!");
 			}
 		});
@@ -737,12 +822,12 @@ public class Directory {
 		panelCompleteSurvey.add(btnCompleSurveyPreviousScreen);
 		
 		JLabel lblCompleteSurveyDescription1 = new JLabel("1 is lowest level of symptom possible");
-		lblCompleteSurveyDescription1.setBounds(174, 65, 242, 30);
+		lblCompleteSurveyDescription1.setBounds(201, 63, 242, 30);
 		panelCompleteSurvey.add(lblCompleteSurveyDescription1);
 		
 		JLabel lblCompleteSurveyDescription2 = new JLabel("10 is highest level of symptom possible");
 		lblCompleteSurveyDescription2.setHorizontalAlignment(SwingConstants.LEFT);
-		lblCompleteSurveyDescription2.setBounds(174, 93, 242, 14);
+		lblCompleteSurveyDescription2.setBounds(201, 96, 242, 14);
 		panelCompleteSurvey.add(lblCompleteSurveyDescription2);
 
 		//----------------------------------------------------------------------------------------------------
@@ -767,10 +852,7 @@ public class Directory {
 		});
 		btnCareProviderInfoPreviousScreen.setBounds(128, 189, 158, 23);
 		panelViewCareProviderInfo.add(btnCareProviderInfoPreviousScreen);
-		
-		JTextPane textPane = new JTextPane();
-		textPane.setBounds(106, 93, 200, 50);
-		panelViewCareProviderInfo.add(textPane);
+	
 		//----------------------------------------------------------------------------------------------------
 		
 		//View History Panel**********************************************************************************
@@ -798,7 +880,8 @@ public class Directory {
 			}
 		});
 
-		btnViewHistoryPreviousScreen.setBounds(136, 193, 164, 23);
+		btnViewHistoryPreviousScreen.setBounds(136, 215, 164, 23);
+		btnViewHistoryPreviousScreen.setBounds(136, 213, 164, 23);
 		panelViewHistory.add(btnViewHistoryPreviousScreen);
 		
 		JLabel lbl_View_History_Survey = new JLabel("Surveys:");
@@ -814,21 +897,21 @@ public class Directory {
 		JLabel lblCreateANew = new JLabel("Create A New User");
 		lblCreateANew.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCreateANew.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblCreateANew.setBounds(109, 40, 211, 14);
+		lblCreateANew.setBounds(112, 26, 211, 14);
 		panelDoctorSignUp.add(lblCreateANew);
 		
 		textField_DoctorSignUp_FirstName = new JTextField();
-		textField_DoctorSignUp_FirstName.setBounds(96, 70, 89, 20);
+		textField_DoctorSignUp_FirstName.setBounds(81, 51, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_FirstName);
 		textField_DoctorSignUp_FirstName.setColumns(10);
 		
 		textField_DoctorSignUp_LastName = new JTextField();
-		textField_DoctorSignUp_LastName.setBounds(296, 70, 95, 20);
+		textField_DoctorSignUp_LastName.setBounds(81, 82, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_LastName);
 		textField_DoctorSignUp_LastName.setColumns(10);
 		
 		textField_DoctorSignUp_Username = new JTextField();
-		textField_DoctorSignUp_Username.setBounds(99, 101, 86, 20);
+		textField_DoctorSignUp_Username.setBounds(317, 51, 95, 20);
 		panelDoctorSignUp.add(textField_DoctorSignUp_Username);
 		textField_DoctorSignUp_Username.setColumns(10);
 		
@@ -844,35 +927,35 @@ public class Directory {
 		
 		JLabel lbl_DoctorSignUp_FirstName = new JLabel("First Name:");
 		lbl_DoctorSignUp_FirstName.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_FirstName.setBounds(0, 72, 86, 14);
+		lbl_DoctorSignUp_FirstName.setBounds(-15, 54, 86, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_FirstName);
 		
 		JLabel lbl_DoctorSignUp_LastName = new JLabel("Last Name:");
 		lbl_DoctorSignUp_LastName.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_LastName.setBounds(209, 72, 76, 14);
+		lbl_DoctorSignUp_LastName.setBounds(-5, 85, 76, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_LastName);
 		
 		JLabel lbl_DoctorSignUp_Username = new JLabel("Username:");
 		lbl_DoctorSignUp_Username.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_Username.setBounds(23, 104, 66, 14);
+		lbl_DoctorSignUp_Username.setBounds(241, 54, 66, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_Username);
 		
 		passwordField_DoctorSignUp_Password = new JPasswordField();
-		passwordField_DoctorSignUp_Password.setBounds(297, 101, 94, 20);
+		passwordField_DoctorSignUp_Password.setBounds(317, 82, 95, 20);
 		panelDoctorSignUp.add(passwordField_DoctorSignUp_Password);
 		
 		passwordField_DoctorSignUp_ConfirmPassword = new JPasswordField();
-		passwordField_DoctorSignUp_ConfirmPassword.setBounds(297, 132, 96, 20);
+		passwordField_DoctorSignUp_ConfirmPassword.setBounds(316, 113, 96, 20);
 		panelDoctorSignUp.add(passwordField_DoctorSignUp_ConfirmPassword);
 		
 		JLabel lbl_DoctorSignUp_Password = new JLabel("Password:");
 		lbl_DoctorSignUp_Password.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_Password.setBounds(222, 104, 63, 14);
+		lbl_DoctorSignUp_Password.setBounds(244, 85, 63, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_Password);
 		
 		JLabel lbl_DoctorSignUp_ConfirmPassword = new JLabel("Confirm Password:");
 		lbl_DoctorSignUp_ConfirmPassword.setHorizontalAlignment(SwingConstants.RIGHT);
-		lbl_DoctorSignUp_ConfirmPassword.setBounds(157, 135, 128, 14);
+		lbl_DoctorSignUp_ConfirmPassword.setBounds(179, 113, 128, 14);
 		panelDoctorSignUp.add(lbl_DoctorSignUp_ConfirmPassword);
 		
 		JLabel lbl_DoctorSignUp_SecurityQuestion = new JLabel("Security Question:");
@@ -892,6 +975,8 @@ public class Directory {
 				String lastName = textField_DoctorSignUp_LastName.getText();
 				String name = firstName + " " + lastName;
 				String userName = textField_DoctorSignUp_Username.getText();
+				String phone = textField_DoctorPhone.getText();
+				String email = textField_DoctorEmail.getText();
 				String secretQuestion = textField_DoctorSignUp_SecurityQuestion.getText();
 				String secretAnswer = textField_DoctorSignUp_SecurityAnswer.getText();
 				@SuppressWarnings("deprecation")
@@ -912,7 +997,7 @@ public class Directory {
 					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{//create a new user and add it to the ArrayList
-					Doctor newUser = new Doctor(name, userName, password, secretQuestion, secretAnswer);
+					Doctor newUser = new Doctor(name, userName, password, secretQuestion, secretAnswer, phone, email);
 					DoctorList.add(newUser);
 					JOptionPane.showMessageDialog(null, "User: " + userName +" was created!");
 					System.out.println("New Doctor user: " + name + " was added!");
@@ -922,6 +1007,8 @@ public class Directory {
 					textField_DoctorSignUp_Username.setText("");
 					textField_DoctorSignUp_SecurityQuestion.setText("");
 					textField_DoctorSignUp_SecurityAnswer.setText("");
+					textField_DoctorEmail.setText("");
+					textField_DoctorPhone.setText("");
 					passwordField_DoctorSignUp_Password.setText("");
 					passwordField_DoctorSignUp_ConfirmPassword.setText("");
 				}
@@ -944,8 +1031,33 @@ public class Directory {
 				panelLogin.setVisible(true);
 			}
 		});
-		btn_DoctorSignUp_PreviousScreen.setBounds(279, 208, 133, 25);
+		btn_DoctorSignUp_PreviousScreen.setBounds(277, 208, 135, 25);
 		panelDoctorSignUp.add(btn_DoctorSignUp_PreviousScreen);
+		
+		textField_DoctorPhone = new JTextField();
+		textField_DoctorPhone.setBounds(81, 146, 95, 20);
+		panelDoctorSignUp.add(textField_DoctorPhone);
+		textField_DoctorPhone.setColumns(10);
+		
+		textField_DoctorEmail = new JTextField();
+		textField_DoctorEmail.setBounds(81, 113, 95, 20);
+		panelDoctorSignUp.add(textField_DoctorEmail);
+		textField_DoctorEmail.setColumns(10);
+		
+		JLabel lbl_DoctorSignUp_Phone = new JLabel("Phone:");
+		lbl_DoctorSignUp_Phone.setHorizontalAlignment(SwingConstants.RIGHT);
+		lbl_DoctorSignUp_Phone.setBounds(10, 143, 61, 23);
+		panelDoctorSignUp.add(lbl_DoctorSignUp_Phone);
+		
+		JLabel lbl_DoctorSignUp_Email = new JLabel("Email:");
+		lbl_DoctorSignUp_Email.setHorizontalAlignment(SwingConstants.RIGHT);
+		lbl_DoctorSignUp_Email.setBounds(5, 113, 65, 20);
+		panelDoctorSignUp.add(lbl_DoctorSignUp_Email);
+		
+		JLabel lblExxxxXxxxxxx = new JLabel("Ex. (xxx)xxx-xxxx");
+		lblExxxxXxxxxxx.setBounds(189, 143, 128, 23);
+		panelDoctorSignUp.add(lblExxxxXxxxxxx);
+		
 		//-----------------------------------------------------------------------------------------------------
 		
 		// Main Menu Doctor panel *****************************************************************************
@@ -969,70 +1081,95 @@ public class Directory {
 				}
 				else {
 					//make and add the JList containing the patient's name associated with the doctor
-					patient_list = new JList<String>(currentDoctor.getList());
-					patient_list.setBorder(new LineBorder(new Color(0, 0, 0)));
-					scroll_patient_list = new JScrollPane(patient_list);
-					scroll_patient_list.setBounds(10, 77, 125, 95);
-					panelViewHistoryDoctor.add(scroll_patient_list);
-
-					patient_list.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
-						@Override
-						public void mouseClicked(MouseEvent e) { 
-							//use the click action to select and retrieve the surveys from a single patient user
-							int index = patient_list.locationToIndex(e.getPoint()); //get index where user clicked on
-							String patientName = currentDoctor.getPatientName(index);
-							int position = findPatientByName(patientName);
-							Patient tempPatient = PatientList.get(position);
-							System.out.println("The index is: "+index);
-							System.out.println("The patient is: "+tempPatient.getName());
-							
-							//add the second JList object
-							survey_list_doctor = new JList<String>(tempPatient.getList());
-							survey_list_doctor.setBorder(new LineBorder(new Color(0, 0, 0)));
-							scroll_survey_list_doctor = new JScrollPane(survey_list_doctor);
-							scroll_survey_list_doctor.setBounds(145, 77, 125, 95);
-							panelViewHistoryDoctor.add(scroll_survey_list_doctor);
-			
-							//add the TextArea
-							textArea_ViewPatient_Names = new JTextArea();
-							textArea_ViewPatient_Names.setBorder(new LineBorder(new Color(0, 0, 0)));
-							textArea_ViewPatient_Names.setEditable(false);
-							textArea_ViewPatient_Names.setBounds(275, 77, 150, 110);
-							panelViewHistoryDoctor.add(textArea_ViewPatient_Names);
-							
-							//refresh the panel to show both JList objects and the TextArea
-							panelViewHistoryDoctor.setVisible(false);
-							panelViewHistoryDoctor.setVisible(true);				
-							
-							//add the action listener that will retrieve the surveys for a specific user
-							survey_list_doctor.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
-								@Override
-								public void mouseClicked(MouseEvent e) { 
-									int index = survey_list_doctor.locationToIndex(e.getPoint()); //get index where user clicked on
-									Survey selectedSurvey = new Survey();	//make a new Survey to hold the information
-									selectedSurvey = tempPatient.getSurvey(index); //retrieve the corresponding Survey
-									String info = selectedSurvey.getValuesOnString(); //Obtain String with values
-									textArea_ViewPatient_Names.setText(info); //display info on textArea
-								}
-							});
-							
-							
-						}
-					});
+					patient_list = new JList<String>(currentDoctor.getList()); //make the JList containing the list of patients
+					patient_list.setBorder(new LineBorder(new Color(0, 0, 0))); //add a border to the JList object
+					scroll_patient_list = new JScrollPane(patient_list); //make a scroll pane for the JList object
+					scroll_patient_list.setBounds(10, 67, 125, 125); //set the bounds of the of scroll pane object
+					panelViewHistoryDoctor.add(scroll_patient_list); //add the patient_list to the scroll pane
+					
+					//Add the second JList object to this panel
+					survey_list_doctor = new JList<String>();
+					survey_list_doctor.setBorder(new LineBorder(new Color(0, 0, 0)));
+					scroll_survey_list_doctor = new JScrollPane(survey_list_doctor);
+					scroll_survey_list_doctor.setBounds(142, 67, 125, 125);
+					panelViewHistoryDoctor.add(scroll_survey_list_doctor);
+					
+					//add the TextArea
+					textArea_ViewPatient_Names = new JTextArea();
+					textArea_ViewPatient_Names.setBorder(new LineBorder(new Color(0, 0, 0)));
+					textArea_ViewPatient_Names.setEditable(false);
+					textArea_ViewPatient_Names.setBounds(275, 67, 150, 125);
+					panelViewHistoryDoctor.add(textArea_ViewPatient_Names);
+					
+					patient_list.addMouseListener(new MouseAdapter() { //mouse Listener	
+					@Override
+					public void mouseClicked(MouseEvent e){
+						//use the click action to select and retrieve the surveys from a single patient user
+						int index2 = patient_list.locationToIndex(e.getPoint()); //get index where user clicked on
+						String patientName = currentDoctor.getPatientName(index2); //put the corresponding patient name in a String
+						int position = findPatientByName(patientName); //find the position of the corresponding Patient in the PatientList
+						Patient tempPatient = PatientList.get(position); //retrieve the corresponding Patient into tempPatient
+						survey_list_doctor.setModel(tempPatient.getList());
+						
+						//add the action listener that will retrieve the surveys for a specific user
+						survey_list_doctor.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
+							@Override
+							public void mouseClicked(MouseEvent e) { 
+								int index = survey_list_doctor.locationToIndex(e.getPoint()); //get index where user clicked on
+								Survey selectedSurvey = new Survey();	//make a new Survey to hold the information
+								selectedSurvey = tempPatient.getSurvey(index); //retrieve the corresponding Survey
+								String info = selectedSurvey.getValuesOnString(); //Obtain String with values
+								textArea_ViewPatient_Names.setText(info); //display info on textArea
+							}
+						});
+					}
+					});//end of patient_list MouseListener
 				}//end of the else
 				
 			}
 		});
+		
 		btn_MainMenuDoctor_ViewPatientHistory.setBounds(108, 79, 200, 33);
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientHistory);
+		//JButton for viewing the patient contact information 
 		JButton btn_MainMenuDoctor_ViewPatientInfo = new JButton("View Patient Contact Info");
 		btn_MainMenuDoctor_ViewPatientInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenuDoctor.setVisible(false);
 				panelViewPatientInfo.setVisible(true);
+				if (currentDoctor.isPatientListEmpty()==true){
+					JOptionPane.showMessageDialog(null, "There are no patients to view!", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else {
+					//make and add the JList containing the patient's name associated with the doctor
+					patient_list_view_patient_info = new JList<String>(currentDoctor.getList()); //make the JList containing the list of patients
+					patient_list_view_patient_info.setBorder(new LineBorder(new Color(0, 0, 0))); //add a border to the JList object
+					scroll_patient_list_view_patient_info = new JScrollPane(patient_list_view_patient_info); //make a scroll pane for the JList object
+					scroll_patient_list_view_patient_info.setBounds(60, 67, 125, 125); //set the bounds of the of scroll pane object
+					panelViewPatientInfo.add(scroll_patient_list_view_patient_info); //add the patient_list to the scroll pane
+					
+					//add the TextArea
+					textArea_ViewPatient_Info = new JTextArea();
+					textArea_ViewPatient_Info.setBorder(new LineBorder(new Color(0, 0, 0)));
+					textArea_ViewPatient_Info.setEditable(false);
+					textArea_ViewPatient_Info.setBounds(200, 67, 150, 125);
+					panelViewPatientInfo.add(textArea_ViewPatient_Info);
+					
+					patient_list_view_patient_info.addMouseListener(new MouseAdapter() { //mouse Listener	
+					@Override
+					public void mouseClicked(MouseEvent e){
+						//use the click action to select and retrieve the surveys from a single patient user
+						int index = patient_list_view_patient_info.locationToIndex(e.getPoint()); //get index where user clicked on
+						String patientName = currentDoctor.getPatientName(index); //put the corresponding patient name in a String
+						int position = findPatientByName(patientName); //find the position of the corresponding Patient in the PatientList
+						Patient tempPatient = PatientList.get(position); //retrieve the corresponding Patient into tempPatient
+						textArea_ViewPatient_Info.setText("Name: " +tempPatient.getName());
+					}
+					});//end of patient_list MouseListener
+				}//end of the else
 			}
 		});
-		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 188, 33);
+		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 200, 33);
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientInfo);
 		JButton btn_View = new JButton("Previous Screen");
 		btn_View.addActionListener(new ActionListener() {
@@ -1041,7 +1178,7 @@ public class Directory {
 				panelLogin.setVisible(true);
 			}
 		});
-		btn_View.setBounds(108, 169, 200, 33);
+		btn_View.setBounds(108, 167, 200, 33);
 		panelMainMenuDoctor.add(btn_View);
 		//-------------------------------------------------------------------------------------------------------------------
 		
@@ -1053,8 +1190,18 @@ public class Directory {
 		JLabel lbl_ViewPatientHistory_title = new JLabel("View Patient History");
 		lbl_ViewPatientHistory_title.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lbl_ViewPatientHistory_title.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_ViewPatientHistory_title.setBounds(97, 31, 207, 28);
+		lbl_ViewPatientHistory_title.setBounds(104, 11, 207, 28);
 		panelViewHistoryDoctor.add(lbl_ViewPatientHistory_title);
+		
+
+		
+		JLabel lbl_ViewHistoryDoctor_Patients = new JLabel("Patients:");
+		lbl_ViewHistoryDoctor_Patients.setBounds(10, 45, 68, 14);
+		panelViewHistoryDoctor.add(lbl_ViewHistoryDoctor_Patients);
+		
+		JLabel lbl_ViewHistoryDoctor_Surveys = new JLabel("Surveys:");
+		lbl_ViewHistoryDoctor_Surveys.setBounds(143, 45, 68, 14);
+		panelViewHistoryDoctor.add(lbl_ViewHistoryDoctor_Surveys);
 		
 		JButton btn_ViewHistoryDoctor_PreviousScreen = new JButton("Previous Screen");
 		btn_ViewHistoryDoctor_PreviousScreen.addActionListener(new ActionListener() {
@@ -1063,12 +1210,12 @@ public class Directory {
 				panelMainMenuDoctor.setVisible(true);
 			}
 		});
-
-		btn_ViewHistoryDoctor_PreviousScreen.setBounds(137, 223, 133, 28);
-
-		btn_ViewHistoryDoctor_PreviousScreen.setBounds(147, 178, 123, 28);
-
+		btn_ViewHistoryDoctor_PreviousScreen.setBounds(132, 223, 145, 28);
 		panelViewHistoryDoctor.add(btn_ViewHistoryDoctor_PreviousScreen);
+		
+		JLabel lbl_ViewHistoryDoctor_Contents = new JLabel("Contents:");
+		lbl_ViewHistoryDoctor_Contents.setBounds(278, 45, 90, 14);
+		panelViewHistoryDoctor.add(lbl_ViewHistoryDoctor_Contents);
 		//--------------------------------------------------------------------------------------------------------------------
 		
 		//View Patient Info as a Doctor panel************************************************************************************
@@ -1079,7 +1226,7 @@ public class Directory {
 		JLabel lblViewPatientInfo = new JLabel("View Patient Info");
 		lblViewPatientInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblViewPatientInfo.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblViewPatientInfo.setBounds(107, 26, 201, 45);
+		lblViewPatientInfo.setBounds(111, 11, 201, 30);
 		panelViewPatientInfo.add(lblViewPatientInfo);
 		
 		JButton btn_ViewPatientInfo_PreviousScreen = new JButton("Previous Screen");
@@ -1089,8 +1236,12 @@ public class Directory {
 				panelMainMenuDoctor.setVisible(true);
 			}
 		});
-		btn_ViewPatientInfo_PreviousScreen.setBounds(148, 178, 136, 30);
+		btn_ViewPatientInfo_PreviousScreen.setBounds(149, 210, 136, 30);
 		panelViewPatientInfo.add(btn_ViewPatientInfo_PreviousScreen);
+		
+		JLabel lbl_ViewPatientInfo_Patients = new JLabel("Patients:");
+		lbl_ViewPatientInfo_Patients.setBounds(60, 45, 68, 14);
+		panelViewPatientInfo.add(lbl_ViewPatientInfo_Patients);
 		
 		//----------------------------------------------------------------------------------------------------
 	}
@@ -1159,5 +1310,61 @@ public class Directory {
 			return position;
 		else 
 			return -1;
+	}
+	//method that looks through the DoctorList for a given Name
+	public boolean doctorExists(String pName){
+		for (int i=0; i < DoctorList.size(); i++){
+			if (pName.equals(DoctorList.get(i).getName())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//For Testing Purposes*********************************************************************************************
+	
+	public boolean addPatient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
+			String pCareProvider) {
+				try{
+					Patient newPatient = new Patient(pName, pUserName, pPassword, pSecretQuestion, pSecretAnswer, pCareProvider);
+					PatientList.add(newPatient);
+					return true;
+				}
+				catch(Exception e) {
+					System.out.println(e);
+				}
+				return false;
+			}
+	public boolean addDoctor(String name1, String username1, String password1, String securityQ1, String securityA1, String phone1, String email1) {
+		try{
+			Doctor newDoctor = new Doctor(name1, username1, password1, securityQ1, securityA1, email);
+			DoctorList.add(newDoctor);	
+			return true;
+			}
+			catch(Exception e) {
+				System.out.println(e);
+			}
+		return false;
+	}
+	
+	public void addSurvey() {
+		Survey newSurvey = new Survey(1, 2, 3, 4, 5, 6, 7, 8, "Today");
+		currentPatient.addSurvey(newSurvey);
+	}
+	
+	public Point getLocationLogin() {
+		return btnLogin.getLocationOnScreen();
+	}
+	
+	public Point getLocationUserName() {
+		return textField_LoginUsername.getLocationOnScreen();
+	}
+	
+	public Point getLocationPassword() {
+		return passwordField_Login.getLocationOnScreen();
+	}
+	
+	public Point getLocationHistory() {
+		return btnMainMenuViewHistory.getLocationOnScreen();
 	}
 }
