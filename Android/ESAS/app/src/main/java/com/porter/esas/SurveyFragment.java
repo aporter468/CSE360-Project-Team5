@@ -13,8 +13,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import java.util.Calendar;
-
 public class SurveyFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
@@ -23,6 +21,7 @@ public class SurveyFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     final private int[] surveyValues = new int[Survey.NUM_SURVEY_FIELDS];
     private EditText commentsET;
+    private String comments;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -73,14 +72,14 @@ public class SurveyFragment extends Fragment {
         }
 
 
-      /*   TextView commentsLabel = new TextView(getActivity());
+        TextView commentsLabel = new TextView(getActivity());
         commentsLabel.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT));
         commentsLabel.setText("Comments:");
         commentsLabel.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
         linearLayout.addView(commentsLabel);
            commentsET = new EditText(getActivity());
-           linearLayout.addView(commentsET);*/
+           linearLayout.addView(commentsET);
 
         Button submitButton = new Button(getActivity());
         submitButton.setText("Submit");
@@ -98,7 +97,8 @@ public class SurveyFragment extends Fragment {
     private void submitSurvey()
     {
         Survey survey = new Survey(surveyValues,"");
-        ((MainActivity) getActivity()).submitSurvey(survey);
+        String comments = commentsET.getText().toString();
+        ((MainActivity) getActivity()).submitSurvey(survey, comments);
     }
 
 

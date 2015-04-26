@@ -27,12 +27,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class RegisterActivity extends Activity {
     private AutoCompleteTextView mEmailView;
@@ -235,7 +234,6 @@ public class RegisterActivity extends Activity {
                 json.put("password", mPassword);
                 if(mUserType == 0)//is patient
                     json.put("providerid",1);
-                //TODO: actual id setting based on getting list and size?
 
                 StringEntity se = new StringEntity( json.toString());
                 se.setContentType(new BasicHeader("Content-type", "application/json"));
@@ -243,20 +241,13 @@ public class RegisterActivity extends Activity {
 
                 // Execute HTTP Post Request
                 HttpResponse response = httpclient.execute(httppost);
-                BufferedReader reader = null;
-                Log.e("mylog","executed");
+                 Log.e("mylog","response");
+                String resp_body = EntityUtils.toString(response.getEntity());
+                JSONObject jsobj = new JSONObject(resp_body);
+                String message = jsobj.get("message").toString();
+                Log.e("mylog",resp_body.toString()+" "+message);
+                if(message.equals("Provider successfully registered")||message.equals("Patient successfully registered")) {
 
-
-                reader = new BufferedReader(new InputStreamReader(response
-                        .getEntity().getContent()));
-                String line = null;
-                String result = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
-                }
-                Log.e("mylog", "result" + result);
-
-                if(result.equals("Provider Registration Successful")||result.equals("Patient Registration Successful")) {
                     mSuccess = true;
                 }
 

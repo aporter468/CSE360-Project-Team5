@@ -12,14 +12,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -387,9 +382,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         historyFragment.setDate(selectedDate, receivedSurveys);
     }
-    public void submitSurvey(Survey s)
+    public void submitSurvey(Survey s, String comments)
     {
-        mAuthTask = new SubmitSurveyTask(s,email, password,this);
+        mAuthTask = new SubmitSurveyTask(s,email, password,comments, this);
         mAuthTask.execute((Void) null);
     }
     public void setProviderInfoFragment(ProviderInfoFragment piFragment)
@@ -403,13 +398,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         private final String mEmail;
         private final String mPassword;
         private final Survey mSurvey;
+        private final String mComments;
         private final MainActivity activity;
         private boolean mySuccess;
 
-        SubmitSurveyTask(Survey s,String email,String password, MainActivity activity) {
+        SubmitSurveyTask(Survey s,String comments,String email,String password, MainActivity activity) {
             mEmail = email;
             mPassword = password;
             this.activity =activity;
+            mComments = comments;
             mSurvey = s;
             mySuccess= false;
         }
@@ -433,6 +430,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 json.put("depression",surveyVals[5]);
                 json.put("anxiety",surveyVals[6]);
                 json.put("wellbeing",surveyVals[7]);
+               // json.put("comments",mComments);
 
 
                 StringEntity se = new StringEntity( json.toString());
