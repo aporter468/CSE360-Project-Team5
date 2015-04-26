@@ -1322,7 +1322,7 @@ public class Directory {
 	}
 	
 	//For Testing Purposes*********************************************************************************************
-	
+	/*
 	public boolean addPatient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
 			String pCareProvider) {
 				try{
