@@ -94,6 +94,9 @@ public class Directory {
 	private JList <String>patient_list_view_patient_info;
 	private JTextArea textArea_ViewPatient_Info;
 	private JScrollPane scroll_patient_list_view_patient_info;
+	
+	//Put the Button here to access later
+	JButton btnLogin = new JButton("Log In");  // Log In 
 
 	
 	//main method
@@ -142,7 +145,6 @@ public class Directory {
 		frmEsasSystem.getContentPane().add(panelLogin, "name_136526590665903");
 		panelLogin.setLayout(null);
 		
-		JButton btnLogin = new JButton("Log In");  // Log In 
 		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
@@ -1343,5 +1345,17 @@ public class Directory {
 				System.out.println(e);
 			}
 		return false;
+	}
+	
+	public Point getLocationLogin() {
+		return btnLogin.getLocationOnScreen();
+	}
+	
+	public Point getLocationUserName() {
+		return textField_LoginUsername.getLocationOnScreen();
+	}
+	
+	public Point getLocationPassword() {
+		return passwordField_Login.getLocationOnScreen();
 	}
 }
