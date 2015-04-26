@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
 public class Doctor {
-	String name,username,password,securityQ,securityA phone, email;
+	String name, username, password, securityQ, securityA, phone, email;
 	ArrayList<Patient> Patients = new ArrayList<Patient>();
 	private DefaultListModel<String> patientList = new DefaultListModel<String>();
 	

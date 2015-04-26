@@ -23,16 +23,12 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
 import javax.swing.JList;
 import javax.swing.border.LineBorder;
-
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-<<<<<<< HEAD
-
 import javax.swing.JTextPane;
 
-=======
->>>>>>> origin/master
+
 
 public class Directory {
     //declaration of private variables
@@ -97,11 +93,7 @@ public class Directory {
 	private JScrollPane scroll_patient_list;
 	private JList <String> survey_list_doctor;
 	private JScrollPane scroll_survey_list_doctor;
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> origin/master
 	//main method
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -126,13 +118,13 @@ public class Directory {
 		//REMOVE+++++++++++++++++++++++++++++++++++++++++=================+++++++++++++++++++++++++++++
 		Patient DummyUser = new Patient("John Smith", "jsmith", "password", "Favorite Color?", "Blue", "Drake Ramoray");
 		PatientList.add(DummyUser);
-		Survey DummySurvey = new Survey(10, 10, 10, 10, 10, "4/05/2015 1:52 pm");
+		Survey DummySurvey = new Survey(10, 10, 10, 10, 10, 10, 10, 10, "4/05/2015 1:52 pm");
 		DummyUser.addSurvey(DummySurvey);
 		DummyUser = new Patient("Andres Iniesta", "ainiesta", "password", "Favorite Play?", "Croqueta", "Drake Ramoray");
 		PatientList.add(DummyUser);
-		DummySurvey = new Survey(8, 8, 8, 8, 8, "4/30/2015 2:52 pm");
+		DummySurvey = new Survey(8, 8, 8, 8, 8, 8, 8, 8, "4/30/2015 2:52 pm");
 		DummyUser.addSurvey(DummySurvey);
-		Doctor DummyDoctor = new Doctor("Drake Ramoray", "dramoray", "password", "Favorite Food?", "Pizza");
+		Doctor DummyDoctor = new Doctor("Drake Ramoray", "dramoray", "password", "Favorite Food?", "Pizza", "555-555-1234", "doctor@esas.com");
 		DummyDoctor.addPatientName("John Smith");
 		DummyDoctor.addPatientName("Andres Iniesta");
 		DoctorList.add(DummyDoctor);
@@ -249,11 +241,6 @@ public class Directory {
 		passwordField_Login = new JPasswordField();   //JPasswordField for the password
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> origin/master
 		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
 		btnDoctorSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -362,15 +349,9 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
-<<<<<<< HEAD
 					for(int i = 0; i < DoctorList.size(); i++)
 					{
-						if(careProvider.equals(DoctorList.get(i).getName()))
-=======
-					
-					for(int i = 0; i < DoctorList.size(); i++){
 						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
->>>>>>> origin/master
 							{
 								DoctorList.get(i).addPatient(newUser);
 								DoctorList.get(i).addPatientName(name);
