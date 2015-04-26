@@ -1337,7 +1337,7 @@ public class Directory {
 			}
 	public boolean addDoctor(String name1, String username1, String password1, String securityQ1, String securityA1, String phone1, String email1) {
 		try{
-			Doctor newDoctor = new Doctor(name1, username1, password1, securityQ1, securityA1, email);
+			Doctor newDoctor = new Doctor(name1, username1, password1, securityQ1, securityA1, email1);
 			DoctorList.add(newDoctor);	
 			return true;
 			}
