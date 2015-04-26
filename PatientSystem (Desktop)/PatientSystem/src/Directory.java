@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,17 +16,19 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
 import javax.swing.JList;
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JTextPane;
-import javax.swing.JCheckBox;
 
 
 public class Directory {
@@ -86,11 +90,9 @@ public class Directory {
 	private JList <String>patient_list;
 	private JTextArea textArea_ViewPatient_Names;
 	private JScrollPane scroll_patient_list;
-	private JList <String>survey_list_doctor;
+	private JList <String> survey_list_doctor;
 	private JScrollPane scroll_survey_list_doctor;
-	private JCheckBox checkboxForDoctor;
 	
-
 	//main method
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -115,8 +117,15 @@ public class Directory {
 		//REMOVE+++++++++++++++++++++++++++++++++++++++++=================+++++++++++++++++++++++++++++
 		Patient DummyUser = new Patient("John Smith", "jsmith", "password", "Favorite Color?", "Blue", "Drake Ramoray");
 		PatientList.add(DummyUser);
+		Survey DummySurvey = new Survey(10, 10, 10, 10, 10, "4/05/2015 1:52 pm");
+		DummyUser.addSurvey(DummySurvey);
+		DummyUser = new Patient("Andres Iniesta", "ainiesta", "password", "Favorite Play?", "Croqueta", "Drake Ramoray");
+		PatientList.add(DummyUser);
+		DummySurvey = new Survey(8, 8, 8, 8, 8, "4/30/2015 2:52 pm");
+		DummyUser.addSurvey(DummySurvey);
 		Doctor DummyDoctor = new Doctor("Drake Ramoray", "dramoray", "password", "Favorite Food?", "Pizza");
 		DummyDoctor.addPatientName("John Smith");
+		DummyDoctor.addPatientName("Andres Iniesta");
 		DoctorList.add(DummyDoctor);
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		frmEsasSystem = new JFrame();
@@ -231,13 +240,6 @@ public class Directory {
 		passwordField_Login = new JPasswordField();   //JPasswordField for the password
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
-		
-
-		//Determines if user is a doctor
-		JCheckBox checkboxForDoctor = new JCheckBox("Doctor");
-		checkboxForDoctor.setBounds(181, 143, 97, 23);
-		panelLogin.add(checkboxForDoctor);
-	
 
 		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
 		btnDoctorSignUp.addActionListener(new ActionListener() {
@@ -329,6 +331,9 @@ public class Directory {
 				} //check that user name is at least 6 characters long
 				else if(userName.length()<= 5){
 					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check that the care provider exists
+				else if(doctorExists(careProvider)==false){
+					JOptionPane.showMessageDialog(null, "Care Provider doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{//create a new user and add it to the ArrayList
 					Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, careProvider);
@@ -344,15 +349,16 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
-					
 					for(int i = 0; i < DoctorList.size(); i++)
 					{
-						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
+						if(careProvider.equals(DoctorList.get(i).getName()))
 							{
 								DoctorList.get(i).addPatient(newUser);
+								DoctorList.get(i).addPatientName(name);
+								System.out.print("Patient: "+newUser.getName());
+								System.out.println(" was added to: " +DoctorList.get(i).getName());
+								break;
 							}
-						else
-							System.out.println("Care Provider does not exist");
 					}
 					
 				}
@@ -969,56 +975,49 @@ public class Directory {
 				}
 				else {
 					//make and add the JList containing the patient's name associated with the doctor
-					patient_list = new JList<String>(currentDoctor.getList());
-					patient_list.setBorder(new LineBorder(new Color(0, 0, 0)));
-					scroll_patient_list = new JScrollPane(patient_list);
-					scroll_patient_list.setBounds(10, 77, 125, 95);
-					panelViewHistoryDoctor.add(scroll_patient_list);
-
-					patient_list.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
-						@Override
-						public void mouseClicked(MouseEvent e) { 
-							//use the click action to select and retrieve the surveys from a single patient user
-							int index = patient_list.locationToIndex(e.getPoint()); //get index where user clicked on
-							String patientName = currentDoctor.getPatientName(index);
-							int position = findPatientByName(patientName);
-							Patient tempPatient = PatientList.get(position);
-							System.out.println("The index is: "+index);
-							System.out.println("The patient is: "+tempPatient.getName());
-							
-							//add the second JList object
-							survey_list_doctor = new JList<String>(tempPatient.getList());
-							survey_list_doctor.setBorder(new LineBorder(new Color(0, 0, 0)));
-							scroll_survey_list_doctor = new JScrollPane(survey_list_doctor);
-							scroll_survey_list_doctor.setBounds(145, 77, 125, 95);
-							panelViewHistoryDoctor.add(scroll_survey_list_doctor);
-			
-							//add the TextArea
-							textArea_ViewPatient_Names = new JTextArea();
-							textArea_ViewPatient_Names.setBorder(new LineBorder(new Color(0, 0, 0)));
-							textArea_ViewPatient_Names.setEditable(false);
-							textArea_ViewPatient_Names.setBounds(275, 77, 150, 110);
-							panelViewHistoryDoctor.add(textArea_ViewPatient_Names);
-							
-							//refresh the panel to show both JList objects and the TextArea
-							panelViewHistoryDoctor.setVisible(false);
-							panelViewHistoryDoctor.setVisible(true);				
-							
-							//add the action listener that will retrieve the surveys for a specific user
-							survey_list_doctor.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
-								@Override
-								public void mouseClicked(MouseEvent e) { 
-									int index = survey_list_doctor.locationToIndex(e.getPoint()); //get index where user clicked on
-									Survey selectedSurvey = new Survey();	//make a new Survey to hold the information
-									selectedSurvey = tempPatient.getSurvey(index); //retrieve the corresponding Survey
-									String info = selectedSurvey.getValuesOnString(); //Obtain String with values
-									textArea_ViewPatient_Names.setText(info); //display info on textArea
-								}
-							});
-							
-							
-						}
-					});
+					patient_list = new JList<String>(currentDoctor.getList()); //make the JList containing the list of patients
+					patient_list.setBorder(new LineBorder(new Color(0, 0, 0))); //add a border to the JList object
+					scroll_patient_list = new JScrollPane(patient_list); //make a scroll pane for the JList object
+					scroll_patient_list.setBounds(10, 77, 125, 95); //set the bounds of the of scroll pane object
+					panelViewHistoryDoctor.add(scroll_patient_list); //add the patient_list to the scroll pane
+					
+					//Add the second JList object to this panel
+					survey_list_doctor = new JList<String>();
+					survey_list_doctor.setBorder(new LineBorder(new Color(0, 0, 0)));
+					scroll_survey_list_doctor = new JScrollPane(survey_list_doctor);
+					scroll_survey_list_doctor.setBounds(145, 77, 125, 95);
+					panelViewHistoryDoctor.add(scroll_survey_list_doctor);
+					
+					//add the TextArea
+					textArea_ViewPatient_Names = new JTextArea();
+					textArea_ViewPatient_Names.setBorder(new LineBorder(new Color(0, 0, 0)));
+					textArea_ViewPatient_Names.setEditable(false);
+					textArea_ViewPatient_Names.setBounds(275, 77, 150, 110);
+					panelViewHistoryDoctor.add(textArea_ViewPatient_Names);
+					
+					patient_list.addMouseListener(new MouseAdapter() { //mouse Listener	
+					@Override
+					public void mouseClicked(MouseEvent e){
+						//use the click action to select and retrieve the surveys from a single patient user
+						int index2 = patient_list.locationToIndex(e.getPoint()); //get index where user clicked on
+						String patientName = currentDoctor.getPatientName(index2); //put the corresponding patient name in a String
+						int position = findPatientByName(patientName); //find the position of the corresponding Patient in the PatientList
+						Patient tempPatient = PatientList.get(position); //retrieve the corresponding Patient into tempPatient
+						survey_list_doctor.setModel(tempPatient.getList());
+						
+						//add the action listener that will retrieve the surveys for a specific user
+						survey_list_doctor.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
+							@Override
+							public void mouseClicked(MouseEvent e) { 
+								int index = survey_list_doctor.locationToIndex(e.getPoint()); //get index where user clicked on
+								Survey selectedSurvey = new Survey();	//make a new Survey to hold the information
+								selectedSurvey = tempPatient.getSurvey(index); //retrieve the corresponding Survey
+								String info = selectedSurvey.getValuesOnString(); //Obtain String with values
+								textArea_ViewPatient_Names.setText(info); //display info on textArea
+							}
+						});
+					}
+					});//end of patient_list MouseListener
 				}//end of the else
 				
 			}
@@ -1032,7 +1031,7 @@ public class Directory {
 				panelViewPatientInfo.setVisible(true);
 			}
 		});
-		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 188, 33);
+		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 200, 33);
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientInfo);
 		JButton btn_View = new JButton("Previous Screen");
 		btn_View.addActionListener(new ActionListener() {
@@ -1041,7 +1040,7 @@ public class Directory {
 				panelLogin.setVisible(true);
 			}
 		});
-		btn_View.setBounds(108, 169, 200, 33);
+		btn_View.setBounds(108, 167, 200, 33);
 		panelMainMenuDoctor.add(btn_View);
 		//-------------------------------------------------------------------------------------------------------------------
 		
@@ -1053,7 +1052,7 @@ public class Directory {
 		JLabel lbl_ViewPatientHistory_title = new JLabel("View Patient History");
 		lbl_ViewPatientHistory_title.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lbl_ViewPatientHistory_title.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_ViewPatientHistory_title.setBounds(97, 31, 207, 28);
+		lbl_ViewPatientHistory_title.setBounds(104, 11, 207, 28);
 		panelViewHistoryDoctor.add(lbl_ViewPatientHistory_title);
 		
 		JButton btn_ViewHistoryDoctor_PreviousScreen = new JButton("Previous Screen");
@@ -1064,7 +1063,7 @@ public class Directory {
 			}
 		});
 
-		btn_ViewHistoryDoctor_PreviousScreen.setBounds(137, 223, 133, 28);
+		btn_ViewHistoryDoctor_PreviousScreen.setBounds(147, 191, 133, 28);
 
 		btn_ViewHistoryDoctor_PreviousScreen.setBounds(147, 178, 123, 28);
 
@@ -1159,5 +1158,14 @@ public class Directory {
 			return position;
 		else 
 			return -1;
+	}
+	//method that looks through the DoctorList for a given Name
+	public boolean doctorExists(String pName){
+		for (int i=0; i < DoctorList.size(); i++){
+			if (pName.equals(DoctorList.get(i).getName())){
+				return true;
+			}
+		}
+		return false;
 	}
 }
