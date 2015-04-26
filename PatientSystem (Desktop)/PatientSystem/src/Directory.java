@@ -5,8 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,7 +14,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -26,7 +23,6 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JTextPane;
 
 
 
@@ -93,7 +89,13 @@ public class Directory {
 	private JScrollPane scroll_patient_list;
 	private JList <String> survey_list_doctor;
 	private JScrollPane scroll_survey_list_doctor;
+    
+	//JList and JTextArea from ViewPatientInfo as a Doctor
+	private JList <String>patient_list_view_patient_info;
+	private JTextArea textArea_ViewPatient_Info;
+	private JScrollPane scroll_patient_list_view_patient_info;
 
+	
 	//main method
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -191,7 +193,7 @@ public class Directory {
 				
 				}
 		});
-		btnLogin.setBounds(207, 168, 89, 23);
+		btnLogin.setBounds(207, 154, 89, 23);
 		panelLogin.add(btnLogin); //add the Login button to the JPanel
 		
 		JButton btnLoginSignUp = new JButton("Sign Up"); //SignUp Button
@@ -203,7 +205,7 @@ public class Directory {
 				panelSignUp.setVisible(true); //set the sign up panel to visible
 			}
 		});
-		btnLoginSignUp.setBounds(108, 168, 89, 23);
+		btnLoginSignUp.setBounds(108, 154, 89, 23);
 		panelLogin.add(btnLoginSignUp);    //add the sign up button to the JPanel
 		
 		textField_LoginUsername = new JTextField(); //textField for Login User name
@@ -220,7 +222,7 @@ public class Directory {
 				panelForgottenCredentials.setVisible(true); //set forgotten credentials panel to visible
 			}
 		});
-		btnLoginForgottenCredentials.setBounds(108, 198, 188, 23);
+		btnLoginForgottenCredentials.setBounds(108, 184, 188, 23);
 		panelLogin.add(btnLoginForgottenCredentials);  //add the Forgotten Password button to the JPanel
 		
 		JLabel lblLoginTitle = new JLabel("Welcome to the ESAS System"); //Window Title
@@ -248,7 +250,7 @@ public class Directory {
 				panelDoctorSignUp.setVisible(true);
 			}
 		});
-		btnDoctorSignUp.setBounds(108, 230, 188, 23);
+		btnDoctorSignUp.setBounds(108, 216, 188, 23);
 		panelLogin.add(btnDoctorSignUp);
 		
 		panelLogin.setVisible(true); //Set the panelLogin to be visible
@@ -844,7 +846,7 @@ public class Directory {
 			}
 		});
 
-		btnViewHistoryPreviousScreen.setBounds(136, 193, 164, 23);
+		btnViewHistoryPreviousScreen.setBounds(136, 215, 164, 23);
 		panelViewHistory.add(btnViewHistoryPreviousScreen);
 		
 		JLabel lbl_View_History_Survey = new JLabel("Surveys:");
@@ -970,6 +972,8 @@ public class Directory {
 					textField_DoctorSignUp_Username.setText("");
 					textField_DoctorSignUp_SecurityQuestion.setText("");
 					textField_DoctorSignUp_SecurityAnswer.setText("");
+					textField_DoctorEmail.setText("");
+					textField_DoctorPhone.setText("");
 					passwordField_DoctorSignUp_Password.setText("");
 					passwordField_DoctorSignUp_ConfirmPassword.setText("");
 				}
@@ -1005,16 +1009,18 @@ public class Directory {
 		panelDoctorSignUp.add(textField_DoctorEmail);
 		textField_DoctorEmail.setColumns(10);
 		
-		JLabel lblPhone = new JLabel("Phone:");
-		lblPhone.setBounds(36, 143, 45, 23);
-		panelDoctorSignUp.add(lblPhone);
+		JLabel lbl_DoctorSignUp_Phone = new JLabel("Phone:");
+		lbl_DoctorSignUp_Phone.setHorizontalAlignment(SwingConstants.RIGHT);
+		lbl_DoctorSignUp_Phone.setBounds(10, 143, 61, 23);
+		panelDoctorSignUp.add(lbl_DoctorSignUp_Phone);
 		
-		JLabel lblEmail = new JLabel("Email:");
-		lblEmail.setBounds(42, 113, 128, 20);
-		panelDoctorSignUp.add(lblEmail);
+		JLabel lbl_DoctorSignUp_Email = new JLabel("Email:");
+		lbl_DoctorSignUp_Email.setHorizontalAlignment(SwingConstants.RIGHT);
+		lbl_DoctorSignUp_Email.setBounds(5, 113, 65, 20);
+		panelDoctorSignUp.add(lbl_DoctorSignUp_Email);
 		
 		JLabel lblExxxxXxxxxxx = new JLabel("Ex. (xxx)xxx-xxxx");
-		lblExxxxXxxxxxx.setBounds(189, 143, 223, 23);
+		lblExxxxXxxxxxx.setBounds(189, 143, 128, 23);
 		panelDoctorSignUp.add(lblExxxxXxxxxxx);
 		
 		//-----------------------------------------------------------------------------------------------------
@@ -1043,21 +1049,21 @@ public class Directory {
 					patient_list = new JList<String>(currentDoctor.getList()); //make the JList containing the list of patients
 					patient_list.setBorder(new LineBorder(new Color(0, 0, 0))); //add a border to the JList object
 					scroll_patient_list = new JScrollPane(patient_list); //make a scroll pane for the JList object
-					scroll_patient_list.setBounds(10, 77, 125, 95); //set the bounds of the of scroll pane object
+					scroll_patient_list.setBounds(10, 67, 125, 125); //set the bounds of the of scroll pane object
 					panelViewHistoryDoctor.add(scroll_patient_list); //add the patient_list to the scroll pane
 					
 					//Add the second JList object to this panel
 					survey_list_doctor = new JList<String>();
 					survey_list_doctor.setBorder(new LineBorder(new Color(0, 0, 0)));
 					scroll_survey_list_doctor = new JScrollPane(survey_list_doctor);
-					scroll_survey_list_doctor.setBounds(145, 77, 125, 95);
+					scroll_survey_list_doctor.setBounds(142, 67, 125, 125);
 					panelViewHistoryDoctor.add(scroll_survey_list_doctor);
 					
 					//add the TextArea
 					textArea_ViewPatient_Names = new JTextArea();
 					textArea_ViewPatient_Names.setBorder(new LineBorder(new Color(0, 0, 0)));
 					textArea_ViewPatient_Names.setEditable(false);
-					textArea_ViewPatient_Names.setBounds(275, 77, 150, 110);
+					textArea_ViewPatient_Names.setBounds(275, 67, 150, 125);
 					panelViewHistoryDoctor.add(textArea_ViewPatient_Names);
 					
 					patient_list.addMouseListener(new MouseAdapter() { //mouse Listener	
@@ -1087,13 +1093,45 @@ public class Directory {
 				
 			}
 		});
+		
 		btn_MainMenuDoctor_ViewPatientHistory.setBounds(108, 79, 200, 33);
 		panelMainMenuDoctor.add(btn_MainMenuDoctor_ViewPatientHistory);
+		//JButton for viewing the patient contact information 
 		JButton btn_MainMenuDoctor_ViewPatientInfo = new JButton("View Patient Contact Info");
 		btn_MainMenuDoctor_ViewPatientInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenuDoctor.setVisible(false);
 				panelViewPatientInfo.setVisible(true);
+				if (currentDoctor.isPatientListEmpty()==true){
+					JOptionPane.showMessageDialog(null, "There are no patients to view!", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else {
+					//make and add the JList containing the patient's name associated with the doctor
+					patient_list_view_patient_info = new JList<String>(currentDoctor.getList()); //make the JList containing the list of patients
+					patient_list_view_patient_info.setBorder(new LineBorder(new Color(0, 0, 0))); //add a border to the JList object
+					scroll_patient_list_view_patient_info = new JScrollPane(patient_list_view_patient_info); //make a scroll pane for the JList object
+					scroll_patient_list_view_patient_info.setBounds(60, 67, 125, 125); //set the bounds of the of scroll pane object
+					panelViewPatientInfo.add(scroll_patient_list_view_patient_info); //add the patient_list to the scroll pane
+					
+					//add the TextArea
+					textArea_ViewPatient_Info = new JTextArea();
+					textArea_ViewPatient_Info.setBorder(new LineBorder(new Color(0, 0, 0)));
+					textArea_ViewPatient_Info.setEditable(false);
+					textArea_ViewPatient_Info.setBounds(200, 67, 150, 125);
+					panelViewPatientInfo.add(textArea_ViewPatient_Info);
+					
+					patient_list_view_patient_info.addMouseListener(new MouseAdapter() { //mouse Listener	
+					@Override
+					public void mouseClicked(MouseEvent e){
+						//use the click action to select and retrieve the surveys from a single patient user
+						int index = patient_list_view_patient_info.locationToIndex(e.getPoint()); //get index where user clicked on
+						String patientName = currentDoctor.getPatientName(index); //put the corresponding patient name in a String
+						int position = findPatientByName(patientName); //find the position of the corresponding Patient in the PatientList
+						Patient tempPatient = PatientList.get(position); //retrieve the corresponding Patient into tempPatient
+						textArea_ViewPatient_Info.setText("Name: " +tempPatient.getName());
+					}
+					});//end of patient_list MouseListener
+				}//end of the else
 			}
 		});
 		btn_MainMenuDoctor_ViewPatientInfo.setBounds(108, 123, 200, 33);
@@ -1120,6 +1158,16 @@ public class Directory {
 		lbl_ViewPatientHistory_title.setBounds(104, 11, 207, 28);
 		panelViewHistoryDoctor.add(lbl_ViewPatientHistory_title);
 		
+
+		
+		JLabel lbl_ViewHistoryDoctor_Patients = new JLabel("Patients:");
+		lbl_ViewHistoryDoctor_Patients.setBounds(10, 45, 68, 14);
+		panelViewHistoryDoctor.add(lbl_ViewHistoryDoctor_Patients);
+		
+		JLabel lbl_ViewHistoryDoctor_Surveys = new JLabel("Surveys:");
+		lbl_ViewHistoryDoctor_Surveys.setBounds(143, 45, 68, 14);
+		panelViewHistoryDoctor.add(lbl_ViewHistoryDoctor_Surveys);
+		
 		JButton btn_ViewHistoryDoctor_PreviousScreen = new JButton("Previous Screen");
 		btn_ViewHistoryDoctor_PreviousScreen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1127,12 +1175,12 @@ public class Directory {
 				panelMainMenuDoctor.setVisible(true);
 			}
 		});
-
-		btn_ViewHistoryDoctor_PreviousScreen.setBounds(147, 191, 133, 28);
-
-		btn_ViewHistoryDoctor_PreviousScreen.setBounds(147, 178, 123, 28);
-
+		btn_ViewHistoryDoctor_PreviousScreen.setBounds(132, 223, 145, 28);
 		panelViewHistoryDoctor.add(btn_ViewHistoryDoctor_PreviousScreen);
+		
+		JLabel lbl_ViewHistoryDoctor_Contents = new JLabel("Contents:");
+		lbl_ViewHistoryDoctor_Contents.setBounds(278, 45, 90, 14);
+		panelViewHistoryDoctor.add(lbl_ViewHistoryDoctor_Contents);
 		//--------------------------------------------------------------------------------------------------------------------
 		
 		//View Patient Info as a Doctor panel************************************************************************************
@@ -1143,7 +1191,7 @@ public class Directory {
 		JLabel lblViewPatientInfo = new JLabel("View Patient Info");
 		lblViewPatientInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblViewPatientInfo.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblViewPatientInfo.setBounds(107, 26, 201, 45);
+		lblViewPatientInfo.setBounds(111, 11, 201, 30);
 		panelViewPatientInfo.add(lblViewPatientInfo);
 		
 		JButton btn_ViewPatientInfo_PreviousScreen = new JButton("Previous Screen");
@@ -1153,8 +1201,12 @@ public class Directory {
 				panelMainMenuDoctor.setVisible(true);
 			}
 		});
-		btn_ViewPatientInfo_PreviousScreen.setBounds(148, 178, 136, 30);
+		btn_ViewPatientInfo_PreviousScreen.setBounds(149, 210, 136, 30);
 		panelViewPatientInfo.add(btn_ViewPatientInfo_PreviousScreen);
+		
+		JLabel lbl_ViewPatientInfo_Patients = new JLabel("Patients:");
+		lbl_ViewPatientInfo_Patients.setBounds(60, 45, 68, 14);
+		panelViewPatientInfo.add(lbl_ViewPatientInfo_Patients);
 		
 		//----------------------------------------------------------------------------------------------------
 	}
