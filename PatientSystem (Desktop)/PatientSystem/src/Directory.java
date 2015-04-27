@@ -99,6 +99,10 @@ public class Directory {
 	private JList <String>patient_list_view_patient_info;
 	private JTextArea textArea_ViewPatient_Info;
 	private JScrollPane scroll_patient_list_view_patient_info;
+	
+	//Put the Button here to access later
+	JButton btnLogin = new JButton("Log In");  // Log In 
+	JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 
 	
 	//main method
@@ -148,7 +152,6 @@ public class Directory {
 		frmEsasSystem.getContentPane().add(panelLogin, "name_136526590665903");
 		panelLogin.setLayout(null);
 		
-		JButton btnLogin = new JButton("Log In");  // Log In 
 		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
@@ -567,7 +570,6 @@ public class Directory {
 		panelMainMenu.add(lblMainMenuWelcome);
 		//The View History Button checks if the user has surveys or not before going to 
 		//the View History Panel
-		JButton btnMainMenuViewHistory = new JButton("View History"); //View History button
 		btnMainMenuViewHistory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);  //hide Main Menu panel
@@ -1326,6 +1328,7 @@ public class Directory {
 		return false;
 	}
 	
+<<<<<<< HEAD
 	private void savePatientToFile() throws FileNotFoundException{
 		PrintWriter pw = new PrintWriter (new FileOutputStream("patients.txt"));
 		pw.println(PatientList.size());
@@ -1441,5 +1444,37 @@ public class Directory {
 			System.out.println("File was not found");
 		}
 	}
+=======
+	//For Testing Purposes*********************************************************************************************
+	/*
+	public boolean addPatient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
+			String pCareProvider) {
+				try{
+					Patient newPatient = new Patient(pName, pUsername, pPassword, pSecretQuestion, pSecretAnswer, pCareProvider);
+					PatientList.add(newPatient);
+					return true;
+				}
+				catch(Exception e) {
+					System.out.println(e);
+				}
+				return false;
+			}
+	public boolean addDoctor(String name1, String username1, String password1, String securityQ1, String securityA1, String phone1, String email1) {
+		try{
+			Doctor newDoctor = new Doctor(name1, username1, password1, securityQ1, securityA1, phone1, email1);
+			DoctorList.add(newDoctor);	
+			return true;
+			}
+			catch(Exception e) {
+				System.out.println(e);
+			}
+		return false;
+	}
+	/*
+	public void addSurvey() {
+		Survey newSurvey = new Survey(1, 2, 3, 4, 5, 6, 7, 8, "Today");
+		currentPatient.addSurvey(newSurvey);
+	}*/
+>>>>>>> origin/master
 }
 

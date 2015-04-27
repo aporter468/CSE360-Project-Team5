@@ -7,6 +7,15 @@ import org.restlet.security.User;
 
 public class AuthenticationVerifier extends SecretVerifier {
 
+    /**
+     * Verifies that the credentials constitute a legitimate User - either
+     * patient or provider - with the database. Also sets this User inside
+     * the request object for use down the pipeline.
+     *
+     * @param s
+     * @param chars
+     * @return
+     */
     @Override
     public int verify(String s, char[] chars) {
         AuthenticationConnector authenticationConnector = new AuthenticationConnector();

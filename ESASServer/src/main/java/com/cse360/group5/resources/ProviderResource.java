@@ -5,42 +5,48 @@ import com.cse360.group5.users.PatientUser;
 import com.cse360.group5.users.ProviderUser;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.restlet.data.Status;
+import org.restlet.ext.json.JsonRepresentation;
+import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
-import org.restlet.resource.ServerResource;
 
-public class ProviderResource extends ServerResource{
+public class ProviderResource extends BaseResource {
 
+    /**
+     * Responds to requests to "/providers". If the user requesting information
+     * is a patient we return the patient's provider's information and if the
+     * user is a provider we return their information.
+     *
+     * @param jsonRequest
+     * @return
+     */
     @Get
-    public String getProviderInformation(String jsonRequest) {
+    public Representation getProviderInformation(String jsonRequest) {
         InformationConnector informationConnector = new InformationConnector();
         ProviderUser providerUser;
 
-        // Retrieve the Provider we are getting information of depending on which user made the request
         Object user = this.getRequest().getAttributes().get("user");
-        if (user instanceof ProviderUser) {
-            providerUser = (ProviderUser) user;
-        } else if (user instanceof PatientUser) {
+        if (user instanceof PatientUser) {
             PatientUser patientUser = (PatientUser) user;
 
             // Retrieve the patient's provider
             int providerId = patientUser.getProviderId();
             providerUser = informationConnector.getProviderUser(providerId);
+        } else if (user instanceof ProviderUser) {
+            providerUser = (ProviderUser) user;
         } else {
-            throw new RuntimeException("User is not instance of either type. Should not happen");
+            getResponse().setStatus(Status.CLIENT_ERROR_PRECONDITION_FAILED);
+            return messageRepresentation("User is not a provider or patient");
         }
 
-        // Populate the provider information jsonResponse
-        JSONObject jsonResponse = new JSONObject();
+        JSONObject jsonResponse;
         try {
-            jsonResponse.put("identifier", providerUser.getIdentifier());
-            jsonResponse.put("firstname", providerUser.getFirstName());
-            jsonResponse.put("lastname", providerUser.getLastName());
-            jsonResponse.put("email", providerUser.getEmail());
-            jsonResponse.put("phone", providerUser.getPhone());
+            jsonResponse = providerUser.toJSON();
         } catch (JSONException e) {
-            throw new RuntimeException("Could not add field to provider json");
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+            return messageRepresentation("Error creating JSON of provider");
         }
 
-        return jsonResponse.toString();
+        return new JsonRepresentation(jsonResponse);
     }
 }

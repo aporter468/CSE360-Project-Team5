@@ -4,84 +4,48 @@ import com.cse360.group5.database.AuthenticationConnector;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.Status;
+import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
 
-/**
- * Registers a patient or provider. Takes in a json request with required patient or provider fields and
- * adds a row to the database for the user.
- */
-public class RegistrationResource extends ServerResource {
+public class RegistrationResource extends BaseResource {
 
     /**
-     * Takes in a json request, validates its contents, and registers the patient or provider.
+     * Responds to requests to "/register". Takes in a JSON request and depending
+     * on the fields present either registers the user as a patient or provider.
      *
-     * @param value
+     * @param jsonRequest
      * @return
      */
     @Post("json")
-    public String register(String value) {
-        // Initialize authentication connection
+    public Representation register(JSONObject jsonRequest) {
         AuthenticationConnector authenticationConnector = new AuthenticationConnector();
 
-        if (JSONValidator.validPatientRegistrationRequest(value)) {
-            try {
-                // Parse the value into json
-                JSONObject jsonObject = new JSONObject(value);
+        try {
+            // Retrieve required fields for registration
+            String firstname = jsonRequest.getString("firstname");
+            String lastname = jsonRequest.getString("lastname");
+            String email = jsonRequest.getString("email");
+            String password = jsonRequest.getString("password");
 
-                // Retrieve required fields
-                String firstname = jsonObject.getString("firstname");
-                String lastname = jsonObject.getString("lastname");
-                String email = jsonObject.getString("email");
-                String password = jsonObject.getString("password");
-                int providerid = jsonObject.getInt("providerid");
-
-                // Check for optional phone parameter and register the patient
-                if (jsonObject.has("phone")) {
-                    int phone = jsonObject.getInt("phone");
-                    authenticationConnector.registerPatient(firstname, lastname, email, password, phone, providerid);
-                } else {
-                    authenticationConnector.registerPatient(firstname, lastname, email, password, 0, providerid);
-                }
-
-                // Return success
-                return "Patient Registration Successful";
-            } catch (JSONException e) {
-                getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                return "";
+            // Check for optional phone parameter
+            int phone = 0;
+            if (jsonRequest.has("phone")) {
+                phone = jsonRequest.getInt("phone");
             }
-        } else if (JSONValidator.validProviderRegistrationRequest(value)) {
-            try {
-                // Parse the value into json
-                JSONObject jsonObject = new JSONObject(value);
 
-                // Retrieve required fields
-                String firstname = jsonObject.getString("firstname");
-                String lastname = jsonObject.getString("lastname");
-                String email = jsonObject.getString("email");
-                String password = jsonObject.getString("password");
-
-                // Check for optional phone parameter and register the patient
-                if (jsonObject.has("phone")) {
-                    int phone = jsonObject.getInt("phone");
-                    authenticationConnector.registerProvider(firstname, lastname, email, password, phone);
-                } else {
-                    authenticationConnector.registerProvider(firstname, lastname, email, password, 0);
-                }
-
-                // Return success
-                return "Provider Registration Successful";
-            } catch (JSONException e) {
-                getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                return "";
+            if (jsonRequest.has("providerid")) {
+                // Request is for patient registration
+                int providerid = jsonRequest.getInt("providerid");
+                authenticationConnector.registerPatient(firstname, lastname, email, password, phone, providerid);
+                return messageRepresentation("Patient successfully registered");
+            } else {
+                // Request is for provider registration
+                authenticationConnector.registerProvider(firstname, lastname, email, password, phone);
+                return messageRepresentation("Provider successfully registered");
             }
-        } else {
+        } catch (JSONException e) {
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            return "";
+            return messageRepresentation("Required fields missing or invalid data types from JSON request");
         }
     }
-
-
-
-
 }

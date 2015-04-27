@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * Opens and releases connections to the sqlite database containing ESAS records.
  */
-public class ESASConnector {
+public class BaseConnector {
     private final String URL = "jdbc:sqlite:esasrecords.sqlite";
     private final String DRIVER = "org.sqlite.JDBC";
 

@@ -9,7 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class InformationConnector extends ESASConnector {
+public class InformationConnector extends BaseConnector {
+
+    /**
+     * Returns the patient user for a given patientid
+     *
+     * @param patientid
+     * @return
+     */
     public PatientUser getPatientUser(int patientid) {
         String query = "SELECT firstname, lastname, email, phone, providerid FROM patients WHERE patientid = ?";
         Connection connection = getConnection();
@@ -41,6 +48,12 @@ public class InformationConnector extends ESASConnector {
         return patientUser;
     }
 
+    /**
+     * Returns the provider user for a given providerid
+     *
+     * @param providerid
+     * @return
+     */
     public ProviderUser getProviderUser(int providerid) {
         String query = "SELECT firstname, lastname, email, phone FROM providers WHERE providerid = ?";
         Connection connection = getConnection();
@@ -71,6 +84,12 @@ public class InformationConnector extends ESASConnector {
         return providerUser;
     }
 
+    /**
+     * Returns all of provider's patients
+     *
+     * @param providerid
+     * @return
+     */
     public ArrayList<PatientUser> getProvidersPatients(int providerid) {
         String query = "SELECT patientid, firstname, lastname, email, phone FROM patients WHERE providerid = ?";
         Connection connection = getConnection();
