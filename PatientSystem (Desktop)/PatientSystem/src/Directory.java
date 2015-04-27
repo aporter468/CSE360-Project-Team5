@@ -155,7 +155,6 @@ public class Directory {
 		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("How many? "+PatientList.size());
 				//check if user name exists
 				//call the function findUser that will find if the user name is in the Patient List
 				int position = findPatient(textField_LoginUsername.getText());
@@ -1328,7 +1327,6 @@ public class Directory {
 		return false;
 	}
 	
-<<<<<<< HEAD
 	private void savePatientToFile() throws FileNotFoundException{
 		PrintWriter pw = new PrintWriter (new FileOutputStream("patients.txt"));
 		pw.println(PatientList.size());
@@ -1444,7 +1442,7 @@ public class Directory {
 			System.out.println("File was not found");
 		}
 	}
-=======
+
 	//For Testing Purposes*********************************************************************************************
 	/*
 	public boolean addPatient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
@@ -1475,6 +1473,5 @@ public class Directory {
 		Survey newSurvey = new Survey(1, 2, 3, 4, 5, 6, 7, 8, "Today");
 		currentPatient.addSurvey(newSurvey);
 	}*/
->>>>>>> origin/master
 }
 
