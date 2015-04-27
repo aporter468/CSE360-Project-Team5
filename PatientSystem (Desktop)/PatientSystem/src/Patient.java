@@ -110,4 +110,8 @@ public class Patient {
 		return surveyList;
 	}
 	
+	public int surveyCount(){
+		return Surveys.size();
+	}
+	
 }

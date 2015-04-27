@@ -1,30 +1,35 @@
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import javax.swing.DefaultListModel;
-import javax.swing.JFormattedTextField;
+import java.util.Scanner;
+
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.JTextArea;
-import javax.swing.JList;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class Directory {
     //declaration of private variables
@@ -102,6 +107,8 @@ public class Directory {
 			public void run() {
 				try {
 					Directory window = new Directory(); //instantiate a new Directory
+					window.loadDoctors();
+					window.loadPatients();
 					window.frmEsasSystem.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -111,31 +118,30 @@ public class Directory {
 	}
 
 	//constructor method
-	public Directory() {
+	public Directory(){
 		initialize();
 	}
 
 	//initialize contents of frame
 	private void initialize() {
-		//REMOVE+++++++++++++++++++++++++++++++++++++++++=================+++++++++++++++++++++++++++++
-		Patient DummyUser = new Patient("John Smith", "jsmith", "password", "Favorite Color?", "Blue", "Drake Ramoray");
-		PatientList.add(DummyUser);
-		Survey DummySurvey = new Survey(10, 10, 10, 10, 10, 10, 10, 10, "4/05/2015 1:52 pm");
-		DummyUser.addSurvey(DummySurvey);
-		DummyUser = new Patient("Andres Iniesta", "ainiesta", "password", "Favorite Play?", "Croqueta", "Drake Ramoray");
-		PatientList.add(DummyUser);
-		DummySurvey = new Survey(8, 8, 8, 8, 8, 8, 8, 8, "4/30/2015 2:52 pm");
-		DummyUser.addSurvey(DummySurvey);
-		Doctor DummyDoctor = new Doctor("Drake Ramoray", "dramoray", "password", "Favorite Food?", "Pizza", "555-555-1234", "doctor@esas.com");
-		DummyDoctor.addPatientName("John Smith");
-		DummyDoctor.addPatientName("Andres Iniesta");
-		DoctorList.add(DummyDoctor);
-		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		frmEsasSystem = new JFrame();
 		frmEsasSystem.setTitle("ESAS System");
 		frmEsasSystem.setBounds(100, 100, 450, 300);
 		frmEsasSystem.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //Set Exit_On_close behavior when window is closed
 		frmEsasSystem.getContentPane().setLayout(new CardLayout(0, 0)); //set CardLayout
+		
+		frmEsasSystem.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        try {
+					savePatientToFile();
+					saveDoctorToFile();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+		    	System.exit(0);
+		    }
+		});
 		
 		//Login Panel ************************************************************************************
 		panelLogin = new JPanel();
@@ -146,6 +152,7 @@ public class Directory {
 		btnLogin.addActionListener(new ActionListener() { //Action Listener for Log In Button
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("How many? "+PatientList.size());
 				//check if user name exists
 				//call the function findUser that will find if the user name is in the Patient List
 				int position = findPatient(textField_LoginUsername.getText());
@@ -351,11 +358,11 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
+//*******************************************************************************************************************************
 					for(int i = 0; i < DoctorList.size(); i++)
 					{
 						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
 							{
-								DoctorList.get(i).addPatient(newUser);
 								DoctorList.get(i).addPatientName(name);
 								System.out.print("Patient: "+newUser.getName());
 								System.out.println(" was added to: " +DoctorList.get(i).getName());
@@ -1318,4 +1325,121 @@ public class Directory {
 		}
 		return false;
 	}
+	
+	private void savePatientToFile() throws FileNotFoundException{
+		PrintWriter pw = new PrintWriter (new FileOutputStream("patients.txt"));
+		pw.println(PatientList.size());
+		for (int i=0;i<PatientList.size();i++){
+			pw.println(PatientList.get(i).getName());
+			pw.println(PatientList.get(i).getUsername());
+			pw.println(PatientList.get(i).getPassword());
+			pw.println(PatientList.get(i).getSecretQuestion());
+			pw.println(PatientList.get(i).getSecretAnswer());
+			pw.println(PatientList.get(i).getCareProvider());
+			Patient tempPatient = PatientList.get(i);
+			pw.println(tempPatient.surveyCount());
+			for (int j=0; j<tempPatient.surveyCount();j++){
+				Survey temp = tempPatient.getSurvey(j);
+				pw.print(temp.getPain()+" ");
+				pw.print(temp.getDrowsiness()+" ");
+				pw.print(temp.getNausea()+" ");
+				pw.print(temp.getAppetite()+" ");
+				pw.print(temp.getShortnessOfBreath()+" ");
+				pw.print(temp.getDepression()+" ");
+				pw.print(temp.getAnxiety()+" ");
+				pw.print(temp.getWellbeing()+" ");
+				pw.println(temp.getDate()+" ");
+			}
+		}
+		pw.close();
+	}
+	
+	private void saveDoctorToFile() throws FileNotFoundException{
+		PrintWriter pw = new PrintWriter (new FileOutputStream("doctors.txt"));
+		pw.println(DoctorList.size());
+		for (int i=0;i<DoctorList.size();i++){
+			pw.println(DoctorList.get(i).getName());
+			pw.println(DoctorList.get(i).getUsername());
+			pw.println(DoctorList.get(i).getPassword());
+			pw.println(DoctorList.get(i).getSecurityQ());
+			pw.println(DoctorList.get(i).getSecurityA());
+			pw.println(DoctorList.get(i).getPhone());
+			pw.println(DoctorList.get(i).getEmail());
+			Doctor tempDoctor = DoctorList.get(i);
+			pw.println(tempDoctor.getPatientCount());
+			for (int j=0; j<tempDoctor.getPatientCount();j++){
+				pw.println(tempDoctor.getPatientName(j));
+			}
+		}
+		pw.close();
+	}
+	
+	public void loadPatients() throws FileNotFoundException{
+		File file = new File("patients.txt");
+		if(file.exists()){
+			Scanner sc = new Scanner(file);
+			int patientCount = sc.nextInt();
+			String Dummy = sc.nextLine();
+			for (int i=0;i<patientCount;i++){
+				String Name = sc.nextLine();
+				String Username = sc.nextLine();
+				String Password = sc.nextLine();
+				String SecretQuestion = sc.nextLine();
+				String SecretAnswer = sc.nextLine();
+				String CareProvider = sc.nextLine();
+				Patient newPatient = new Patient(Name, Username, Password, SecretQuestion, SecretAnswer, CareProvider);
+				PatientList.add(newPatient);
+				int surveyCount = sc.nextInt();
+				Dummy = sc.nextLine();
+				for (int j=0; j<surveyCount; j++){
+					int Pain = sc.nextInt();
+					int Drowsiness = sc.nextInt();
+					int Nausea = sc.nextInt();
+					int Appetite = sc.nextInt();
+					int Shortness = sc.nextInt();
+					int Depression = sc.nextInt();
+					int Anxiety = sc.nextInt();
+					int WellBeing = sc.nextInt();
+					String Date = sc.nextLine();
+					Survey newSurvey = new Survey(Pain, Drowsiness, Nausea, Appetite, Shortness, Depression, Anxiety, WellBeing, Date);
+					newPatient.addSurvey(newSurvey);
+				}
+			}
+		
+		sc.close();
+		} else {
+			System.out.println("File was not found");
+		}
+	}
+	
+	public void loadDoctors() throws FileNotFoundException{
+		File file = new File("doctors.txt");
+		if(file.exists()){
+			Scanner sc = new Scanner(file);
+			int doctorCount = sc.nextInt();
+			String Dummy = sc.nextLine();
+			for (int i=0;i<doctorCount;i++){
+				String Name = sc.nextLine();
+				String Username = sc.nextLine();
+				String Password = sc.nextLine();
+				String SecretQuestion = sc.nextLine();
+				String SecretAnswer = sc.nextLine();
+				String PhoneNumber = sc.nextLine();
+				String Email = sc.nextLine();
+				Doctor newDoctor = new Doctor(Name, Username, Password, SecretQuestion, SecretAnswer, PhoneNumber, Email);
+				DoctorList.add(newDoctor);
+				int patientCount = sc.nextInt();
+				Dummy = sc.nextLine();
+				for (int j=0; j<patientCount; j++){
+					String patientName = sc.nextLine();
+					newDoctor.addPatientName(patientName);
+				}
+			}
+		
+		sc.close();
+		} else {
+			System.out.println("File was not found");
+		}
+	}
 }
+

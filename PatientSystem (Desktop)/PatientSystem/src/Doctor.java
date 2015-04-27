@@ -1,10 +1,7 @@
-import java.util.ArrayList;
-
 import javax.swing.DefaultListModel;
 
 public class Doctor {
 	String name, username, password, securityQ, securityA, phone, email;
-	ArrayList<Patient> Patients = new ArrayList<Patient>();
 	private DefaultListModel<String> patientList = new DefaultListModel<String>();
 	
 	//Constructor
@@ -69,16 +66,6 @@ public class Doctor {
 		patientList.addElement(pPatientName);
 	}
 	
-	public void addPatient(Patient p) {
-		for(int i = 0; i < Patients.size(); i++) {
-			if(p.getName().equals(Patients.get(i).getName())) {
-				System.out.println("The Patient is already a patient of this Doctor.");
-				return;
-			}
-		}
-		Patients.add(p);
-		System.out.println("Patient has been added");
-	}
 	
 	//getters
 	public String getName()
@@ -115,17 +102,6 @@ public class Doctor {
 		return email;
 	}
 	
-	public Patient getPatient(String patientN)
-	{
-		for(int i = 0; i < Patients.size(); i++) {
-			if(patientN.equals(Patients.get(i).getName()))
-				return Patients.get(i);
-		}
-		
-		System.out.println("No Patient Found");
-		return null;
-	}
-	
 	public DefaultListModel<String> getList(){
 		return patientList;
 	}
@@ -139,4 +115,7 @@ public class Doctor {
 		return name;
 	}
 	
+	public int getPatientCount(){
+		return patientList.getSize();
+	}
 }
