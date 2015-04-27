@@ -1,5 +1,6 @@
 package com.porter.esas;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -93,6 +94,9 @@ tableLayout.removeAllViews();
                 rowTitleText.setLayoutParams(itemParams);
                 rowTitleText.setText(Survey.SURVEY_FIELDS[i]);
                 rowTitleText.setTextColor(Color.BLACK);
+                Resources res = getResources();
+                int color = res.getColor(getResources().getIdentifier("color"+i, "color", getActivity().getPackageName()));
+                rowTitleText.setBackgroundColor(color);
                 tableRow.addView(rowTitleText);
                 for (int column = dateMatches.size()-1; column >-1; column--) {
 

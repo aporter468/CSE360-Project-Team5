@@ -384,7 +384,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
     public void submitSurvey(Survey s, String comments)
     {
-        mAuthTask = new SubmitSurveyTask(s,email, password,comments, this);
+        mAuthTask = new SubmitSurveyTask(s,comments,email, password, this);
         mAuthTask.execute((Void) null);
     }
     public void setProviderInfoFragment(ProviderInfoFragment piFragment)
@@ -430,7 +430,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 json.put("depression",surveyVals[5]);
                 json.put("anxiety",surveyVals[6]);
                 json.put("wellbeing",surveyVals[7]);
-               // json.put("comments",mComments);
+                json.put("comments",mComments);
+                Log.e("mylog","comments put: "+mComments);
 
 
                 StringEntity se = new StringEntity( json.toString());

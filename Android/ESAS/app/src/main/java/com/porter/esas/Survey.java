@@ -61,6 +61,7 @@ public class Survey {
             s+=SURVEY_FIELDS[i]+": "+surveyValues[i]+"\n";
 
         }
+        s+= "Comments: "+comments+"\n";
         return s;
     }
 

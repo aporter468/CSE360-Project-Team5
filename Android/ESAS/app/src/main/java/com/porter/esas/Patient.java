@@ -49,6 +49,8 @@ public class Patient {
                         surveyArray[j] = Integer.parseInt(survey.get(Survey.SERVER_FIELD_NAMES[j]).toString());
                     }
                     Survey newS = new Survey(surveyArray, "");
+                    newS.setComments(survey.get("comments").toString());
+                    Log.e("mylog","setup survey comments: "+survey.get("comments").toString());
                     newS.setDate(Long.parseLong(survey.get("timestamp").toString()), mainActivity);
                     surveys.add(newS);
                 }
