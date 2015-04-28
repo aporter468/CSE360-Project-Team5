@@ -37,6 +37,11 @@ json_request = {'pain': 3, 'drowsiness': 4, 'nausea': 0, 'appetite': 7, 'shortne
 response = requests.post('http://localhost:3888/v1/surveys', auth=('jdoe@gmail.com', 'password123'), json=json_request)
 print(response.json())
 
+# Submit survey with comments
+json_request = {'pain': 3, 'drowsiness': 4, 'nausea': 0, 'appetite': 7, 'shortnessofbreath': 2, 'depression': 1, 'anxiety': 1, 'wellbeing': 9, 'comments': 'COMMENTS'}
+response = requests.post('http://localhost:3888/v1/surveys', auth=('jdoe@gmail.com', 'password123'), json=json_request)
+print(response.json())
+
 # Retrieve surveys from patient
 response = requests.get('http://localhost:3888/v1/surveys', auth=('jdoe@gmail.com', 'password123'))
 print(response.json())

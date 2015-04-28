@@ -166,7 +166,7 @@ public class SurveyResource extends BaseResource {
 
             // Check for optional comments section
             String comments = "";
-            if (jsonRequest.has("comment")) {
+            if (jsonRequest.has("comments")) {
                 comments = jsonRequest.getString("comments");
             }
 
