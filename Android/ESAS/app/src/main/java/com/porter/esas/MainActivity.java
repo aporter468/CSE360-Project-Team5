@@ -37,14 +37,7 @@ import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
     SectionsPagerAdapter mSectionsPagerAdapter;
     HistoryFragment historyFragment;
     PatientsFragment patientsFragment;
@@ -65,9 +58,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private ArrayList<String> patientSurveysStrings;
     ArrayList<Patient> patientsList;
     private ArrayList<Survey> topSurveysList;
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+
     ViewPager mViewPager;
 
     @Override
@@ -103,24 +94,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             setTitle("ESAS: Provider");
 
         }
-        Log.e("mylog", "Main received data: " + userType + " " + email + " " + password);
 
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
+
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
+
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -128,19 +115,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
         });
 
-        // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
+
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
         if(userType ==0) {
-          //  historyFragment = HistoryFragment.newInstance(userType);
             providerInfoFragment = ProviderInfoFragment.newInstance("","","");
         }
         else
@@ -431,6 +413,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 json.put("anxiety",surveyVals[6]);
                 json.put("wellbeing",surveyVals[7]);
                 json.put("comments",mComments);
+
                 Log.e("mylog","comments put: "+mComments);
 
 

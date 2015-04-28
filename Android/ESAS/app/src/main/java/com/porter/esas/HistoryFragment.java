@@ -16,20 +16,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class HistoryFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
+
     public static HistoryFragment newInstance(int userType) {
         HistoryFragment fragment = new HistoryFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, userType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +66,7 @@ View rootView;
             }
         }
 
-       //show first (= most recent survey for taht day) in top table
+       //show first (= most recent survey for that day) in top table
         TableLayout.LayoutParams rowParams =
                 new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.FILL_PARENT, 1f);
 

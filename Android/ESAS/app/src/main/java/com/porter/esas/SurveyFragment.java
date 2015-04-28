@@ -14,18 +14,12 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class SurveyFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
+
     private static final String ARG_SECTION_NUMBER = "section_number";
     final private int[] surveyValues = new int[Survey.NUM_SURVEY_FIELDS];
     private EditText commentsET;
     private String comments;
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
+
     public static SurveyFragment newInstance(int sectionNumber) {
         SurveyFragment fragment = new SurveyFragment();
         Bundle args = new Bundle();

@@ -2,52 +2,20 @@ package com.porter.esas;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.util.Log;
 import android.view.View;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Random;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
 
 
 public class GraphView extends View {
 
     public int width;
     public  int height;
-    //private Bitmap  mBitmap;
     Context context;
-    private int graphMode;//-1 = all foods; 0-5 are food categories; 6=height, 7=weight, 8= bmi
-
-    public  final int NUM_FACTS = 6;
-
-    //sizes- ratios to 1, for touch scaling
-
-
 
     Paint paint;
     ArrayList<Survey> surveys;
@@ -65,7 +33,6 @@ public class GraphView extends View {
 public void setSurveysList(ArrayList<Survey> surveys)
 {
     this.surveys = surveys;
-    Log.e("mylog","new surveys list: "+surveys.size());
     invalidate();
 }
     @Override
@@ -121,12 +88,12 @@ public void setSurveysList(ArrayList<Survey> surveys)
     }
     public void reDraw()
     {
+
         invalidate();
     }
     public void cleanUp()
     {
-        //	mBitmap.recycle();
-        //	mBitmap = null;
+
         System.gc();
         Runtime.getRuntime().gc();
     }

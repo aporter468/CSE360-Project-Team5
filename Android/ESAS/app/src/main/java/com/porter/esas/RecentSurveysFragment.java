@@ -2,6 +2,7 @@ package com.porter.esas;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,25 +14,16 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import android.graphics.Color;
 
 public class RecentSurveysFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
+
     final private int[] surveyValues = new int[Survey.NUM_SURVEY_FIELDS];
     private EditText commentsET;
     private  ArrayList<Survey> topSurveysList;
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
+
     public static RecentSurveysFragment newInstance() {
         RecentSurveysFragment fragment = new RecentSurveysFragment();
         Bundle args = new Bundle();
-        // args.putInt(ARG_SECTION_NUMBER, );
         fragment.setArguments(args);
         return fragment;
     }

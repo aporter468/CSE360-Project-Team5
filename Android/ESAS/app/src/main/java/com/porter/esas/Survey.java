@@ -18,7 +18,6 @@ public class Survey {
     {
         this.surveyValues= surveyValues;
         this.comments = comments;
-       // this.date = date;
     }
 
     public int[] getSurveyValues() {
@@ -39,7 +38,6 @@ public class Survey {
         c = Calendar.getInstance();
         c.setTime(d);
 
-        //Toast.makeText(activity, sdf.format(c), Toast.LENGTH_SHORT).show();
     }
     public Calendar getCalendar()
     {
@@ -61,7 +59,8 @@ public class Survey {
             s+=SURVEY_FIELDS[i]+": "+surveyValues[i]+"\n";
 
         }
-        s+= "Comments: "+comments+"\n";
+        if(!comments.equals(""))
+             s+= "Comments: "+comments+"\n";
         return s;
     }
 

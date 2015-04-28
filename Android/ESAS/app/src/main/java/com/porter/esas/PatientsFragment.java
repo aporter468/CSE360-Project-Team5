@@ -157,7 +157,7 @@ private void openPatientDetails(Patient p) {
 
              @Override
              public void onClick(View v) {
-                // open survey details(p);
+                // open survey details
                  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                  builder.setTitle("Survey Details");
                  final TextView infoText = new TextView(getActivity());

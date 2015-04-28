@@ -142,12 +142,10 @@ public class RegisterActivity extends Activity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+
             showProgress(true);
             mAuthTask = new UserRegisterTask(firstname,lastname,email, password, userType,this);
             mAuthTask.execute((Void) null);
@@ -156,9 +154,7 @@ public class RegisterActivity extends Activity {
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -180,8 +176,7 @@ public class RegisterActivity extends Activity {
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
+
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
@@ -231,6 +226,7 @@ public class RegisterActivity extends Activity {
                 json.put("firstname",mFirstname);
                 json.put("lastname",mLastname);
                 json.put("email", mEmail);
+                json.put("phone","1233231123");
                 json.put("password", mPassword);
                 if(mUserType == 0)//is patient
                     json.put("providerid",1);
