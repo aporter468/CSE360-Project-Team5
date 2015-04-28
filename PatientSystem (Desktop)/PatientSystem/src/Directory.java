@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -374,7 +375,7 @@ public class Directory {
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
 					passwordField_SignUpConfirmPassword.setText("");
-//*******************************************************************************************************************************
+					//Patient name is added to the corresponding doctor 
 					for(int i = 0; i < DoctorList.size(); i++)
 					{
 						if(newUser.getCareProvider().equals(DoctorList.get(i).getName()))
@@ -1168,16 +1169,20 @@ public class Directory {
 						int position = findPatientByName(patientName); //find the position of the corresponding Patient in the PatientList
 						Patient tempPatient = PatientList.get(position); //retrieve the corresponding Patient into tempPatient
 						survey_list_doctor.setModel(tempPatient.getList());
-						
+		
 						//add the action listener that will retrieve the surveys for a specific user
 						survey_list_doctor.addMouseListener(new MouseAdapter() { //mouse Listener for clicking on List
 							@Override
 							public void mouseClicked(MouseEvent e) { 
 								int index = survey_list_doctor.locationToIndex(e.getPoint()); //get index where user clicked on
 								Survey selectedSurvey = new Survey();	//make a new Survey to hold the information
-								selectedSurvey = tempPatient.getSurvey(index); //retrieve the corresponding Survey
-								String info = selectedSurvey.getValuesOnString(); //Obtain String with values
-								textArea_ViewPatient_Names.setText(info); //display info on textArea
+								try {
+									selectedSurvey = tempPatient.getSurvey(index); //retrieve the corresponding Survey
+									String info = selectedSurvey.getValuesOnString(); //Obtain String with values
+									textArea_ViewPatient_Names.setText(info); //display info on textArea
+								} catch (Exception e1) {
+									//System.out.println("Survey was not retrieved for this user");
+								}
 							}
 						});
 					}
@@ -1265,6 +1270,10 @@ public class Directory {
 		JButton btn_ViewHistoryDoctor_PreviousScreen = new JButton("Previous Screen");
 		btn_ViewHistoryDoctor_PreviousScreen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				textArea_ViewPatient_Names.setText("");
+				survey_list_doctor.removeAll();
+				patient_list.removeAll();
+				panelViewHistoryDoctor.remove(scroll_survey_list_doctor);
 				panelViewHistoryDoctor.setVisible(false);
 				panelMainMenuDoctor.setVisible(true);
 			}
@@ -1380,10 +1389,10 @@ public class Directory {
 		Patient temp = new Patient();
 		int position = -1; 
 		int i = 0;
-		while ((found==false)&&(i<length)){
+		while ((found==false)&&(i<length)){ //traverse ArraList looking for a match
 			temp = PatientList.get(i);
 			if (pName.equalsIgnoreCase(temp.getName())){
-				found = true;
+				found = true; //change the condition and save the index position
 				position = i;
 			}
 			i++;
@@ -1416,6 +1425,7 @@ public class Directory {
 		return found;
 	}
 	
+	//method to save the 
 	private void savePatientToFile() throws FileNotFoundException{
 		PrintWriter pw = new PrintWriter (new FileOutputStream("patients.txt"));
 		pw.println(PatientList.size());
@@ -1439,7 +1449,7 @@ public class Directory {
 				pw.print(temp.getDepression()+" ");
 				pw.print(temp.getAnxiety()+" ");
 				pw.print(temp.getWellbeing()+" ");
-				pw.println(temp.getDate()+" ");
+				pw.println(temp.getDate());
 			}
 		}
 		pw.close();
@@ -1493,6 +1503,7 @@ public class Directory {
 					int Anxiety = sc.nextInt();
 					int WellBeing = sc.nextInt();
 					String Date = sc.nextLine();
+					Date = Date.trim();
 					Survey newSurvey = new Survey(Pain, Drowsiness, Nausea, Appetite, Shortness, Depression, Anxiety, WellBeing, Date);
 					newPatient.addSurvey(newSurvey);
 				}
