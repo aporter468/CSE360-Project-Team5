@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -55,7 +56,7 @@ public class Directory {
 	private JTextField textField_SignUpLastName;
 	private JTextField textField_SignUpUsername;
 	private JTextField textField_SignUpSecretQuestion;
-	private JTextField textField_SignUpCareProvider;
+	private JTextField textField_SignUp_PhoneNumber;
 	private JPasswordField passwordField_SignUpPassword;
 	private JPasswordField passwordField_SignUpConfirmPassword;
 	private JTextField textField_SignUpSecretAnswer;
@@ -111,8 +112,8 @@ public class Directory {
 			public void run() {
 				try {
 					Directory window = new Directory(); //instantiate a new Directory
-					window.loadDoctors();
-					window.loadPatients();
+					window.loadDoctors(); //load information from file
+					window.loadPatients(); //load information from file
 					window.frmEsasSystem.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -134,6 +135,7 @@ public class Directory {
 		frmEsasSystem.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //Set Exit_On_close behavior when window is closed
 		frmEsasSystem.getContentPane().setLayout(new CardLayout(0, 0)); //set CardLayout
 		
+		//the following method overrides the DefaultCloseOperation to be able to execute the saving methods when closing the application
 		frmEsasSystem.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -168,6 +170,9 @@ public class Directory {
 						panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
 						currentPatient = temp;  //save the currently logged patient in currentPatient
 					}
+					else {//display a message if the password is incorrect
+						JOptionPane.showMessageDialog(null, "Incorrect password. Try Again.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 				else { //look for the user name in the Doctor List
 						position = findDoctor(textField_LoginUsername.getText());
@@ -193,6 +198,9 @@ public class Directory {
 								panelLogin.setVisible(false); //set the panelLogin to not visible
 								panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
 								currentDoctor = tempDoctor;
+							}
+							else { //display a message if the password is incorrect
+								JOptionPane.showMessageDialog(null, "Incorrect Password. Try Again.", "Error", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 						else if (position==-1){//display message if user name does not exist
@@ -252,14 +260,14 @@ public class Directory {
 		passwordField_Login = new JPasswordField();   //JPasswordField for the password
 		passwordField_Login.setBounds(181, 116, 112, 20);
 		panelLogin.add(passwordField_Login);
-		JButton btnDoctorSignUp = new JButton("Doctor Sign Up");
+		JButton btnDoctorSignUp = new JButton("Doctor Sign Up"); //JButton to navigate to the Doctor Sign Up panel
 		btnDoctorSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelLogin.setVisible(false);
+				panelLogin.setVisible(false); //change the visibility of the panels
 				panelDoctorSignUp.setVisible(true);
 			}
 		});
-		btnDoctorSignUp.setBounds(108, 216, 188, 23);
+		btnDoctorSignUp.setBounds(108, 216, 188, 23); //set bounds
 		panelLogin.add(btnDoctorSignUp);
 		
 		panelLogin.setVisible(true); //Set the panelLogin to be visible
@@ -316,38 +324,44 @@ public class Directory {
 		panelSignUp.add(textField_SignUpSecretQuestion);
 		textField_SignUpSecretQuestion.setColumns(10);
 		
-		JButton btnSignUpCreateNewUser = new JButton("Register");
-		btnSignUpCreateNewUser.addActionListener(new ActionListener() {
+		JButton btnSignUpCreateNewUser = new JButton("Register"); //Register button
+		btnSignUpCreateNewUser.addActionListener(new ActionListener() { //Action Listener for the Register button
 			public void actionPerformed(ActionEvent e) {
-				String firstName = textField_SignUpFirstName.getText();
+				String firstName = textField_SignUpFirstName.getText(); //collect Strings from textFields
 				String lastName = textField_SignUpLastName.getText();
 				String name = firstName + " " + lastName;
 				String userName = textField_SignUpUsername.getText();
-				String careProvider = textField_SignUpCareProvider.getText();
+				String PhoneNumber = textField_SignUp_PhoneNumber.getText();
 				String secretQuestion = textField_SignUpSecretQuestion.getText();
 				String secretAnswer = textField_SignUpSecretAnswer.getText();
 				@SuppressWarnings("deprecation")
-				String password = passwordField_SignUpPassword.getText();
+				String password = passwordField_SignUpPassword.getText(); //collect password from password Fields
 				@SuppressWarnings("deprecation")
 				String passwordConfirmation = passwordField_SignUpConfirmPassword.getText();
 				//check if passwords match
-				if (!password.equals(passwordConfirmation)){
+				if (!password.equals(passwordConfirmation)){ //check that both passwords fields match
 					JOptionPane.showMessageDialog(null, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
 				} //check if password is at least 6 characters
-				else if(password.length()<=5){
+				else if(password.length()<=5){ 
 					JOptionPane.showMessageDialog(null, "Password must be at least 6 characters", "Error", JOptionPane.ERROR_MESSAGE);
 				} //check if name is at least 3 characters long
-				else if(name.length() <= 3){
+				else if(name.length() <= 3){  
 					JOptionPane.showMessageDialog(null, "Invalid name", "Error", JOptionPane.ERROR_MESSAGE);
 				} //check that user name is at least 6 characters long
-				else if(userName.length()<= 5){
+				else if(userName.length()<= 5){ 
 					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
-				} //check that the care provider exists
-				else if(doctorExists(careProvider)==false){
-					JOptionPane.showMessageDialog(null, "Care Provider doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
+				} //check that the user name is not taken already
+				else if(checkUsername(userName)==true){
+					JOptionPane.showMessageDialog(null, "Username already exists in the system!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{//create a new user and add it to the ArrayList
-					Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, careProvider);
+					Patient newUser = new Patient(name, userName, password, secretQuestion, secretAnswer, "", PhoneNumber);
+					//check to see if there any existing Doctors in the system to be assigned this patient
+					if (DoctorList.size()>0){ //if there are existing doctors a randomly assigned cared provider will be assigned to the patient
+						int doctorIndex = randNumber(0,DoctorList.size()-1);
+						String CareProvider = DoctorList.get(doctorIndex).getName();
+						newUser.setCareProvider(CareProvider);
+					}
 					PatientList.add(newUser);
 					JOptionPane.showMessageDialog(null, "User: " + userName +" was created!");
 					System.out.println("New user: " + name + " was added!");
@@ -355,7 +369,7 @@ public class Directory {
 					textField_SignUpFirstName.setText("");
 					textField_SignUpLastName.setText("");
 					textField_SignUpUsername.setText("");
-					textField_SignUpCareProvider.setText("");
+					textField_SignUp_PhoneNumber.setText("");
 					textField_SignUpSecretQuestion.setText("");
 					textField_SignUpSecretAnswer.setText("");
 					passwordField_SignUpPassword.setText("");
@@ -385,26 +399,27 @@ public class Directory {
 				textField_SignUpLastName.setText("");
 				textField_SignUpUsername.setText("");
 				textField_SignUpSecretQuestion.setText("");
-				textField_SignUpCareProvider.setText("");
+				textField_SignUp_PhoneNumber.setText("");
 				passwordField_SignUpPassword.setText("");
 				passwordField_SignUpConfirmPassword.setText("");
 				textField_SignUpSecretAnswer.setText("");
+				//change the visibility of the panels
 				panelSignUp.setVisible(false);
 				panelLogin.setVisible(true);
 			}
 		});
 		btnSignUpGoBack.setBounds(259, 214, 146, 23);
 		panelSignUp.add(btnSignUpGoBack); //add the previous screen button
+		//text field for the Sign Up of a Doctor user
+		textField_SignUp_PhoneNumber = new JTextField();
+		textField_SignUp_PhoneNumber.setBounds(103, 119, 86, 20);
+		panelSignUp.add(textField_SignUp_PhoneNumber);
+		textField_SignUp_PhoneNumber.setColumns(10);
 		
-		textField_SignUpCareProvider = new JTextField();
-		textField_SignUpCareProvider.setBounds(103, 119, 86, 20);
-		panelSignUp.add(textField_SignUpCareProvider);
-		textField_SignUpCareProvider.setColumns(10);
-		
-		JLabel lblNewLabel = new JLabel("Care Provider:");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel.setBounds(10, 122, 84, 14);
-		panelSignUp.add(lblNewLabel);
+		JLabel lblSignUpPhoneNumber = new JLabel("Phone Number:");
+		lblSignUpPhoneNumber.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSignUpPhoneNumber.setBounds(0, 116, 96, 14);
+		panelSignUp.add(lblSignUpPhoneNumber);
 		
 		passwordField_SignUpPassword = new JPasswordField();
 		passwordField_SignUpPassword.setBounds(329, 88, 86, 20);
@@ -433,6 +448,11 @@ public class Directory {
 		lblSignUpSecretAnswer.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSignUpSecretAnswer.setBounds(10, 218, 105, 14);
 		panelSignUp.add(lblSignUpSecretAnswer);
+		
+		JLabel lblNewLabel = new JLabel("Ex. (xxx) xxx-xxxx");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(81, 139, 131, 20);
+		panelSignUp.add(lblNewLabel);
 		//----------------------------------------------------------------------------------------------------
 		
 		//Forgotten Credentials Panel*************************************************************************
@@ -469,7 +489,7 @@ public class Directory {
 						Doctor tempDoctor = new Doctor();
 						tempDoctor = DoctorList.get(position);
 						textField_ForgottenCredentialsSecretQuestion.setText(tempDoctor.getSecurityQ());
-					} else {
+					} else { //display error message
 						JOptionPane.showMessageDialog(null, "Username was not found!", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -489,17 +509,18 @@ public class Directory {
 				//check if the answer provided matches the Secret Answer stored
 				//get the position of the user in the ArrayList to get the information stored
 				int position = findPatient(textField_ForgottenCredentialsUsername.getText());
-				if (position == -1){
+				if (position == -1){ //find the user using the findPatient or findDoctor method
 					position = findDoctor(textField_ForgottenCredentialsUsername.getText());
-					if (position >= 0){
+					if (position >= 0){ //retrieve the answer and use it to compare with the String from the Text Field
 						String answer = textField_ForgottenCredentialsSecretAnswer.getText();
 						Doctor tempDoctor = new Doctor();
 						tempDoctor = DoctorList.get(position);
+						//check if the answer matches what it is stored as the secret answer and provide the password
 						if (answer.equals(tempDoctor.getSecurityA())){
 							String password = tempDoctor.getPassword();
 							JOptionPane.showMessageDialog(null, "Password is: "+password, "Password Recovery", JOptionPane.WARNING_MESSAGE);
 						}
-						else {
+						else {//display an error if the answer doesn't match what was entered in the TextField
 							JOptionPane.showMessageDialog(null, "Incorrect Answer!", "Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
@@ -507,12 +528,12 @@ public class Directory {
 				else {
 					String answer = textField_ForgottenCredentialsSecretAnswer.getText();
 					Patient temp = new Patient();
-					temp = PatientList.get(position);
+					temp = PatientList.get(position); 	//check if the answer matches what it is stored as the secret answer and provide the password
 					if (answer.equals(temp.getSecretAnswer())){
 						String password = temp.getPassword();
 						JOptionPane.showMessageDialog(null, "Password is: "+password, "Password Recovery", JOptionPane.WARNING_MESSAGE);
 					}
-					else {
+					else {//display an error if the answer doesn't match what was entered in the TextField
 						JOptionPane.showMessageDialog(null, "Incorrect Answer!", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -542,6 +563,7 @@ public class Directory {
 				textField_ForgottenCredentialsUsername.setText("");
 				textField_ForgottenCredentialsSecretAnswer.setText("");
 				textField_ForgottenCredentialsSecretQuestion.setText("");
+				//change the visibility of the panels to show the navigation between them
 				panelForgottenCredentials.setVisible(false);
 				panelLogin.setVisible(true);
 			}
@@ -573,17 +595,17 @@ public class Directory {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);  //hide Main Menu panel
 				panelViewHistory.setVisible(true); //show the View History panel
-				if (currentPatient.surveyIsEmpty()==true){
+				if (currentPatient.surveyIsEmpty()==true){ //display a message if there are no surveys to view for the current patient
 					JOptionPane.showMessageDialog(null, "There are no surveys to view!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
-				else {
+				else { //create a JList object that will hold the list of surveys for the current patient
 					survey_list = new JList<String>(currentPatient.getList());
 					survey_list.setBorder(new LineBorder(new Color(0, 0, 0)));
+					//add the JList inside of a JScrollpane so it will be able to scroll 
 					scroll_survey_list = new JScrollPane(survey_list);
 					scroll_survey_list.setBounds(27, 77, 155, 94);
 					panelViewHistory.add(scroll_survey_list);
-					
-					//add the TextArea
+					//add the TextArea that will display the contents of each individual survey
 					textArea_ViewHistory_Surveys = new JTextArea();
 					textArea_ViewHistory_Surveys.setBorder(new LineBorder(new Color(0, 0, 0)));
 					textArea_ViewHistory_Surveys.setEditable(false);
@@ -604,24 +626,36 @@ public class Directory {
 		});
 		btnMainMenuViewHistory.setBounds(108, 93, 200, 23);
 		panelMainMenu.add(btnMainMenuViewHistory);
-		
+		//JButton for accessing the Care Provider Information
 		JButton btnMainMenuAccessCPInformation = new JButton("Access Care Provider Info");
 		btnMainMenuAccessCPInformation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelMainMenu.setVisible(false);
 				panelViewCareProviderInfo.setVisible(true);
-				
+				//add the text area that will display the information about the care provider
 				JTextArea textArea = new JTextArea();
 				textArea.setEditable(false);
-				textArea.setBounds(95, 85, 232, 79);
+				textArea.setBounds(75, 85, 250, 90);
+				textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 				panelViewCareProviderInfo.add(textArea);
-			
-					for(int i = 0; i < DoctorList.size(); i++){
-						if(currentPatient.getCareProvider().equals(DoctorList.get(i).getName()))
-						{
-							textArea.setText("\n" + "     " + DoctorList.get(i).getName() + "\n" + "     Phone: " + DoctorList.get(i).getPhone() + "\n" + "     Email: " + DoctorList.get(i).getEmail());		
-						}
+				//check to see if the current patient has an assigned care provider
+				if (currentPatient.getCareProvider().equals("")){//displayed a message in case the patient doesn't have one assigned
+					textArea.setText("You currently do not have a Care Provider assigned to you at this moment");
+				}
+				else{//if the patient has one assigned, retrieved the doctor and set the text area to display the corresponding information
+					int index = findDoctorByName(currentPatient.getCareProvider());
+					if (index >= 0){ //if the doctor was found used the index to retrieve its information
+						textArea.setText("Position: "+index);
+						Doctor tempDoctor = DoctorList.get(index); //retrieve the doctor and get the information into a string
+						String info = String.format(" Name: \n %s \n Phone Number: %s \n Email: \n %s", tempDoctor.getName(), 
+								tempDoctor.getPhone(), tempDoctor.getEmail());
+						textArea.setText(info); //set the text area to display the string with the information
 					}
+					else { //if the care provider was not found in the DoctorList display a message
+						textArea.setText("\n         Care Provider was not found in \n         the directory of Care Providers");
+					}
+					
+				}
 			}
 		});
 		btnMainMenuAccessCPInformation.setBounds(108, 127, 200, 23);
@@ -630,11 +664,14 @@ public class Directory {
 		//Button to Complete Survey from the Main Menu
 		JButton btnMainMenuCompleteSurvey = new JButton("Complete Survey");
 		btnMainMenuCompleteSurvey.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) { //action listener for the Complete Survey Button
+				//add the JSpinner object that represents the date for the Survey 
 				spinnerCompleteSurveyDate.setModel(new SpinnerDateModel());
-				spinnerCompleteSurveyDate.setEditor(new JSpinner.DateEditor(spinnerCompleteSurveyDate, "dd/MM/yyyy hh:mm:ss a"));
+				spinnerCompleteSurveyDate.setEditor(new JSpinner.DateEditor(spinnerCompleteSurveyDate, "dd/MM/yyyy hh:mm a"));
 				spinnerCompleteSurveyDate.setBounds(254, 123, 159, 20);
+				//add to the panel
 				panelCompleteSurvey.add(spinnerCompleteSurveyDate);
+				//change the visibility of the panels
 				panelMainMenu.setVisible(false);
 				panelCompleteSurvey.setVisible(true);
 			}
@@ -797,7 +834,7 @@ public class Directory {
 				int depression = (int)spinnerCompleteSurveyDepression.getValue();
 				int anxiety = (int)spinnerCompleteSurveyAnxiety.getValue();
 				int wellbeing = (int)spinnerCompleteSurveyWellbeing.getValue();
-				String date = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(spinnerCompleteSurveyDate.getValue());
+				String date = new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(spinnerCompleteSurveyDate.getValue());
 				//add the survey to the Correct Patient
 				Survey completedSurvey = new Survey(pain, drowsiness, nausea, appetite, shortnessOfBreath, depression, anxiety, wellbeing, date);
 				//--------------completedSurvey.printAll();
@@ -826,11 +863,11 @@ public class Directory {
 		});
 		btnCompleSurveyPreviousScreen.setBounds(254, 205, 134, 23);
 		panelCompleteSurvey.add(btnCompleSurveyPreviousScreen);
-		
+		//JLabel describing the usage of the JSpinner
 		JLabel lblCompleteSurveyDescription1 = new JLabel("1 is lowest level of symptom possible");
 		lblCompleteSurveyDescription1.setBounds(201, 63, 242, 30);
 		panelCompleteSurvey.add(lblCompleteSurveyDescription1);
-		
+		//JLabel describing the usage of the JSpinner
 		JLabel lblCompleteSurveyDescription2 = new JLabel("10 is highest level of symptom possible");
 		lblCompleteSurveyDescription2.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCompleteSurveyDescription2.setBounds(201, 96, 242, 14);
@@ -852,6 +889,7 @@ public class Directory {
 		JButton btnCareProviderInfoPreviousScreen = new JButton("Previous Screen");
 		btnCareProviderInfoPreviousScreen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//change the visibility of the panels
 				panelViewCareProviderInfo.setVisible(false);
 				panelMainMenu.setVisible(true);
 			}
@@ -877,8 +915,10 @@ public class Directory {
 		JButton btnViewHistoryPreviousScreen = new JButton("Previous Screen");
 		btnViewHistoryPreviousScreen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//change the visibility of the panels
 				panelViewHistory.setVisible(false);
 				panelMainMenu.setVisible(true);
+				//if there are no surveys for the current patient then the text area and the JScroll pane are removed
 				if (currentPatient.surveyIsEmpty()==false){
 					panelViewHistory.remove(textArea_ViewHistory_Surveys);
 					panelViewHistory.remove(scroll_survey_list);
@@ -1001,10 +1041,20 @@ public class Directory {
 				} //check that user name is at least 6 characters long
 				else if(userName.length()<= 5){
 					JOptionPane.showMessageDialog(null, "Username too short", "Error", JOptionPane.ERROR_MESSAGE);
+				}//check that the user name is not taken already
+				else if(checkUsername(userName)==true){
+					JOptionPane.showMessageDialog(null, "Username already exists in the system!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				else{//create a new user and add it to the ArrayList
 					Doctor newUser = new Doctor(name, userName, password, secretQuestion, secretAnswer, phone, email);
-					DoctorList.add(newUser);
+					//check to see if there any Patients without an assigned Doctor and add them to the new Doctor user
+					for(int i=0;i<PatientList.size();i++){
+						if (PatientList.get(i).getCareProvider().equals("")){ //check to see if there's no Care Provider assigned to the Patient
+							PatientList.get(i).setCareProvider(newUser.getName());//add the Care Provider's name to the Patient
+							newUser.addPatientName(PatientList.get(i).getName());//add the Patient Name to the Care Provider's list of patients
+						}
+					}
+					DoctorList.add(newUser); //add the new Doctor User to the DoctorList
 					JOptionPane.showMessageDialog(null, "User: " + userName +" was created!");
 					System.out.println("New Doctor user: " + name + " was added!");
 					//clear textFields
@@ -1023,9 +1073,10 @@ public class Directory {
 		btn_DoctorSignUp_Register.setBounds(277, 176, 135, 23);
 		panelDoctorSignUp.add(btn_DoctorSignUp_Register);
 		
-		JButton btn_DoctorSignUp_PreviousScreen = new JButton("Previous Screen");
-		btn_DoctorSignUp_PreviousScreen.addActionListener(new ActionListener() {
+		JButton btn_DoctorSignUp_PreviousScreen = new JButton("Previous Screen");//Previous Screen Button
+		btn_DoctorSignUp_PreviousScreen.addActionListener(new ActionListener() { //Action Listener for the Previous Screen button
 			public void actionPerformed(ActionEvent e) {
+				//clear all the text fields
 				textField_DoctorSignUp_FirstName.setText("");
 				textField_DoctorSignUp_LastName.setText("");
 				textField_DoctorSignUp_Username.setText("");
@@ -1033,6 +1084,7 @@ public class Directory {
 				textField_DoctorSignUp_SecurityAnswer.setText("");
 				passwordField_DoctorSignUp_Password.setText("");
 				passwordField_DoctorSignUp_ConfirmPassword.setText("");
+				//change the visibility of the panels
 				panelDoctorSignUp.setVisible(false);
 				panelLogin.setVisible(true);
 			}
@@ -1090,21 +1142,21 @@ public class Directory {
 					patient_list = new JList<String>(currentDoctor.getList()); //make the JList containing the list of patients
 					patient_list.setBorder(new LineBorder(new Color(0, 0, 0))); //add a border to the JList object
 					scroll_patient_list = new JScrollPane(patient_list); //make a scroll pane for the JList object
-					scroll_patient_list.setBounds(10, 67, 125, 125); //set the bounds of the of scroll pane object
+					scroll_patient_list.setBounds(10, 67, 125, 135); //set the bounds of the of scroll pane object
 					panelViewHistoryDoctor.add(scroll_patient_list); //add the patient_list to the scroll pane
 					
 					//Add the second JList object to this panel
 					survey_list_doctor = new JList<String>();
 					survey_list_doctor.setBorder(new LineBorder(new Color(0, 0, 0)));
 					scroll_survey_list_doctor = new JScrollPane(survey_list_doctor);
-					scroll_survey_list_doctor.setBounds(142, 67, 125, 125);
+					scroll_survey_list_doctor.setBounds(142, 67, 125, 135);
 					panelViewHistoryDoctor.add(scroll_survey_list_doctor);
 					
 					//add the TextArea
 					textArea_ViewPatient_Names = new JTextArea();
 					textArea_ViewPatient_Names.setBorder(new LineBorder(new Color(0, 0, 0)));
 					textArea_ViewPatient_Names.setEditable(false);
-					textArea_ViewPatient_Names.setBounds(275, 67, 150, 125);
+					textArea_ViewPatient_Names.setBounds(275, 67, 150, 135);
 					panelViewHistoryDoctor.add(textArea_ViewPatient_Names);
 					
 					patient_list.addMouseListener(new MouseAdapter() { //mouse Listener	
@@ -1169,7 +1221,8 @@ public class Directory {
 						String patientName = currentDoctor.getPatientName(index); //put the corresponding patient name in a String
 						int position = findPatientByName(patientName); //find the position of the corresponding Patient in the PatientList
 						Patient tempPatient = PatientList.get(position); //retrieve the corresponding Patient into tempPatient
-						textArea_ViewPatient_Info.setText("Name: " +tempPatient.getName());
+						String info = String.format("Patient Name: \n%s \nPatient Phone Number: \n%s", tempPatient.getName(), tempPatient.getPhoneNumber());
+						textArea_ViewPatient_Info.setText(info);
 					}
 					});//end of patient_list MouseListener
 				}//end of the else
@@ -1274,7 +1327,8 @@ public class Directory {
 		else
 			return -1;
 	}
-	
+
+//method that finds the index of a doctor in the DoctorList based on the user name
 	public int findDoctor(String pUsername){
 		//check if user name exists
 		boolean found = false;
@@ -1296,6 +1350,28 @@ public class Directory {
 			return -1;
 	}
 
+	
+//method that finds the index of a doctor in the DoctorList based on the Name
+	public int findDoctorByName(String pName){
+		//check if user name exists
+		boolean found = false;
+		int length = DoctorList.size(); //get the size of ArrayList
+		Doctor tempDoctor = new Doctor();   //make a temporary Patient
+		int position = -1;
+		int i = 0;                     //counter
+		while ((found==false)&&(i<length)){ //go through ArrayList looking for match on user name
+			tempDoctor = DoctorList.get(i);
+			if (pName.equalsIgnoreCase(tempDoctor.getName())){ //check if user name matches
+				found = true;  // if it is found change condition and save the index
+				position = i; //save the current position 
+			}
+			i++;  //increment counter
+		}		
+		if (found == true)
+			return position;
+		else
+			return -1;
+	}
 	
 	public int findPatientByName(String pName){
 		//check if the name exists in the PatientList
@@ -1326,6 +1402,19 @@ public class Directory {
 		}
 		return false;
 	}
+	//method to check if a username already exists in either the PatientList or the DoctorList
+	public boolean checkUsername(String pUsername){
+		boolean found = false;
+		for (int i=0;i<PatientList.size();i++){
+			if (pUsername.equalsIgnoreCase(PatientList.get(i).getUsername()))
+				return true;
+		}
+		for (int i=0;i<DoctorList.size();i++){
+			if (pUsername.equalsIgnoreCase(DoctorList.get(i).getUsername()))
+				return true;
+		}
+		return found;
+	}
 	
 	private void savePatientToFile() throws FileNotFoundException{
 		PrintWriter pw = new PrintWriter (new FileOutputStream("patients.txt"));
@@ -1337,6 +1426,7 @@ public class Directory {
 			pw.println(PatientList.get(i).getSecretQuestion());
 			pw.println(PatientList.get(i).getSecretAnswer());
 			pw.println(PatientList.get(i).getCareProvider());
+			pw.println(PatientList.get(i).getPhoneNumber());
 			Patient tempPatient = PatientList.get(i);
 			pw.println(tempPatient.surveyCount());
 			for (int j=0; j<tempPatient.surveyCount();j++){
@@ -1388,7 +1478,8 @@ public class Directory {
 				String SecretQuestion = sc.nextLine();
 				String SecretAnswer = sc.nextLine();
 				String CareProvider = sc.nextLine();
-				Patient newPatient = new Patient(Name, Username, Password, SecretQuestion, SecretAnswer, CareProvider);
+				String PhoneNumber = sc.nextLine();
+				Patient newPatient = new Patient(Name, Username, Password, SecretQuestion, SecretAnswer, CareProvider, PhoneNumber);
 				PatientList.add(newPatient);
 				int surveyCount = sc.nextInt();
 				Dummy = sc.nextLine();
@@ -1441,6 +1532,13 @@ public class Directory {
 		} else {
 			System.out.println("File was not found");
 		}
+	}
+	
+	//method to generate a random number
+	public static int randNumber(int min, int max){
+		Random rand = new Random();
+		int randomNumber = rand.nextInt((max - min) + 1) + min;
+		return randomNumber;
 	}
 
 	//For Testing Purposes*********************************************************************************************

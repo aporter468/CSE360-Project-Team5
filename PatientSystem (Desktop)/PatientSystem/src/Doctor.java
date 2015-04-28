@@ -4,7 +4,7 @@ public class Doctor {
 	String name, username, password, securityQ, securityA, phone, email;
 	private DefaultListModel<String> patientList = new DefaultListModel<String>();
 	
-	//Constructor
+	//Constructor methods
 	public Doctor(String name1, String username1, String password1, String securityQ1, String securityA1, String phone1, String email1)
 	{
 		name = name1;
@@ -24,9 +24,8 @@ public class Doctor {
 		securityA = "";
 		phone = "";
 		email = "";
-		
 	}
-	
+	//--------------------------------------------------------------------------------------------------
 	//setters
 	public void setName(String name1)
 	{
@@ -62,6 +61,7 @@ public class Doctor {
 		email = email1;
 	}
 	
+	//method to add the name of a Patient to the Patient ListModel 
 	public void addPatientName(String pPatientName){
 		patientList.addElement(pPatientName);
 	}
@@ -102,19 +102,23 @@ public class Doctor {
 		return email;
 	}
 	
+	//returns the patientList ListModel
 	public DefaultListModel<String> getList(){
 		return patientList;
 	}
 	
+	//checks if the patientList is empty or not
 	public boolean isPatientListEmpty(){
 		return patientList.isEmpty();
 	}
 	
+	//returns a single patienList name based on a provided index
 	public String getPatientName(int index){
 		String name = patientList.get(index);
 		return name;
 	}
 	
+	//returns the total count of patients assigned to a Doctor
 	public int getPatientCount(){
 		return patientList.getSize();
 	}
