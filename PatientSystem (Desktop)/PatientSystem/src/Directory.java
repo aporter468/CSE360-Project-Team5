@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -1314,7 +1313,7 @@ public class Directory {
 		//----------------------------------------------------------------------------------------------------
 	}
 	
-	//method to find user in either the PatientList or DoctorList 
+	//method to find user in either the PatientList or DoctorList using the UserName
 	public int findPatient(String pUsername){
 		//check if user name exists
 		boolean found = false;
@@ -1510,6 +1509,7 @@ public class Directory {
 			}
 		
 		sc.close();
+		System.out.println("File was loaded correctly."+Dummy);
 		} else {
 			System.out.println("File was not found");
 		}
@@ -1540,6 +1540,7 @@ public class Directory {
 			}
 		
 		sc.close();
+		System.out.println("File was loaded correctly."+Dummy);
 		} else {
 			System.out.println("File was not found");
 		}
@@ -1553,11 +1554,11 @@ public class Directory {
 	}
 
 	//For Testing Purposes*********************************************************************************************
-	/*
+	
 	public boolean addPatient(String pName, String pUsername, String pPassword, String pSecretQuestion, String pSecretAnswer,
-			String pCareProvider) {
+			String pCareProvider, String pPhoneNumber) {
 				try{
-					Patient newPatient = new Patient(pName, pUsername, pPassword, pSecretQuestion, pSecretAnswer, pCareProvider);
+					Patient newPatient = new Patient(pName, pUsername, pPassword, pSecretQuestion, pSecretAnswer, pCareProvider, pPhoneNumber);
 					PatientList.add(newPatient);
 					return true;
 				}
@@ -1577,10 +1578,10 @@ public class Directory {
 			}
 		return false;
 	}
-	/*
+	
 	public void addSurvey() {
 		Survey newSurvey = new Survey(1, 2, 3, 4, 5, 6, 7, 8, "Today");
 		currentPatient.addSurvey(newSurvey);
-	}*/
+	}
 }
 

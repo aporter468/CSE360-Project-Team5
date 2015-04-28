@@ -1,8 +1,9 @@
-import org.junit.Test;
-import org.junit.Ignore;
-import static org.junit.Assert;
+import static org.junit.Assert.*;
 
-public class DirectoryTest {
+import org.junit.Test;
+
+
+public class Tests {
 
 Directory dir = new Directory();
 
@@ -10,7 +11,7 @@ Directory dir = new Directory();
 
 //Tests finding a User in the PatientList
 public void findUser() {
-    if(dir.addPatient("a", "b", "c", "d", "e")) {
+    if(dir.addPatient("a", "b", "c", "d", "e", "f", "g")) {
        int x = dir.findPatientByName("a");
        if(x!= -1)
        {
@@ -25,9 +26,9 @@ public void findUser() {
 
 @Test
 
-//Tests finding a User by Username in the PatientList
+//Tests finding a User by User name in the PatientList
 public void findUserName() {
-    if(dir.addPatient("a", "b", "c", "d", "e")) {
+    if(dir.addPatient("a", "b", "c", "d", "e", "f", "g")) {
         int x = dir.findPatient("b");
         if(x!= -1)
         {
@@ -44,11 +45,11 @@ public void findUserName() {
 
 //Tests Finding Doctor in List
 public void doctorExists() {
-    if(dir.addDoctor("a", "b", "c", "d", "e")) {
+    if(dir.addDoctor("a", "b", "c", "d", "e", "f", "g")) {
         boolean x = dir.doctorExists("a");
         assertTrue("Doctor a exists", x);
         boolean y = dir.doctorExists("b");
-        assertFalse("Doctor b does not exist", y)'
+        assertFalse("Doctor b does not exist", y);
     }
 }
 
@@ -56,7 +57,7 @@ public void doctorExists() {
 
 //Tests Finding Doctor in List
 public void findDoctor() {
-    if(dir.addDoctor("a", "b", "c", "d", "e")) {
+    if(dir.addDoctor("a", "b", "c", "d", "e", "f", "g")) {
         int x = dir.findDoctor("a");
         if(x!= -1)
         {
