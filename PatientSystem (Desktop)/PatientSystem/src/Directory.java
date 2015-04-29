@@ -179,35 +179,20 @@ public class Directory {
 						Doctor tempDoctor = new Doctor();
 						if (position >=0) {
 							tempDoctor = DoctorList.get(position); //retrieve the corresponding user
-							textField_LoginUsername.setText("");//clear the fields
-							passwordField_Login.setText("");
-							panelMainMenuDoctor.setVisible(true); //set the MainMenuDoctor panel to visible
-							panelLogin.setVisible(false);//set the panelLogin to not visible
-							currentDoctor = tempDoctor; //save the currently logged patient in currentDoctor
-							currentDoctor = tempDoctor;
-						}
-						
-					} if (position == -1){ //if the user is not in the Patient List, then check the Doctor List
-						position = findDoctor(textField_LoginUsername.getText());
-						if (position >=0 ){ //the user name was found in the Doctor List
-							Doctor tempDoctor = new Doctor(); //make a temporary doctor
-							tempDoctor = DoctorList.get(position); //retrieve the corresponding user
 							if (passwordField_Login.getText().equals(tempDoctor.getPassword())){ //check that password matches stored password
 								textField_LoginUsername.setText("");//clear the fields
 								passwordField_Login.setText("");
 								panelLogin.setVisible(false); //set the panelLogin to not visible
-								panelMainMenu.setVisible(true);  //set the MainMenu panel to visible
+								panelMainMenuDoctor.setVisible(true);  //set the MainMenu panel to visible
 								currentDoctor = tempDoctor;
-							}
-							else { //display a message if the password is incorrect
+							}else { //display a message if the password is incorrect
 								JOptionPane.showMessageDialog(null, "Incorrect Password. Try Again.", "Error", JOptionPane.ERROR_MESSAGE);
 							}
 						}
-						else if (position==-1){//display message if user name does not exist
+						else { //display a message if the user name was not found in either ArrayList
 							JOptionPane.showMessageDialog(null, "Username does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
 						}
 					} 
-				
 				}
 		});
 		btnLogin.setBounds(207, 154, 89, 23);

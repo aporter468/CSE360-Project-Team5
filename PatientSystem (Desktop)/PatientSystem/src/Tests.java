@@ -18,7 +18,6 @@ public void findUser() {
            boolean found = true;
            assertTrue("Patient a is Found", found);
        }
-       assertEquals("Patient a not Found by Name", -1, x);
        int y = dir.findPatientByName("b");
        assertEquals("Patient b not Found by Name", -1, y);
     }
@@ -35,7 +34,6 @@ public void findUserName() {
            boolean found = true;
            assertTrue("Patient a is Found", found);
         }
-        assertEquals("Patient a not Found by UserName", -1, x);
         int y = dir.findPatient("c");
         assertEquals("Patient b not Found by Name", -1, y);
     }
@@ -64,8 +62,7 @@ public void findDoctor() {
            boolean found = true;
            assertTrue("Doctor a is Found", found);
         }
-        assertEquals("Doctor a not found", -1, x);
-        int y = dir.findDoctor("b");
+        int y = dir.findDoctor("c");
         assertEquals("Doctor b not found", -1, y);
     }
 }
