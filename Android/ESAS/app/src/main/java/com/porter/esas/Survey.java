@@ -8,7 +8,8 @@ import java.util.Date;
 public class Survey {
     public static String[] SURVEY_FIELDS = {"Pain","Drowsiness","Nausea","Appetite","Shortness of Breath","Depression","Anxiety","Wellbeing"};
   public static String[] SERVER_FIELD_NAMES = {"pain","drowsiness","nausea","appetite","shortnessofbreath","depression","anxiety","wellbeing"};
-  public static int NUM_SURVEY_FIELDS = 8;
+  public static int[] symptomthresholds = {5,5,4,4,3,2,2,4};
+    public static int NUM_SURVEY_FIELDS = 8;
     private int[] surveyValues;
     private String comments;
     private Calendar c;
@@ -63,7 +64,20 @@ public class Survey {
              s+= "Comments: "+comments+"\n";
         return s;
     }
-
+    public int getIsCritical()
+    {
+        int c = 0;
+        for (int i =0; i<NUM_SURVEY_FIELDS; i++)
+        {
+            if(surveyValues[i]>symptomthresholds[i])
+                c++;
+        }
+        if(c>5)
+            return 2;
+        else if (c>0)
+            return 1;
+        return 0;
+    }
 
     public void setPatient(Patient patient)
     {

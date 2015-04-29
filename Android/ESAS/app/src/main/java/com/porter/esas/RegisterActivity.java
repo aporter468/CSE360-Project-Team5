@@ -38,6 +38,7 @@ public class RegisterActivity extends Activity {
     private EditText mPasswordView;
     private EditText mFirstNameView;
     private EditText mLastNameView;
+    private EditText mPhoneView;
 
     private View mProgressView;
     private View mLoginFormView;
@@ -55,6 +56,15 @@ public class RegisterActivity extends Activity {
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mFirstNameView = (EditText) findViewById(R.id.firstName);
         mLastNameView = (EditText) findViewById(R.id.lastName);
+        mPhoneView = (EditText) findViewById(R.id.phoneNum);
+      
+        Button doneButton = (Button) findViewById(R.id.done_button);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptRegister();
+            }
+        });
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -65,13 +75,6 @@ public class RegisterActivity extends Activity {
                     return true;
                 }
                 return false;
-            }
-        });
-        Button doneButton = (Button) findViewById(R.id.done_button);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptRegister();
             }
         });
 
@@ -102,7 +105,7 @@ public class RegisterActivity extends Activity {
         String password = mPasswordView.getText().toString();
         String firstname = mFirstNameView.getText().toString();
         String lastname = mLastNameView.getText().toString();
-
+        String phone = mPhoneView.getText().toString();
         boolean cancel = false;
         View focusView = null;
 
@@ -147,7 +150,7 @@ public class RegisterActivity extends Activity {
         } else {
 
             showProgress(true);
-            mAuthTask = new UserRegisterTask(firstname,lastname,email, password, userType,this);
+            mAuthTask = new UserRegisterTask(firstname,lastname,email, password, phone,userType,this);
             mAuthTask.execute((Void) null);
 
         }
@@ -199,15 +202,17 @@ public class RegisterActivity extends Activity {
         private final String mLastname;
         private final String mEmail;
         private final String mPassword;
+        private final String mPhone;
         private final int mUserType;
         private final RegisterActivity activity;
         private boolean mSuccess;
 
-        UserRegisterTask(String firstname, String lastname,String email, String password, int userType,RegisterActivity activity) {
+        UserRegisterTask(String firstname, String lastname,String email, String password,String phone, int userType,RegisterActivity activity) {
             mEmail = email;
             mPassword = password;
             mUserType = userType;
             mFirstname = firstname;
+            mPhone = phone;
             mLastname = lastname;
             this.activity =activity;
             mSuccess = false;

@@ -68,7 +68,22 @@ private void makeTopSurveysTable()
 
         TextView rowTitleText = new TextView(getActivity());
         rowTitleText.setTextSize(18);
-        rowTitleText.setTextColor(Color.BLACK);
+        int critical = s.getIsCritical();
+        switch(critical)
+        {
+            case 0:
+                rowTitleText.setTextColor(Color.GREEN);
+                break;
+            case 1:
+                rowTitleText.setTextColor(Color.parseColor("#EE7600"));
+                break;
+            case 2:
+                rowTitleText.setTextColor(Color.RED);
+                break;
+            default:
+                rowTitleText.setTextColor(Color.BLACK);
+                break;
+        }
         rowTitleText.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -77,7 +92,6 @@ private void makeTopSurveysTable()
                 builder.setTitle("Survey Details");
                 final TextView infoText = new TextView(getActivity());
                 infoText.setText(s.getFullValueString()+"\n"+s.getPatient().getInfoString());
-
                 builder.setView(infoText);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
